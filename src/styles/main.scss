@@ -1,0 +1,9 @@
+@use './vars.scss' as *;
+
+.main-container {
+  width: 100%;
+  height: 100vh;
+  background: $background;
+  margin: 0;
+  padding: 0;
+}

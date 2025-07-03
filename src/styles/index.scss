@@ -1,0 +1,10 @@
+@forward './base.scss';
+@use './vars.scss' as *;
+
+@use './main.scss';
+@use './artworks.scss';
+@use './name.scss';
+@use './nav.scss';
+@use './loading.scss';
+@use './artworks-timeline.scss';
+@use './artwork-detail.scss';

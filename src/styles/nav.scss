@@ -1,0 +1,24 @@
+@use './vars.scss' as *;
+
+.nav-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+.nav-button {
+    margin: 10px;
+    opacity: .9;
+    cursor: pointer;
+    height: 30px;
+    width: 40px;
+
+    svg {
+        fill: $dark;
+        width: 100%;
+    }
+}
+
+.nav-button-open {
+    opacity: .5;
+}
