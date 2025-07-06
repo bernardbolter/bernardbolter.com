@@ -7,6 +7,8 @@ interface ArtworksState {
   filtered: Artwork[];
   sorting: "latest"|"oldest";
   filterNavOpen: boolean;
+  searchNavOpen: boolean;
+  showSlideshow: boolean;
 }
 
 type ArtworksContextType= [ArtworksState, Dispatch<SetStateAction<ArtworksState>>];
@@ -15,8 +17,10 @@ export const ArtworksContext = createContext<ArtworksContextType>([
   {
     original: [],
     filtered: [],
-    sorting: "latest",
+    sorting: "oldest",
     filterNavOpen: false,
+    searchNavOpen: false,
+    showSlideshow: false
   },
   () => {}
 ]);
@@ -31,25 +35,33 @@ const ArtworksProvider = ({ children }: ArtworksProviderProps) => {
     filtered: [],
     sorting: "latest",
     filterNavOpen: false,
+    searchNavOpen: false,
+    showSlideshow: false
   })
 
   useEffect(() => {
-    console.log('artworks provider: ', artworks.sorting)
-    console.log(artworks.original)
+    // console.log('artworks provider: ', artworks.sorting)
+    console.log(artworks.original, artworks.filtered)
     if (artworks.original.length !== 0) {
+      console.log('get new filtered array')
       let newFiltered: Artwork[] = []
+      
+      // FILTER OUT NON IMAGE ARWORKS AT THE MOMENT!!!! 
+      // TODO: FIX THIS SO IT DOESN'T BREAK EVERYTHING
+      const newOriginal = artworks.original.filter(art => art.artworkFields.artworkImage !== null)
       if (artworks.sorting === 'latest') {
-        newFiltered = [...artworks.original].sort(function(a, b) {
+        // newFiltered = [...artworks.original].sort(function(a, b) {
+        newFiltered = [...newOriginal].sort(function(a, b) {
           return new Date(b.date).getTime() - new Date(a.date).getTime()
         })
       } else if (artworks.sorting === 'oldest') {
         console.log("filter oldest")
-        newFiltered = [...artworks.original].sort(function(a, b) {
+        newFiltered = [...newOriginal].sort(function(a, b) {
           return new Date(a.date).getTime() - new Date(b.date).getTime()
         })
       }
       setArtworks(state => ({ ...state, filtered: newFiltered }))
-      console.log("new f: ", newFiltered)
+      // console.log("new f: ", newFiltered)
     }
   }, [artworks.sorting, artworks.original])
 

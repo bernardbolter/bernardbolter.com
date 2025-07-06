@@ -1,5 +1,102 @@
 @use './vars.scss' as *;
 
-.artworks-timeline-container {
-    display: block;
+.artworks-timeline__container {
+    position: relative;
+    width: 100%;
+}
+
+.artwork-timeline__artworks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-x: auto;
+    margin-top: 75px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+
+    &::-webkit-scrollbar {
+        background: transparent; /* Chrome/Safari/Webkit */
+        width: 0px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+}
+
+// TITLE
+.artworks-timeline__title-container {
+    position: fixed;
+    z-index: 3000;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    h1 {
+        font-size: 20px;
+    }
+}
+
+// ARTWORK
+
+.artworks-timeline__artwork-inside {
+    display: flex;
+    flex-direction: column;
+}
+
+.artworks-timeline__artwork--container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #bbb;
+    border: 1px solid black;
+}
+
+.artwork-timeline__desktop-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #aaa;
+    border: 1px solid greenyellow;
+}
+
+.artworks-timeline__timepoint {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+    background: #999;
+}
+
+// CONTROLS
+
+.artworks-timeline__controls-container {
+    position: fixed;
+    z-index: 3000;
+    bottom: 0px;
+    left: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.artworks-timeline__control {
+    width: 44px;
+    height: 43px;
+    padding: 0 0 10px 10px;
+    cursor: pointer;
+    transform: scale(1);
+    transition: all .2s ease-in-out;
+
+    svg {
+        margin: 0 0 10px 10px;
+        width: 100%;
+    }
+
+    &:hover {
+        transform: scale(1.03);
+        transition: all .2s ease-in-out;
+    }
 }

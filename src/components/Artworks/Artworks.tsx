@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import { ArtworksContext } from '@/providers/ArtworkProvider'
 
 import ArtworksTimeline from './ArtworksTimeline'
+import ArtworksSlideshow from './ArtworksSlideshow'
 import Loading from '@/components/Loading'
 
 import { Artwork } from '@/types/artworks'
@@ -24,7 +25,7 @@ const Artworks = ({ gArtworks }: { gArtworks: Artwork[]}) => {
 
     useEffect(() => {
         if (artworks.original.length === 0) {
-            setArtworks(state => ({ ...state, original: [...gArtworks], filtered: [...gArtworks] }))
+            setArtworks(state => ({ ...state, original: [...gArtworks] }))
             setLoading(false)
         } else {
             setLoading(false)
@@ -41,6 +42,7 @@ const Artworks = ({ gArtworks }: { gArtworks: Artwork[]}) => {
                 ?   <p>No artworks found.</p> 
                 :   <ArtworksTimeline artworks={artworks.filtered} />
             }
+            {artworks.showSlideshow && <ArtworksSlideshow filteredArtworks={artworks.filtered} />}
         </section>
     )
 }

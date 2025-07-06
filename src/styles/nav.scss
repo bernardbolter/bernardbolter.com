@@ -2,23 +2,22 @@
 
 .nav-container {
     position: fixed;
-    top: 0;
+    top: 7px;
     right: 0;
+    z-index: 1000;
 }
 
 .nav-button {
-    margin: 10px;
     opacity: .9;
     cursor: pointer;
-    height: 30px;
-    width: 40px;
+    height: 34px;
+    width: 33px;
 
     svg {
-        fill: $dark;
         width: 100%;
     }
-}
 
-.nav-button-open {
-    opacity: .5;
+    .svgs-light-fill {
+        transition: opacity .5s ease-in-out;
+    }
 }

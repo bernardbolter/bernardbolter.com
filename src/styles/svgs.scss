@@ -1,0 +1,25 @@
+@use './vars.scss' as *;
+
+.svgs-light-fill {
+    fill: $svg-light;
+}
+
+.svgs-light-stroke{
+    stroke: $svg-light;
+}
+
+.svgs-dark-fill {
+    fill: $svg-dark;
+}
+
+.svgs-dark-stroke {
+    stroke: $svg-dark;
+}
+
+.svgs-transparent-fill {
+    fill: transparent;
+}
+
+.svgs-transparent-stroke {
+    stroke: transparent;
+}

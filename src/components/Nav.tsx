@@ -3,6 +3,8 @@
 import { useContext } from 'react'
 import { ArtworksContext } from '@/providers/ArtworkProvider'
 import FilterSvg from '@/svgs/FilterSvg'
+import SearchSvg from '@/svgs/SearchSvg'
+import PlaySvg from '@/svgs/PlaySvg'
 
 const Nav = () => {
     const [artworks, setArtworks] = useContext(ArtworksContext)
@@ -10,10 +12,25 @@ const Nav = () => {
   return (
     <nav className="nav-container">
         <div 
-            className={artworks.filterNavOpen ? 'nav-button nav-button-open' : 'nav-button'}
+            className="nav-button"
+            role="button"
+            onClick={() => setArtworks(prev => ({...prev, searchNavOpen: !prev.searchNavOpen}))}
+        >
+          <SearchSvg searchNavOpen={artworks.searchNavOpen} />
+        </div>
+        <div 
+            className="nav-button"
+            role="button"
+            onClick={() => setArtworks(prev => ({...prev, showSlideshow: !prev.showSlideshow}))}
+        >
+          <PlaySvg showSlideshow={artworks.showSlideshow} />
+        </div>
+        <div 
+            className="nav-button"
+            role="button"
             onClick={() => setArtworks(prev => ({...prev, filterNavOpen: !prev.filterNavOpen}))}
         >
-            <FilterSvg />
+            <FilterSvg filterNavOpen={artworks.filterNavOpen} />
         </div>
     </nav>
   )
