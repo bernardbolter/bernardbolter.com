@@ -23,3 +23,11 @@
 .svgs-transparent-stroke {
     stroke: transparent;
 }
+
+.timer-svg__background-circle {
+    stroke: rgba(255, 255, 255, .3);
+}
+
+.timer-svg__progress-circle {
+    stroke: $svg-light;
+}

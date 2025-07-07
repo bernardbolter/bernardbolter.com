@@ -9,6 +9,8 @@ interface ArtworksState {
   filterNavOpen: boolean;
   searchNavOpen: boolean;
   showSlideshow: boolean;
+  slideshowPlaying: boolean;
+  slideshowTimerProgress: number;
 }
 
 type ArtworksContextType= [ArtworksState, Dispatch<SetStateAction<ArtworksState>>];
@@ -20,7 +22,9 @@ export const ArtworksContext = createContext<ArtworksContextType>([
     sorting: "oldest",
     filterNavOpen: false,
     searchNavOpen: false,
-    showSlideshow: false
+    showSlideshow: false,
+    slideshowPlaying: false,
+    slideshowTimerProgress: 0
   },
   () => {}
 ]);
@@ -36,7 +40,9 @@ const ArtworksProvider = ({ children }: ArtworksProviderProps) => {
     sorting: "latest",
     filterNavOpen: false,
     searchNavOpen: false,
-    showSlideshow: false
+    showSlideshow: false,
+    slideshowPlaying: false,
+    slideshowTimerProgress: 0
   })
 
   useEffect(() => {

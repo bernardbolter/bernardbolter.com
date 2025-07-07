@@ -1,0 +1,14 @@
+@use './vars.scss' as *;
+
+.artworks-slideshow__container {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    z-index: 4000;
+    top: 0px;
+    left: 0px;
+    background: $dark;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
