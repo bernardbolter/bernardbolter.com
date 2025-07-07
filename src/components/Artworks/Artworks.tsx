@@ -40,7 +40,7 @@ const Artworks = ({ gArtworks }: { gArtworks: Artwork[]}) => {
         <section className="artworks-container">
             { noArtworks 
                 ?   <p>No artworks found.</p> 
-                :   <ArtworksTimeline artworks={artworks.filtered} />
+                :   <ArtworksTimeline filteredArtworks={artworks.filtered} />
             }
             {artworks.showSlideshow && <ArtworksSlideshow filteredArtworks={artworks.filtered} />}
         </section>

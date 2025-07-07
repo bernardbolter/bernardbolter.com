@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
+import { ArtworksContext } from '@/providers/ArtworkProvider';
 import ArtworkDetail from '@/components/Artworks/ArtworkDetail';
 
 import LeftArrowSvg from '@/svgs/LeftArrowSvg';
@@ -12,11 +13,13 @@ import { Artwork } from '@/types/artworks';
 import { formatFilteredArtworkWithTimeDIff } from '@/helpers'; 
 
 interface ArtworksTimelineProps {
-  artworks: Artwork[];
+  filteredArtworks: Artwork[];
 }
 
-const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ artworks = [] }) => {
-    const [currentIndex, setCurrentIndex] = useState<number>(0); // State to track the current index of the artwork being displayed
+const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = [] }) => {
+    const [artworks, setArtworks] = useContext(ArtworksContext);
+    
+    // const [currentIndex, setCurrentIndex] = useState<number>(0); // State to track the current index of the artwork being displayed
     const timelineRef = useRef<HTMLDivElement>(null);
     const vport = useWindowSize(); // Get the size of the viewport
     const [artworkContainerWidth, setArtworkContainerWidth] = useState<number>(0);
@@ -41,35 +44,57 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ artworks = [] }) =>
     }, [vport])
 
     const formattedArtworks = useMemo(() => {
-        return formatFilteredArtworkWithTimeDIff(artworks, vport)
-    }, [artworks, vport])
+        return formatFilteredArtworkWithTimeDIff(filteredArtworks, vport)
+    }, [filteredArtworks, vport])
 
     // Calculate scroll position for a specific index
     const getScrollPosition = (index: number): number => {
-        return index * (artworkContainerWidth);
+        // Calculate the position that would center the artwork in the viewport
+        const viewportWidth = vport.width || 0;
+        const artworkCenter = (index * artworkContainerWidth) + (artworkContainerWidth / 2);
+        const viewportCenter = viewportWidth / 2;
+        const scrollPosition = artworkCenter - viewportCenter + (artworkDesktopSideWidth || 0);
+        
+        // Ensure we don't scroll to negative positions
+        return Math.max(0, scrollPosition);
     };
 
     // Scroll to specific index
     const scrollToIndex = (index: number): void => {
         if (timelineRef.current && index >= 0 && index < formattedArtworks.length) {
-        const scrollPosition = getScrollPosition(index);
-        timelineRef.current.scrollTo({
-            left: scrollPosition,
-            behavior: 'smooth'
-        });
-        setCurrentIndex(index);
+            isScrollingProgrammatically.current = true;
+
+            setArtworks(state => ({ ...state, currentArtworkIndex: index }))
+
+            const scrollPosition = getScrollPosition(index);
+            timelineRef.current.scrollTo({
+                left: scrollPosition,
+                behavior: 'smooth'
+            });
         }
+
+        setTimeout(() => {
+            isScrollingProgrammatically.current = false; // Reset flag after scrolling completes
+        }, 500);
     };
 
     // Scroll to next image
     const scrollNext = (): void => {
-        const nextIndex = currentIndex < formattedArtworks.length - 1 ? currentIndex + 1 : 0;
+        const nextIndex = artworks.currentArtworkIndex < formattedArtworks.length - 1 
+            ? artworks.currentArtworkIndex + 1 
+            : 0;
+        
+        console.log("Scrolling to next index:", nextIndex);
         scrollToIndex(nextIndex);
     };
 
     // Scroll to previous image
     const scrollPrevious = (): void => {
-        const prevIndex = currentIndex > 0 ? currentIndex - 1 : formattedArtworks.length - 1;
+        const prevIndex = artworks.currentArtworkIndex > 0 
+            ? artworks.currentArtworkIndex - 1 
+            : formattedArtworks.length - 1;
+        
+        console.log("Scrolling to previous index:", prevIndex);
         scrollToIndex(prevIndex);
     };
 
@@ -85,37 +110,60 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ artworks = [] }) =>
         }
     };
 
+    useEffect(() => {
+    // Only scroll if we're not already scrolling programmatically
+        if (!isScrollingProgrammatically.current && timelineRef.current) {
+            isScrollingProgrammatically.current = true;
+            const scrollPosition = getScrollPosition(artworks.currentArtworkIndex);
+            
+            timelineRef.current.scrollTo({
+                left: scrollPosition,
+                behavior: 'smooth'
+            });
+            
+            setTimeout(() => {
+                isScrollingProgrammatically.current = false;
+            }, 500);
+        }
+    }, [artworks.currentArtworkIndex]);
+
      // Handle manual scroll detection
     const handleScroll = (): void => {
         if (timelineRef.current && !isScrollingProgrammatically.current) {
             const scrollLeft = timelineRef.current.scrollLeft;
-            const containerWidth = timelineRef.current.clientWidth;
+            // const containerWidth = timelineRef.current.clientWidth;
             const sideWidth = artworkDesktopSideWidth || 0;
             
             // Adjust scroll position to account for desktop side width
             const adjustedScrollLeft = scrollLeft - sideWidth;
-            
+            const mostVisibleIndex = Math.round(adjustedScrollLeft / artworkContainerWidth);
+        
             // Calculate which artwork is most visible
-            let mostVisibleIndex = 0;
-            let maxVisibleArea = 0;
+            // let mostVisibleIndex = 0;
+            // let maxVisibleArea = 0;
             
-            formattedArtworks.forEach((_, index) => {
-                const artworkStart = index * artworkContainerWidth;
-                const artworkEnd = artworkStart + artworkContainerWidth;
+            // formattedArtworks.forEach((_, index) => {
+            //     const artworkStart = index * artworkContainerWidth;
+            //     const artworkEnd = artworkStart + artworkContainerWidth;
                 
-                // Calculate visible area of this artwork
-                const visibleStart = Math.max(adjustedScrollLeft, artworkStart);
-                const visibleEnd = Math.min(adjustedScrollLeft + containerWidth, artworkEnd);
-                const visibleArea = Math.max(0, visibleEnd - visibleStart);
+            //     // Calculate visible area of this artwork
+            //     const visibleStart = Math.max(adjustedScrollLeft, artworkStart);
+            //     const visibleEnd = Math.min(adjustedScrollLeft + containerWidth, artworkEnd);
+            //     const visibleArea = Math.max(0, visibleEnd - visibleStart);
                 
-                if (visibleArea > maxVisibleArea) {
-                    maxVisibleArea = visibleArea;
-                    mostVisibleIndex = index;
-                }
-            });
+            //     if (visibleArea > maxVisibleArea) {
+            //         maxVisibleArea = visibleArea;
+            //         mostVisibleIndex = index;
+            //     }
+            // });
             
-            if (mostVisibleIndex !== currentIndex) {
-                setCurrentIndex(mostVisibleIndex);
+            if (
+                mostVisibleIndex >= 0 && 
+                mostVisibleIndex < formattedArtworks.length && 
+                mostVisibleIndex !== artworks.currentArtworkIndex
+            ) {
+                // setCurrentIndex(mostVisibleIndex);
+                setArtworks(state => ({ ...state, currentArtworkIndex: mostVisibleIndex }))
             }
         }
     };
@@ -131,14 +179,14 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ artworks = [] }) =>
                 scrollContainer.removeEventListener('scroll', handleScroll);
             };
         }
-    }, [currentIndex, artworkContainerWidth, artworkDesktopSideWidth, formattedArtworks.length]);
+    }, [timelineRef.current, artworkContainerWidth, formattedArtworks.length]);
 
 
     return (
         <div className="artworks-timeline__container">
             {formattedArtworks.length > 0 && (
                 <div className="artworks-timeline__title-container">
-                    <h1>{formattedArtworks[currentIndex].title}</h1>
+                    <h1>{formattedArtworks[artworks.currentArtworkIndex].title}</h1>
                 </div>
             )}
             <div

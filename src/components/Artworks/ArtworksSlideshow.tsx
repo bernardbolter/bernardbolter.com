@@ -7,32 +7,44 @@ import { Artwork } from '@/types/artworks'
 
 interface ArtworksSlideshowProps {
   filteredArtworks: Artwork[];
-  initialIndex?: number;
-  autoPlayInterval?: number; // in milliseconds
-  onClose?: () => void; 
+  autoPlayInterval?: number;
 }
 
 const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({ 
     filteredArtworks, 
-    initialIndex = 0, 
     autoPlayInterval = 5000
 }) => {
     const [artworks, setArtworks] = useContext(ArtworksContext);
-    const [currentIndex, setCurrentIndex] = useState<number>(initialIndex)
     const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+
+    const currentIndexRef = useRef<number>(artworks.currentArtworkIndex)
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const animationRef = useRef<number | null>(null); // Store the animation frame ID here
     const startTimeRef = useRef<number>(0);
     const pausedProgressRef = useRef<number>(0); // Store paused progress
+    const progressRef = useRef<number>(0); // Store progress value
+
+    // Keep the ref in sync with context
+    useEffect(() => {
+        currentIndexRef.current = artworks.currentArtworkIndex;
+    }, [artworks.currentArtworkIndex]);
 
     // Initialize start time when slideshow starts for the first time or when image changes
     useEffect(() => {
-        if (artworks.slideshowPlaying && imageLoaded) {
-            // Calculate adjusted start time based on paused progress
-            const adjustedStartTime = Date.now() - (pausedProgressRef.current / 100) * autoPlayInterval;
-            startTimeRef.current = adjustedStartTime;
+        // When slideshow is first shown, ensure it starts with the current index
+        if (artworks.showSlideshow) {
+            // Reset progress for the current image
+            pausedProgressRef.current = 0;
+            progressRef.current = 0;
+            setImageLoaded(false);
+            
+            // Update progress in context
+            setArtworks(prevState => ({
+                ...prevState,
+                slideshowTimerProgress: 0
+            }));
         }
-    }, [artworks.slideshowPlaying, imageLoaded, autoPlayInterval]);
+    }, [artworks.showSlideshow]);
 
     // Update Progress
     const updateProgress = () => {
@@ -42,23 +54,29 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
         const elapsed = now - startTimeRef.current;
         const newProgress = Math.min((elapsed / autoPlayInterval) * 100, 100);
         
-        // setProgress(newProgress);
-        pausedProgressRef.current = newProgress; // Always update paused progress
+        // Store progress in refs
+        pausedProgressRef.current = newProgress;
+        progressRef.current = newProgress
 
-        // Update context with current progress
-        setArtworks(prevState => ({
-            ...prevState,
-            slideshowTimerProgress: newProgress
-        }));
+        // Update context with current progress - but throttle updates to reduce re-renders
+        if (Math.abs(newProgress - artworks.slideshowTimerProgress) > 1) {
+            setArtworks(prevState => ({
+                ...prevState,
+                slideshowTimerProgress: newProgress
+            }));
+        }
         
         if (newProgress < 100) {
             animationRef.current = requestAnimationFrame(updateProgress);
+        } else {
+            animationRef.current = null;
         }
     };
 
     // Handle progress animation
     useEffect(() => {
         if (artworks.slideshowPlaying && imageLoaded) {
+            startTimeRef.current = Date.now() - (pausedProgressRef.current / 100) * autoPlayInterval;
             animationRef.current = requestAnimationFrame(updateProgress);
         } else {
             if (animationRef.current) {
@@ -73,7 +91,7 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
                 animationRef.current = null;
             }
         };
-    }, [artworks.slideshowPlaying, imageLoaded ]);
+    }, [artworks.slideshowPlaying, imageLoaded]);
 
     // Auto-play functionality - advance to next image
     useEffect(() => {
@@ -81,9 +99,16 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
             const remainingTime = autoPlayInterval - (pausedProgressRef.current / 100) * autoPlayInterval;
             
             intervalRef.current = setTimeout(() => {
-                setCurrentIndex((prevIndex) => 
-                    prevIndex === filteredArtworks.length - 1 ? 0 : prevIndex + 1
-                );
+                // Calculate next index using the ref
+                const nextIndex = currentIndexRef.current === filteredArtworks.length - 1 
+                    ? 0 
+                    : currentIndexRef.current + 1;
+                
+                // Update context with new index
+                setArtworks(state => ({
+                    ...state,
+                    currentArtworkIndex: nextIndex
+                }));
             }, remainingTime);
         }
 
@@ -93,35 +118,37 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
                 intervalRef.current = null;
             }
         };
-    }, [artworks.slideshowPlaying, filteredArtworks.length, autoPlayInterval, imageLoaded, currentIndex]);
+    }, [artworks.slideshowPlaying, filteredArtworks.length, imageLoaded]);
 
     // Reset progress only when index changes (new image)
     useEffect(() => {
         setImageLoaded(false);
         pausedProgressRef.current = 0; // Reset paused progress for new image
-        
+        progressRef.current = 0;
+
         // Reset progress in context when image changes
         setArtworks(prevState => ({
             ...prevState,
-            slideshowProgress: 0
+            slideshowTimerProgress: 0
         }));
-    }, [currentIndex, setArtworks]);
+    }, [artworks.currentArtworkIndex]);
 
-    // Update context progress when paused (so circle animation shows current position)
+    // Update context progress when paused
     useEffect(() => {
         if (!artworks.slideshowPlaying) {
             setArtworks(prevState => ({
                 ...prevState,
-                slideshowProgress: pausedProgressRef.current
+                slideshowTimerProgress: pausedProgressRef.current
             }));
         }
-    }, [artworks.slideshowPlaying, setArtworks]);
+    }, [artworks.slideshowPlaying]);
 
     const handleImageLoad = () => {
         setImageLoaded(true);
+        startTimeRef.current = Date.now(); // Reset start time when image loads
     };
 
-    const currentArtwork = filteredArtworks[currentIndex];
+    const currentArtwork = filteredArtworks[artworks.currentArtworkIndex];
 
     return (
         <div className="artworks-slideshow__container">

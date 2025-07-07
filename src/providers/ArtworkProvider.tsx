@@ -5,6 +5,7 @@ import { Artwork } from '@/types/artworks'
 interface ArtworksState {
   original: Artwork[];
   filtered: Artwork[];
+  currentArtworkIndex: number;
   sorting: "latest"|"oldest";
   filterNavOpen: boolean;
   searchNavOpen: boolean;
@@ -19,6 +20,7 @@ export const ArtworksContext = createContext<ArtworksContextType>([
   {
     original: [],
     filtered: [],
+    currentArtworkIndex: 0,
     sorting: "oldest",
     filterNavOpen: false,
     searchNavOpen: false,
@@ -37,6 +39,7 @@ const ArtworksProvider = ({ children }: ArtworksProviderProps) => {
   const [artworks, setArtworks] = useState<ArtworksState>({
     original: [],
     filtered: [],
+    currentArtworkIndex: 0,
     sorting: "latest",
     filterNavOpen: false,
     searchNavOpen: false,

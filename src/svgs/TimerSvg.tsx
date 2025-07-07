@@ -5,10 +5,11 @@ const TimerSvg = () => {
   const [ artworks ] = useContext(ArtworksContext);
 
   const circumference = Math.PI * 2 * 13;
+  console.log("timer: ", artworks.slideshowTimerProgress)
   const progress = artworks.slideshowTimerProgress;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
-  console.log('timer progress: ', progress)
+  // console.log('timer progress: ', progress)
 
   return (
     <svg className="timer-svg__container" viewBox="-2 -2 40 40">
