@@ -9,7 +9,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    overflow-x: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     margin-top: 75px;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* IE 10+ */
@@ -22,6 +23,7 @@
     @media screen and (min-width: $break-m) {
         flex-direction: row;
         overflow-x: auto;
+        overflow-y: hidden;
     }
 }
 
@@ -42,7 +44,11 @@
 
 .artworks-timeline__artwork-inside {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+
+    @media screen and (min-width: $break-m) {
+        flex-direction: column;
+    }
 }
 
 .artworks-timeline__artwork--container {
@@ -68,6 +74,121 @@
     min-height: 50px;
     background: #999;
 }
+
+// TIMELINE
+.artworks-timeline__timepoint {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-width: 50px;
+    height: 100%;
+
+    @media screen and (max-width: $break-m) {
+        min-height: 50px;
+        width: 100%;
+    }
+
+    .timeline-line-first {
+        position: absolute;
+        width: 1px;
+        height: 50%;
+        margin: 50% 0 0 0;
+        background: $timeline;
+
+        @media screen and (max-width: $break-m) {
+            height: 1px;
+            width: 50%;
+            margin: 0 0 0 50%;
+        }
+    }
+    
+    .timeline-line {
+        position: absolute;
+        width: 1px;
+        height: 100%;
+        background-color: $timeline;
+
+        @media screen and (max-width: $break-m) {
+            height: 1px;
+            width: 100%;
+        }
+    }
+
+    .timeline-line-last {
+        position: absolute;
+        width: 1px;
+        height: 50%;
+        margin: 0 0 50% 0;
+        background-color: $timeline;
+
+        @media screen and (max-width: $break-m) {
+            height: 1px;
+            width: 50%;
+            margin: 0 50% 0 0;
+        }
+    }
+    
+    .timeline-small-tick {
+        position: absolute;
+        left: 20px;
+        width: 12px;
+        height: 1px;
+        background-color: $timeline;
+
+        @media screen and (max-width: $break-m) {
+            top: 20px;
+            width: 1px;
+            height: 12px;
+        }
+    } 
+    
+    .timeline-marker {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        @media screen and (max-width: $break-m) {
+            left: 50%;
+            transform: translateX(-50%);
+            flex-direction: column;
+        }
+        
+        .timeline-tick {
+            height: 2px;
+            width: 30px;
+            background-color: $timeline;
+
+            @media screen and (max-width: $break-m) {
+                width: 2px;
+                height: 30px;
+            }
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: -4px;
+            top: 2px;
+            padding: 1px 3px;
+            background: rgba($background, .8);
+            font-family: $title;
+            font-weight: 200;
+            font-size: 15px;
+            letter-spacing: 0.05em;
+            color: $timeline;
+            text-align: center;
+
+            @media screen and (max-width: $break-m) {
+                top: -4px;
+                left: 2px;
+            }
+        }
+    }
+}
+    
 
 // CONTROLS
 
