@@ -8,6 +8,8 @@ import PlaySvg from '@/svgs/PlaySvg'
 import PauseSvg from '@/svgs/PauseSvg'
 import TimerSvg from '@/svgs/TimerSvg'
 
+import SearchNav from './SearchNav'
+
 const Nav = () => {
     const [artworks, setArtworks] = useContext(ArtworksContext)
 
@@ -24,13 +26,14 @@ const Nav = () => {
           <TimerSvg />
         </div>
         <div 
-            className="nav-button"
+            className={artworks.searchNavOpen ? "nav-button search-button search-button--open" : "nav-button search-button"}
             role="button"
             onClick={() => setArtworks(prev => ({...prev, searchNavOpen: !prev.searchNavOpen}))}
             style={{ display: artworks.showSlideshow ? 'none' : 'block'}}
         >
           <SearchSvg searchNavOpen={artworks.searchNavOpen} />
         </div>
+        <SearchNav />
         <div 
             className="nav-button"
             role="button"

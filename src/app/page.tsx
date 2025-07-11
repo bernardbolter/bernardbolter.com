@@ -1,6 +1,6 @@
 import Artworks from '@/components/Artworks/Artworks'
 import Name from '@/components/Name'
-import Nav from '@/components/Nav'
+import Nav from '@/components/Navs/Nav'
 
 import { getAllArtwork } from '@/lib/graphql'
 import { Artwork } from '@/types/artworks'

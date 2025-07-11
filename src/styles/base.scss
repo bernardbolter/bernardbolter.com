@@ -42,8 +42,21 @@ table{
   border-spacing: 0;
 }
 
-input{
+input,
+select,
+textarea,
+button{
   -webkit-appearance: none;
   appearance: none;
   border-radius: 0;
+  border: none; 
+  border-width: 0; 
+  box-shadow: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
