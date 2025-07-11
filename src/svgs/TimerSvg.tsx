@@ -5,7 +5,7 @@ const TimerSvg = () => {
   const [ artworks ] = useContext(ArtworksContext);
 
   const circumference = Math.PI * 2 * 13;
-  console.log("timer: ", artworks.slideshowTimerProgress)
+  // console.log("timer: ", artworks.slideshowTimerProgress)
   const progress = artworks.slideshowTimerProgress;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 

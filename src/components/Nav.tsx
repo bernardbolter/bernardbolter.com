@@ -34,7 +34,18 @@ const Nav = () => {
         <div 
             className="nav-button"
             role="button"
-            onClick={() => setArtworks(prev => ({...prev, showSlideshow: !prev.showSlideshow, slideshowPLaying: true}))}
+             onClick={() => {
+              console.log("hitting nav setArtworks")
+              setArtworks(prev => {
+                const newShowSlideshow = !prev.showSlideshow;
+                return {
+                  ...prev, 
+                  showSlideshow: newShowSlideshow, 
+                  slideshowPlaying: newShowSlideshow, // Only play if showing slideshow
+                  isTimelineScrollingProgamatically: prev.showSlideshow // True only when closing slideshow
+                }
+              })
+            }}
         >
           <PlaySvg showSlideshow={artworks.showSlideshow} />
         </div>

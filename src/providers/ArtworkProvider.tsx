@@ -12,6 +12,7 @@ interface ArtworksState {
   showSlideshow: boolean;
   slideshowPlaying: boolean;
   slideshowTimerProgress: number;
+  isTimelineScrollingProgamatically: boolean;
 }
 
 type ArtworksContextType= [ArtworksState, Dispatch<SetStateAction<ArtworksState>>];
@@ -26,7 +27,8 @@ export const ArtworksContext = createContext<ArtworksContextType>([
     searchNavOpen: false,
     showSlideshow: false,
     slideshowPlaying: false,
-    slideshowTimerProgress: 0
+    slideshowTimerProgress: 0,
+    isTimelineScrollingProgamatically: false
   },
   () => {}
 ]);
@@ -45,7 +47,8 @@ const ArtworksProvider = ({ children }: ArtworksProviderProps) => {
     searchNavOpen: false,
     showSlideshow: false,
     slideshowPlaying: false,
-    slideshowTimerProgress: 0
+    slideshowTimerProgress: 0,
+    isTimelineScrollingProgamatically: false
   })
 
   useEffect(() => {
