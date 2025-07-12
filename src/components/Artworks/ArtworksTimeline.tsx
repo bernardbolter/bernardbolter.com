@@ -16,6 +16,8 @@ import {
     calculateTotalTimelineHeight,
     calculateHorizontalScrollPoints,
     calculateVerticalScrollPoints,
+    generateSmallLines,
+    generateYearMarkers
 } from '@/helpers/timeline';
 
 interface ArtworksTimelineProps {
@@ -296,6 +298,49 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
     //     )
     // }
 
+    const smallLines = useMemo(() => {
+        const isMobile: boolean = Boolean(vport.width && vport.width <= 767);
+        
+        return generateSmallLines({
+            isMobile,
+            totalTimelineHeight,
+            totalTimelineWidth,
+            artworkContainerHeight,
+            artworkContainerWidth,
+            artworkDesktopSideWidth,
+            targetSpacing: 20 // Optional: customize spacing
+        });
+    }, [
+        vport.width,
+        totalTimelineHeight,
+        totalTimelineWidth,
+        artworkContainerHeight,
+        artworkContainerWidth,
+        artworkDesktopSideWidth
+    ]);
+
+    const yearMarkers = useMemo(() => {
+        const isMobile: boolean = Boolean(vport.width && vport.width <= 767);
+        
+        return generateYearMarkers({
+            formattedArtworks,
+            isMobile,
+            totalTimelineHeight,
+            totalTimelineWidth,
+            artworkContainerHeight,
+            artworkContainerWidth,
+            artworkDesktopSideWidth,
+            pixelsPerYear: 120 // Adjust this value based on your timeline scale
+        });
+    }, [
+        formattedArtworks,
+        vport.width,
+        totalTimelineHeight,
+        totalTimelineWidth,
+        artworkContainerHeight,
+        artworkContainerWidth,
+        artworkDesktopSideWidth
+    ]);
 
 
     return (
@@ -363,7 +408,6 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                         height: vport.width && vport.width <= 767 ? `${totalTimelineHeight}px` : '50px',
                         marginLeft: vport.width && vport.width > 767 ? `${artworkDesktopSideWidth}px` : '0px',
                         marginRight: vport.width && vport.width > 767 ? `${artworkDesktopSideWidth}px` : '0px',
-                        background: '#ccc',
                     }}
                 >
                     <div
@@ -375,6 +419,17 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                             top: vport.width && vport.width > 767 ? '24px' : `${artworkContainerHeight / 2}px`,
                         }}
                     />
+                    <div 
+                        className="artworks-timeline__small-lines"
+                        style={{
+                            marginLeft: vport.width && vport.width > 767 ? `${artworkContainerWidth / 2}px` : '0px',
+                        }}    
+                    >
+                        {smallLines}
+                    </div>
+                    <div className="artworks-timeline__year-markers">
+                        {yearMarkers}
+                    </div>
                 </div>
             </div>
 

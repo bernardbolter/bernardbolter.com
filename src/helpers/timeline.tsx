@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { Artwork } from "@/types/artworks";
 
 // Extended artwork interface with time difference and calculated margin
@@ -8,6 +9,39 @@ export interface ArtworkWithTimeMargin extends Artwork {
   missingYears?: number[]; // Array of missing years if hasYearBreak is true
   originalIndex: number; // Original index of the artwork in the input array
   yearsDifference: number; // Number of years between artworks
+}
+// interface for small lines in timline
+export interface GenerateSmallLinesProps {
+  isMobile: boolean;
+  totalTimelineHeight: number;
+  totalTimelineWidth: number;
+  artworkContainerHeight: number;
+  artworkContainerWidth: number;
+  artworkDesktopSideWidth: number;
+  targetSpacing?: number;
+}
+
+// interface ArtworkWithTimeMargin extends Artwork {
+//   timeMargin: number;
+//   yearsDifference: number;
+// }
+
+interface GenerateYearMarkersParams {
+  formattedArtworks: ArtworkWithTimeMargin[];
+  isMobile: boolean;
+  totalTimelineHeight: number;
+  totalTimelineWidth: number;
+  artworkContainerHeight: number;
+  artworkContainerWidth: number;
+  artworkDesktopSideWidth: number;
+  pixelsPerYear?: number; // How many pixels represent one year in gaps
+}
+
+interface YearMarker {
+  year: number;
+  position: number;
+  isArtworkYear: boolean; // True if this marker is at an artwork position
+  isStartOrEnd: boolean; // True if this is the first or last marker
 }
 
 // Constants for time calculations
@@ -271,3 +305,238 @@ export const calculateVerticalScrollPoints = (
 
   return scrollPoints;
 };
+
+/**
+ * Calculates the the small lines in the timeline by calculating the average.
+ * there is a spacing variable which can be adjusted to change the density of the lines.
+ */
+
+export const generateSmallLines = ({
+  isMobile,
+  totalTimelineHeight,
+  totalTimelineWidth,
+  artworkContainerHeight,
+  artworkContainerWidth,
+  artworkDesktopSideWidth,
+  targetSpacing = 10
+}: GenerateSmallLinesProps): JSX.Element[] => {
+  const totalDimension = isMobile ? 
+    totalTimelineHeight - artworkContainerHeight : 
+    totalTimelineWidth - artworkContainerWidth - (artworkDesktopSideWidth * 2);
+  
+  // Calculate optimal spacing closest to target spacing
+  const numberOfLines = Math.floor(totalDimension / targetSpacing);
+  const actualSpacing = totalDimension / numberOfLines;
+  
+  const lines: JSX.Element[] = [];
+  
+  for (let i = 0; i <= numberOfLines; i++) {
+    const position = i * actualSpacing;
+    
+    // Skip lines that would be too close to the start or end
+    if (position < 5 || position > totalDimension - 5) continue;
+    
+    // Create different sizes for visual hierarchy
+    const isLargeTick = i % 10 === 0; // Every 10th line is larger
+    const isMediumTick = i % 5 === 0 && !isLargeTick; // Every 5th line is medium
+    
+    let lineSize: { width: string; height: string };
+    let lineOpacity: number;
+    
+    if (isLargeTick) {
+      lineSize = isMobile ? { width: '16px', height: '2px' } : { width: '2px', height: '16px' };
+      lineOpacity = 0.9;
+    } else if (isMediumTick) {
+      lineSize = isMobile ? { width: '12px', height: '1px' } : { width: '1px', height: '12px' };
+      lineOpacity = 0.7;
+    } else {
+      lineSize = isMobile ? { width: '8px', height: '1px' } : { width: '1px', height: '8px' };
+      lineOpacity = 0.5;
+    }
+    
+    const lineStyle: React.CSSProperties = isMobile ? {
+      top: `${position}px`,
+      ...lineSize,
+      opacity: lineOpacity
+    } : {
+      left: `${position}px`,
+      ...lineSize,
+      opacity: lineOpacity
+    };
+    
+    lines.push(
+      <div
+        key={`small-line-${i}`}
+        className={`artworks-timeline__small-line ${isLargeTick ? 'large' : isMediumTick ? 'medium' : 'small'}`}
+        style={lineStyle}
+      />
+    );
+  }
+  
+  return lines;
+};
+
+// generate alrge lines and year markers
+export function generateYearMarkers({
+  formattedArtworks,
+  isMobile,
+  artworkContainerHeight,
+  artworkContainerWidth,
+}: GenerateYearMarkersParams): React.ReactNode[] {
+  
+  if (formattedArtworks.length === 0) return [];
+
+  const markers: YearMarker[] = [];
+  let currentPosition = 0;
+  let prevYear: number | null = null;
+
+  // Add start marker
+  const firstYear = new Date(formattedArtworks[0].date).getFullYear();
+  markers.push({
+    year: firstYear,
+    position: currentPosition + (isMobile ? artworkContainerHeight / 2 : artworkContainerWidth / 2),
+    isArtworkYear: true,
+    isStartOrEnd: true
+  });
+  prevYear = firstYear;
+
+  // Process each artwork
+  formattedArtworks.forEach((artwork, index) => {
+    const artworkYear = new Date(artwork.date).getFullYear();
+    const artworkDimension = isMobile ? artworkContainerHeight : artworkContainerWidth;
+    
+    // Add marker for current artwork (center of artwork)
+    const artworkCenterPosition = currentPosition + (artworkDimension / 2);
+    
+    // Only add year if it's different from the last year
+    if (prevYear === null || artworkYear !== prevYear) {
+      markers.push({
+        year: artworkYear,
+        position: artworkCenterPosition,
+        isArtworkYear: true,
+        isStartOrEnd: false
+      });
+      prevYear = artworkYear;
+    } else {
+      // Still add a marker for the line, but without year text
+      markers.push({
+        year: artworkYear,
+        position: artworkCenterPosition,
+        isArtworkYear: true,
+        isStartOrEnd: false
+      });
+    }
+
+    // Move to next position
+    currentPosition += artworkDimension;
+
+    // If there's a time margin (gap) after this artwork, add intermediate year markers
+    if (index < formattedArtworks.length - 1 && artwork.timeMargin > 0) {
+      const yearsDifference = artwork.yearsDifference;
+      
+      if (yearsDifference > 1) {
+        // Calculate how many intermediate years to show
+        const intermediateYears = Math.floor(yearsDifference) - 1;
+        const gapSpacing = artwork.timeMargin / (yearsDifference);
+        
+        // Add markers for missing years in the gap
+        for (let i = 1; i <= intermediateYears; i++) {
+          const yearInGap = artworkYear + i;
+          const positionInGap = currentPosition + (i * gapSpacing);
+          
+          markers.push({
+            year: yearInGap,
+            position: positionInGap,
+            isArtworkYear: false,
+            isStartOrEnd: false
+          });
+        }
+      }
+      
+      currentPosition += artwork.timeMargin;
+    }
+  });
+
+  // Add end marker
+  const lastArtwork = formattedArtworks[formattedArtworks.length - 1];
+  const lastYear = new Date(lastArtwork.date).getFullYear();
+  const endPosition = currentPosition - (isMobile ? artworkContainerHeight / 2 : artworkContainerWidth / 2);
+  
+  markers.push({
+    year: lastYear,
+    position: endPosition,
+    isArtworkYear: true,
+    isStartOrEnd: true
+  });
+
+  // Convert markers to React elements
+  return markers.map((marker, index) => {
+    const isLargeLine = marker.isArtworkYear || marker.isStartOrEnd;
+    const showYear = index === 0 || index === markers.length - 1 || 
+                    (index > 0 && markers[index - 1].year !== marker.year);
+
+    if (isMobile) {
+      return (
+        <div
+          key={`year-marker-${marker.year}-${index}`}
+          className="artworks-timeline__marker"
+          style={{
+            top: `${marker.position}px`,
+          }}
+        >
+          {/* Large line for artworks and major markers */}
+          <div
+            className={`artworks-timeline__tick ${isLargeLine ? 'artworks-timeline__tick--large' : 'artworks-timeline__tick--small'}`}
+            style={{
+              width: isLargeLine ? '30px' : '15px',
+              left: isLargeLine ? '10px' : '17px'
+            }}
+          />
+          
+          {/* Year label */}
+          {showYear && (
+            <span
+              className="artworks-timeline__year"
+              style={{
+                fontWeight: isLargeLine ? 'bold' : 'normal'
+              }}
+            >
+              {marker.year}
+            </span>
+          )}
+        </div>
+      );
+    } else {
+      return (
+        <div
+          key={`year-marker-${marker.year}-${index}`}
+          className="artworks-timeline__marker"
+          style={{
+            left: `${marker.position}px`,
+          }}
+        >
+          {/* Large line for artworks and major markers */}
+          <div
+            className={`artworks-timeline__tick ${isLargeLine ? 'artworks-timeline__tick--large' : 'artworks-timeline__tick--small'}`}
+            style={{
+              height: isLargeLine ? '30px' : '15px',
+              top: isLargeLine ? '10px' : '17px'
+            }}
+          />
+          
+          {/* Year label */}
+          {showYear && (
+            <span
+              className="artworks-timeline__year"
+              style={{
+                fontWeight: isLargeLine ? 'bold' : 'normal',
+              }}
+            >
+              {marker.year}
+            </span>
+          )}
+        </div>
+      );
+    }
+  });
+}
