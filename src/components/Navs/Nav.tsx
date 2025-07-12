@@ -9,6 +9,7 @@ import PauseSvg from '@/svgs/PauseSvg'
 import TimerSvg from '@/svgs/TimerSvg'
 
 import SearchNav from './SearchNav'
+import FilterNav from './FilterNav'
 
 const Nav = () => {
     const [artworks, setArtworks] = useContext(ArtworksContext)
@@ -45,7 +46,9 @@ const Nav = () => {
                   ...prev, 
                   showSlideshow: newShowSlideshow, 
                   slideshowPlaying: newShowSlideshow, // Only play if showing slideshow
-                  isTimelineScrollingProgamatically: prev.showSlideshow // True only when closing slideshow
+                  isTimelineScrollingProgamatically: prev.showSlideshow, // True only when closing slideshow
+                  searchNavOpen: prev.searchNavOpen === true ? true : false,
+                  filterNavOpen: prev.filterNavOpen === true ? true : false
                 }
               })
             }}
@@ -53,13 +56,14 @@ const Nav = () => {
           <PlaySvg showSlideshow={artworks.showSlideshow} />
         </div>
         <div 
-            className="nav-button"
+            className={artworks.filterNavOpen ? "nav-button filter-button filter-button--open" : "nav-button filter-button"}
             role="button"
             onClick={() => setArtworks(prev => ({...prev, filterNavOpen: !prev.filterNavOpen}))}
             style={{ display: artworks.showSlideshow ? 'none' : 'block'}}
         >
             <FilterSvg filterNavOpen={artworks.filterNavOpen} />
         </div>
+        <FilterNav />
         <div 
             className="nav-button"
             role="button"

@@ -78,3 +78,32 @@
         fill: $svg-dark;
     }       
 }
+
+// FILTER NAV
+.filter-button {
+    transform: translateX(0);
+    transition: all .6s cubic-bezier(.8,.1,0.2,1);
+}
+
+.filter-button--open {
+    transform: translateX(-200);
+    transition: all .6s cubic-bezier(.8,.1,0.2,1);
+}
+
+.filter-nav__container {
+    position: fixed;
+    top: 84px;
+    right: 0;
+    width: 200px;
+    height: 400px;
+    transform: translateX(200);
+    transition: all .6s cubic-bezier(.8,.1,0.2,1);
+    border-top: 1px solid $svg-dark;
+    border-bottom: 1px solid $svg-dark;
+    border-left: 1px solid $svg-dark;
+}
+
+.filter-nav__container--open {
+    transform: translateX(0);
+    transition: all .6s cubic-bezier(.8,.1,0.2,1);
+}

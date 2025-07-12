@@ -13,6 +13,7 @@ const SearchNav = () => {
             className={artworks.searchNavOpen ? "search-nav__container search-nav__container--open" : "search-nav__container"}
             style={{
                 opacity: artworks.searchValue.length === 0 ? .3 : .8,
+                display: artworks.showSlideshow ? "none" : "",
             }}
         >
             <input
