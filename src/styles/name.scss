@@ -1,8 +1,30 @@
 @use './vars.scss' as *;
 
-.name-container {
+.name__container {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 2000;
+}
+
+.name-text__container {
+
+}
+
+.name-text__bernard {
+    font-family: $heading;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.name-text__city {
+    font-family: $body-font;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.name-text__location {
+    font-family: $body-font;
+    font-size: 14px;
+    font-weight: 300;
 }

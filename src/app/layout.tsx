@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Staatliches } from "next/font/google";
+import { Geist, Staatliches, Sofia_Sans_Extra_Condensed, Manrope } from "next/font/google";
 import ArtworksProvider from "@/providers/ArtworkProvider";
 import '@/styles/index.scss'
 
@@ -8,8 +8,18 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const manrope = Manrope({
+  variable: '--font-manrope',
+  subsets: ['latin']
+})
+
 const staatliches = Staatliches({
   weight: ['400'],
+  subsets: ["latin"],
+});
+
+const sofiaSansExtraCondensed = Sofia_Sans_Extra_Condensed({
+  weight: ['300', '400', '500', '600', '700'],
   subsets: ["latin"],
 });
 
@@ -25,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${staatliches.className}`}>
+      <body className={`${geistSans.variable} ${manrope.variable} ${staatliches.className} ${sofiaSansExtraCondensed.className}`}>
         <ArtworksProvider>
           {children}
         </ArtworksProvider>

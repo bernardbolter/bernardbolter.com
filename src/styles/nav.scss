@@ -98,12 +98,83 @@
     height: 400px;
     transform: translateX(200);
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
-    border-top: 1px solid $svg-dark;
-    border-bottom: 1px solid $svg-dark;
-    border-left: 1px solid $svg-dark;
+    // border-top: 1px solid $svg-dark;
+    // border-bottom: 1px solid $svg-dark;
+    // border-left: 1px solid $svg-dark;
+    background: $svg-dark;
 }
 
 .filter-nav__container--open {
     transform: translateX(0);
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
+}
+
+.filter-nav__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 10px;
+    border-bottom: 1px solid $svg-light;
+    margin: 5px;
+    padding: 5px;
+
+    h3 {
+        font-family: $heading;
+        color: $svg-light;
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;
+    }
+
+    svg {
+        fill: $svg-light;
+    }
+}
+
+.filter-nav__item--container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+}
+
+// SORTING
+
+.filter-nav__header--sort {
+    svg {
+        width: 40px;
+        height: 20px;
+    }
+}
+
+.sorting-nav__box {
+    background: $svg-light;
+}
+
+// FILTERS
+
+.filter-nav__header--filters {
+    svg {
+        width: 20px;
+        height: 40px;
+    }   
+}
+
+.filter-nav__name {
+    font-size: 12px;
+    font-weight: 400;
+    color: $svg-light;
+}
+
+.filter-nav__name--active {
+    font-weight: 800;
+}
+
+.filter-nav__box {
+    width: 20px;
+    height: 20px;
 }

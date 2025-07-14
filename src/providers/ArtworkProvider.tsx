@@ -6,7 +6,8 @@ interface ArtworksState {
   original: Artwork[];
   filtered: Artwork[];
   currentArtworkIndex: number;
-  sorting: "latest" | "oldest" | "random";
+  sorting: string;
+  filtersArray: Array<string>;
   filterNavOpen: boolean;
   searchNavOpen: boolean;
   showSlideshow: boolean;
@@ -24,6 +25,7 @@ export const ArtworksContext = createContext<ArtworksContextType>([
     filtered: [],
     currentArtworkIndex: 0,
     sorting: "latest",
+    filtersArray: [],
     filterNavOpen: false,
     searchNavOpen: false,
     showSlideshow: false,
@@ -45,6 +47,7 @@ const ArtworksProvider = ({ children }: ArtworksProviderProps) => {
     filtered: [],
     currentArtworkIndex: 0,
     sorting: "latest",
+    filtersArray: [],
     filterNavOpen: false,
     searchNavOpen: false,
     showSlideshow: false,
