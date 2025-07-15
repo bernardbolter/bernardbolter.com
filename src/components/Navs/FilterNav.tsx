@@ -17,7 +17,7 @@ import { FilterNavProps} from '@/types/filter'
 
 const FilterNav: React.FC<FilterNavProps> = () => {
     const [artworks] = useContext(ArtworksContext)
-    console.log(filterValues)
+    // console.log(filterValues)
     return (
         <div 
             className={artworks.filterNavOpen ? "filter-nav__container filter-nav__container--open" : "filter-nav__container"}
@@ -41,7 +41,7 @@ const FilterNav: React.FC<FilterNavProps> = () => {
 
             <div className="filter-nav__content">
                 {filterValues.map(value => {
-                    console.log(value)
+                    // console.log(value)
                     return <FilterItem key={value.id} {...value} />
                 })}
             </div>

@@ -116,18 +116,6 @@
     left: 18px;
     background-color: $timeline;
 
-    .large {
-
-    }
-
-    .medium {
-
-    }
-
-    .small {
-
-    }
-
     @media screen and (min-width: $break-m) {
         top: 18px
     }
@@ -137,44 +125,44 @@
     position: absolute;
 }
 
-.artworks-timeline__marker {
+.artworks-timeline__year-marker {
     position: absolute;
-    left: 0px;
-    width: 50px;
-    height: 1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    @media screen and (min-width: $break-m) {
-        top: 0px;
-        width: 1px;
-        height: 50px;
-    }
 }
 
-.artworks-timeline__tick {
+.artworks-timeline__year-tick {
     height: 2px;
+    width: 30px;
+    left: 10px;
+    top: 0;
     background-color: $timeline;
     position: absolute;
 
     @media screen and (min-width: $break-m) {
+        height: 30px;
         width: 2px;
+        top: 10px;
+        left: 0;
     }
 }
 
-.artworks-timeline__year {
+.artworks-timeline__year-label {
     position: absolute;
-    right: -40px;
+    right: -43px;
+    top: 3px;
     font-size: 12px;
     color: $timeline;
     white-space: nowrap;
+    font-family: $heading;
+    font-size: 20px;
+    font-weight: 700;
+    background: rgba(255,255,255,.5);
+    padding: 3px;
 
     @media screen and (min-width: $break-m) {
-        bottom: 26px;
-        right: 2px;
-        background: rgba(255,255,255,.5);
-        padding: 3px;
+        bottom: -24px;
+        right: -40px;
+        top: 0px;
+        padding: 3px 3px 0 3px;
     }
 }
     
