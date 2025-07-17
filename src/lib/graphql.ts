@@ -57,5 +57,97 @@ export const getAllArtwork = `
                 }
             }
         }
+        page(id: "cG9zdDo1MQ==") {
+          content(format: RENDERED)
+        }
+        cvinfos(first:1000) {
+          nodes {
+            cv_info_fields {
+              city
+              gallery
+              role
+              school
+              section
+              title
+              year
+            }
+          }
+        }
+        artistInfo(id: "cG9zdDozNQ==") {
+          artistInfo {
+            birthcity
+            birthyear
+            link1 {
+              title
+              url
+            }
+            link2 {
+              title
+              url
+            }
+            link3 {
+              title
+              url
+            }
+            link4 {
+              title
+              url
+            }
+            link5 {
+              title
+              url
+            }
+            name
+            workcity1
+            workcity2
+            workcity3
+          }
+        }
     }
+`
+
+export const getAllArtistInfo = `
+cvinfos(first:1000) {
+          nodes {
+            cv_info_fields {
+              city
+              gallery
+              role
+              school
+              section
+              title
+              year
+            }
+          }
+        }
+        artistInfo(id: "cG9zdDozNQ==") {
+          artistInfo {
+            birthcity
+            birthyear
+            link1 {
+              title
+              url
+            }
+            link2 {
+              title
+              url
+            }
+            link3 {
+              title
+              url
+            }
+            link4 {
+              title
+              url
+            }
+            link5 {
+              title
+              url
+            }
+            name
+            workcity1
+            workcity2
+            workcity3
+          }
+        }
 `

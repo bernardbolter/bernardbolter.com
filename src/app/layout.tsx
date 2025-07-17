@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+import AnimationWrapper from "./AnimationWrapper";
+
 import { Geist, Staatliches, Sofia_Sans_Extra_Condensed, Manrope, Barlow_Condensed } from "next/font/google";
 import ArtworksProvider from "@/providers/ArtworkProvider";
 import '@/styles/index.scss'
@@ -42,7 +45,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${manrope.variable} ${barlow.className} ${staatliches.className} ${sofiaSansExtraCondensed.className}`}>
         <ArtworksProvider>
-          {children}
+          <AnimationWrapper>
+            {children}
+          </AnimationWrapper>
         </ArtworksProvider>
       </body>
     </html>

@@ -23,6 +23,14 @@ $svg-dark: #393B3E;
 
 $timeline: #878585;
 
+$nav-background: rgba(255,255,255,.8);
+
+$confirmation-color: #56ba5a;
+$warning-color: #f0ad4e;
+$error-color: #d9534f;
+
+$nav-highlight: #56dad0;
+
 // BREAKPOINTS
 $break-s: 550px;
 $break-m: 767px;
@@ -33,3 +41,13 @@ $break-xl: 1200px;
 $title: "Staatliches", sans-serif;
 $heading: "Sofia Sans Extra Condensed", sans-serif;
 $body-font: "Barlow Condensed", sans-serif;
+
+:root {
+    --dark-color: #{$dark};
+    --light-color: #{$light};
+    --medium-color: #{$medium};
+    --confirmation-color: #{$confirmation-color};
+    --warning-color: #{$warning-color};
+    --error-color: #{$error-color};
+    --nav-highlight: #{$nav-highlight};
+}

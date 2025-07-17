@@ -97,8 +97,13 @@ export function generateTimeline(config: TimelineConfig): TimelineResult {
   const timepointsArray: TimelineTimepoint[] = [];
 
   if (sorting === 'random') {
-    // For random: no margins, no timepoints
-    sortedArtworks.forEach(artwork => {
+    // For random: no margins, but with timepoints
+    let currentDistanceFromStart = artworkContainerWidth / 2; // Center of first artwork
+
+    sortedArtworks.forEach((artwork, index) => {
+      const currentDate = normalizeDate(artwork.date);
+      const currentYear = currentDate.getFullYear();
+
       artworksArray.push({
         ...artwork,
         marginRight: 0,
@@ -106,7 +111,20 @@ export function generateTimeline(config: TimelineConfig): TimelineResult {
         horizontalScrollPoint: 0,
         verticalScrollPoint: 0
       });
+
+      const artworkCenterDistance = currentDistanceFromStart;
+
+      timepointsArray.push({
+        id: `artwork-year-${currentYear}-${index}`,
+        year: currentYear,
+        type: 'artwork-year',
+        distanceFromStart: artworkCenterDistance,
+        isVisible: true
+      })
+        currentDistanceFromStart += artworkContainerWidth; // Move to start of next artwork
+ 
     });
+
   } else {
     const seenYears = new Set<number>(); // Track seen years
     // For latest/oldest: calculate margins and create timepoints
@@ -203,6 +221,8 @@ export function generateTimeline(config: TimelineConfig): TimelineResult {
       currentDistanceFromStart += marginRight + (artworkContainerWidth / 2);
     });
   }
+
+  console.log("sorted Artwork: ", sortedArtworks)
 
   // Step 4: Calculate scroll points for artworks
   let currentHorizontalPosition = desktopSideWidth;

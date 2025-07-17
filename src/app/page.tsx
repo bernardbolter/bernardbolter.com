@@ -1,34 +1,36 @@
 import Artworks from '@/components/Artworks/Artworks'
-import Name from '@/components/Name'
+import Info from '@/components/Info/Info'
 import Nav from '@/components/Navs/Nav'
 
-import { getAllArtwork } from '@/lib/graphql'
-import { Artwork } from '@/types/artworks'
+// import { getAllArtwork } from '@/lib/graphql'
+import { getArtworkData } from '@/lib/dataService'
+// import { Artwork } from '@/types/artworks'
 
-async function getArtwork(): Promise<Artwork[]> {
-  const res = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL as string, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query: getAllArtwork }),
-    next: { revalidate: 100 }
-  })
+// async function getArtwork(): Promise<Artwork[]> {
+//   const res = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL as string, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({ query: getAllArtwork }),
+//     next: { revalidate: 100 }
+//   })
 
-  const data = await res.json()
-  // console.log(data)
+//   const data = await res.json()
+//   // console.log(data)
   
-  return data.data.allArtwork.nodes
-}
+//   return data.data.allArtwork.nodes
+// }
 
 const Home = async () => {
-  const gArtworks = await getArtwork()
+  const allData = await getArtworkData()
+  // console.log('gArtworks: ', gArtworks)
 
   return (
     <main className="main-container">
-      <Name />
+      <Info />
       <Nav />
-      <Artworks gArtworks={gArtworks} />
+      <Artworks allData={allData} />
     </main>
   ) 
 }
