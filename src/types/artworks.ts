@@ -27,7 +27,7 @@ export interface ArtworkFields {
     artworkImage: ArtworkImage;
     country: string;
     forsale: boolean;
-    height: number;
+    height: string;
     lat: number;
     lng: number;
     medium: string;
@@ -38,7 +38,7 @@ export interface ArtworkFields {
     series: string;
     size: string;
     style: string;
-    width: number;
+    width: string;
     year: number;
 }
 

@@ -42,20 +42,6 @@
     }
 }
 
-
-// TITLE
-.artworks-timeline__title-container {
-    position: fixed;
-    z-index: 3000;
-    top: 10px;
-    left: 50%;
-    transform: translate(-50%, 0);
-
-    h1 {
-        font-size: 20px;
-    }
-}
-
 // ARTWORK
 
 .artworks-timeline__artwork-inside {
@@ -64,7 +50,6 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    border: 1px solid #bbb;
 
     @media screen and (min-width: $break-m) {
         flex-direction: column;

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from 'react';
 import { ArtworksContext } from '@/providers/ArtworkProvider';
 import ArtworkDetail from '@/components/Artworks/ArtworkDetail';
+import ArtworkTitle from '@/components/Artworks/ArtworkTitle';
 
 import LeftArrowSvg from '@/svgs/LeftArrowSvg';
 import RightArrowSvg from '@/svgs/RightArrowSvg';
@@ -250,15 +251,7 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
 
     return (
         <div className="artworks-timeline__container">
-            {formattedArtworks.artworksArray.length > 0 && (
-                <div className="artworks-timeline__title-container">
-                    <h1>{formattedArtworks.artworksArray[artworks.currentArtworkIndex].title}</h1>
-                    <div className="artworks-timeline__year-info">
-                        <span>{new Date(formattedArtworks.artworksArray[artworks.currentArtworkIndex].date).getFullYear()}</span>
-                    </div>
-                </div>
-            )}
-
+            <ArtworkTitle formattedArtworks={formattedArtworks} />
             <div 
                 className="artworks-timeline__artworks-container"
                 ref={artworkTimelineRef}

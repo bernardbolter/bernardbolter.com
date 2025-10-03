@@ -1,0 +1,12 @@
+@use './vars.scss' as *;
+
+.cv-page__container {
+    display: block;
+}
+
+.cv__container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: $background;
+}

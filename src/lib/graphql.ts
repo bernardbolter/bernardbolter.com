@@ -151,3 +151,7 @@ cvinfos(first:1000) {
           }
         }
 `
+
+export const singleArtwork = `
+  query
+`

@@ -1,12 +1,12 @@
 import Info from '@/components/Info/Info'
+import Bio from '@/components/Bio/Bio'
 
 const BioPage = () => {
 
     return (
         <div>
             <Info />
-            <h1>Bernard Bolter</h1>
-            <p>I am a software engineer and web developer.</p>
+            <Bio />
         </div>
     )
 }

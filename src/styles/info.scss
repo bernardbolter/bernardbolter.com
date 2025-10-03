@@ -1,14 +1,16 @@
 @use './vars.scss' as *;
 
-.info__container {
+// NAME
+
+.name__container {
     position: fixed;
+    z-index: 2000;
+    background: $nav-background-light;
     top: 4px;
     left: 4px;
-    z-index: 2000;
-    background: rgba(255,255,255,.3);
+    padding: 3px 6px 6px 3px;
+    border-bottom-right-radius: 6px;
 }
-
-// NAME
 
 .name__bernard {
     font-family: $heading;
@@ -35,6 +37,11 @@
     height: 24px;
     margin: 10px 0;
     cursor: pointer;
+    position: fixed;
+    z-index: 2001;
+    background: $nav-background-light;
+    top: 60px;
+    left: 7px;
 }
 
 // CONTENT
@@ -44,9 +51,12 @@
     padding: 0 0 10px 0;
     border-bottom-right-radius: 10px;
     position: relative;
-    left: 0;
+    left: 8px;
     transform: translateX(-120px);
     transition: all .5s ease-in-out;
+    position: fixed;
+    top: 100px;
+    z-index: 2000;
 }
 
 .info__content--open {

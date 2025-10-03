@@ -1,0 +1,204 @@
+@use './vars.scss' as *;
+
+.artwork-title__container {
+    position: fixed;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+}
+
+.artwork-title__container--desktop {
+    top: 0;
+    left: 60%;
+    transform: translate(-60%, 0); 
+}
+
+.artwork-title__container--mobile {
+    right: 0;
+    bottom: 0; 
+}
+
+.artwork-title__container--slideshow {
+    left: 0;
+    bottom: 0;
+    z-index: 8000;
+}
+
+.artwork-title__border-top {
+    display: flex;
+    flex-direction: row;
+}
+
+.artwork-title__border-top--left {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+
+    svg {
+        fill: $title-light;
+        position: absolute;
+        top: 0;
+    }
+}
+
+.artwork-title__border-top--middle {
+    flex-grow: 1;
+    height: 10px;
+    background: $title-light;
+}
+
+.artwork-title__border-top--show {
+    border-bottom: 1px solid $title-dark;
+}
+
+.artwork-title__border-top--right {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+
+    svg {
+        position: absolute;
+        top: 0;
+        fill: $title-light;
+    }
+}
+
+.artwork-title__border-middle {
+    display: flex;
+    flex-direction: row;
+}
+
+.artwork-title__border-middle-left--show {
+    border-right: 1px solid $title-dark;
+}   
+
+.artwork-title__border-middle--left {
+    width: 10px;
+    height: auto;
+    background: $title-light;
+}
+
+.artwork-title__inside {
+    padding: 4px;
+    background: $title-light;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.artwork-title__inside--desktop {
+    padding: 10px 5px 0 5px;
+    align-items: flex-start;
+}
+
+.artwork-title__inside--mobile {
+    padding: 0 5px 10px 5px;
+    align-items: flex-start;
+}
+
+.artwork-title__inside--slideshow {
+    padding: 0 5px 10px 5px;
+    align-items: flex-start;
+}
+
+.artwork-title__title {
+    font-family: $heading;
+    font-weight: 800;
+    font-size: 22px;
+    color: $title-dark;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.artwork-title__year {
+    font-family: $heading;
+    color: $title-dark;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.artwork-title__medium {
+    font-family: $heading;
+    color: $title-dark;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.artwork-title__size {
+    font-family: $heading;
+    color: $title-dark;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.artwork-title__size--converted {
+    font-family: $heading;
+    color: $title-dark;
+    font-size: 11px;
+    font-weight: 200;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+.artwork-title__border-middle--right {
+    width: 10px;
+    flex-grow: 1;
+    background: $title-light;
+}
+
+.artwork-title__border-middle-right--show {
+    border-left: 1px solid $title-dark;
+    border-right: 1px solid $title-dark;
+}
+
+.artwork-title__border-bottom {
+    display: flex;
+    flex-direction: row;
+}
+
+.artwork-title__border-bottom--left {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+
+    svg {
+        fill: $title-light;
+        position: absolute;
+        bottom: 0;
+    }
+}
+
+.artwork-title__border-bottom--middle {
+    height: 10px;
+    flex-grow: 1;
+    background: $title-light;
+
+}
+
+.artwork-title__border-bottom--show {
+    border-top: 1px solid $title-dark;
+}
+
+
+.artwork-title__border-bottom--right {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+
+    svg {
+        position: absolute;
+        bottom: 0;
+        fill: $title-light;
+    }
+}

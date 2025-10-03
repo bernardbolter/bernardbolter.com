@@ -19,17 +19,22 @@ $pho: #2D4654;
 $vid: #996a3e;
 
 $svg-light: #FDFEFF;
-$svg-dark: #393B3E;
+$svg-dark: #666;
+
+$title-light: yellow;
+$title-dark: #333;
+$title-space: 15px;
 
 $timeline: #878585;
 
 $nav-background: rgba(255,255,255,.8);
+$nav-background-light: rgba(255,255,255,.3);
 
 $confirmation-color: #56ba5a;
 $warning-color: #f0ad4e;
 $error-color: #d9534f;
 
-$nav-highlight: #56dad0;
+$nav-highlight: #b9b9b9;
 
 // BREAKPOINTS
 $break-s: 550px;
@@ -50,4 +55,7 @@ $body-font: "Barlow Condensed", sans-serif;
     --warning-color: #{$warning-color};
     --error-color: #{$error-color};
     --nav-highlight: #{$nav-highlight};
+    --title-light: #{$title-light};
+    --title-dark: #{$title-dark};
+    --title-space: #{$title-space};
 }
