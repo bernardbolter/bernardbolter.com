@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useContext } from 'react'
-import { ArtworksContext } from '@/providers/ArtworkProvider'
+import { useState, useEffect } from 'react'
+import { useArtworks } from '@/providers/ArtworkProvider'
 import useWindowSize from '@/hooks/useWindowSize'
 
 import { convertUnits } from '@/helpers/sizeConversion'
@@ -14,7 +14,7 @@ import TitleCornerBottomLeft from '@/svgs/TitleCornerBottomLeft'
 import TitleCornerBottomRight from '@/svgs/TitleCornerBottomRight'
 
 const ArtworkTitle = ({formattedArtworks}: { formattedArtworks: TimelineResult}) => {
-    const [artworks] = useContext(ArtworksContext)
+    const [artworks] = useArtworks()
     const [convertedWidth, setConvertedWidth] = useState('')
     const [convertedHeight, setConvertedHeight] = useState('')
     const size = useWindowSize()

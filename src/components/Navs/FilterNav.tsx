@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useContext } from 'react'
-import { ArtworksContext } from '@/providers/ArtworkProvider'
+import { useArtworks } from '@/providers/ArtworkProvider'
 
 import SortSvg from '@/svgs/SortSvg'
 import FilterLightSvg from '@/svgs/FilterLightSvg'
@@ -16,7 +15,7 @@ import { FilterNavProps} from '@/types/filter'
 
 
 const FilterNav: React.FC<FilterNavProps> = () => {
-    const [artworks] = useContext(ArtworksContext)
+    const [artworks] = useArtworks()
     // console.log(filterValues)
     return (
         <div 

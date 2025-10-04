@@ -1,8 +1,7 @@
-import React,{ useContext } from 'react';
-import { ArtworksContext } from '@/providers/ArtworkProvider'
+import { useArtworks } from '@/providers/ArtworkProvider'
 
 const TimerSvg = () => {
-  const [ artworks ] = useContext(ArtworksContext);
+  const [ artworks ] = useArtworks()
 
   const circumference = Math.PI * 2 * 13;
   // console.log("timer: ", artworks.slideshowTimerProgress)

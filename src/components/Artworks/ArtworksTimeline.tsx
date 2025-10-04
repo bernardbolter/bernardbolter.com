@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from 'react';
-import { ArtworksContext } from '@/providers/ArtworkProvider';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useArtworks } from '@/providers/ArtworkProvider';
 import ArtworkDetail from '@/components/Artworks/ArtworkDetail';
 import ArtworkTitle from '@/components/Artworks/ArtworkTitle';
 
@@ -22,7 +22,7 @@ interface ArtworksTimelineProps {
 }
 
 const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = [] }) => {
-    const [artworks, setArtworks] = useContext(ArtworksContext);
+    const [artworks, setArtworks] = useArtworks();
     
     const artworkTimelineRef = useRef<HTMLDivElement>(null);
 

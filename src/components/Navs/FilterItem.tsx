@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { ArtworksContext } from '@/providers/ArtworkProvider'
+import { useArtworks } from '@/providers/ArtworkProvider'
 
 import { FilterProps } from '@/types/filter'
 
@@ -8,7 +7,7 @@ const FilterItem: React.FC<FilterProps> = ({
     slug,
     color
 }) => {
-    const [artworks, setArtworks] = useContext(ArtworksContext)
+    const [artworks, setArtworks] = useArtworks()
     
     return (
         <div 

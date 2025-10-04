@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import { ArtworksContext } from "@/providers/ArtworkProvider"
+import { useArtworks } from "@/providers/ArtworkProvider"
 
 const PauseSvg = () => {
-    const [artworks] = useContext(ArtworksContext);
+    const [artworks] = useArtworks()
 
     return (
         <svg viewBox="0 0 52 50">

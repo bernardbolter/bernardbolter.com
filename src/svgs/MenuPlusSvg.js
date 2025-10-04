@@ -1,23 +1,23 @@
 'use client'
 
-import { useState, useContext } from'react';
-import { ArtworksContext } from '@/providers/ArtworkProvider';
+import { useState } from'react'
+import { useArtworks } from '@/providers/ArtworkProvider'
 
 const MenuPlusSvg = () => {
-    const [artworks] = useContext(ArtworksContext);
-    const [isHovered, setIsHovered] = useState(false);
+    const [artworks] = useArtworks()
+    const [isHovered, setIsHovered] = useState(false)
     let styles, navHighlight 
     let dark = '#393b3e'
 
     if (typeof window !== "undefined") {
-        styles = window.getComputedStyle(document.documentElement);
-        navHighlight = styles.getPropertyValue('--nav-highlight');
-        dark = styles.getPropertyValue('--dark-color');
+        styles = window.getComputedStyle(document.documentElement)
+        navHighlight = styles.getPropertyValue('--nav-highlight')
+        dark = styles.getPropertyValue('--dark-color')
     }
 
     const plusPathFill = artworks.infoOpen 
         ? navHighlight 
-        : (isHovered ? navHighlight : dark);
+        : (isHovered ? navHighlight : dark)
 
     return (
         <svg 

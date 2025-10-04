@@ -1,12 +1,11 @@
 "use client"
 
-import { useContext } from "react"
-import { ArtworksContext } from "@/providers/ArtworkProvider"
+import { useArtworks } from "@/providers/ArtworkProvider"
 
 import CloseSvg from "@/svgs/CloseSvg"
 
 const SearchNav = () => {
-    const [artworks, setArtwork] = useContext(ArtworksContext)
+    const [artworks, setArtwork] = useArtworks()
 
     return (
         <div 

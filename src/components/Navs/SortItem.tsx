@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import { ArtworksContext } from '@/providers/ArtworkProvider'
+import { useArtworks } from '@/providers/ArtworkProvider'
 
 import { SortProps } from '@/types/filter'
 
@@ -7,7 +6,7 @@ const SortItem: React.FC<SortProps> = ({
     slug,
     name
 }) => {
-    const [artworks, setArtworks] = useContext(ArtworksContext)
+    const [artworks, setArtworks] = useArtworks()
     console.log(artworks.sorting)
 
     return (

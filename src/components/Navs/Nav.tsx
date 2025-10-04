@@ -1,7 +1,6 @@
 'use client'
 
-import { useContext } from 'react'
-import { ArtworksContext } from '@/providers/ArtworkProvider'
+import { useArtworks } from '@/providers/ArtworkProvider'
 import FilterSvg from '@/svgs/FilterSvg'
 import SearchSvg from '@/svgs/SearchSvg'
 import PlaySvg from '@/svgs/PlaySvg'
@@ -12,7 +11,7 @@ import SearchNav from './SearchNav'
 import FilterNav from './FilterNav'
 
 const Nav = () => {
-    const [artworks, setArtworks] = useContext(ArtworksContext)
+    const [artworks, setArtworks] = useArtworks()
 
   return (
     <nav 

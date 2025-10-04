@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
-import { ArtworksContext } from "@/providers/ArtworkProvider";
+import { useEffect, useState } from "react";
+import { useArtworks } from "@/providers/ArtworkProvider";
 import useWindowSize from "@/hooks/useWindowSize";
 
 
 const TitleCornerTopLeft = () => {
-    const [artworks] = useContext(ArtworksContext)
+    const [artworks] = useArtworks()
     const size = useWindowSize()
     const [viewState, setViewState] = useState('desktop')
 

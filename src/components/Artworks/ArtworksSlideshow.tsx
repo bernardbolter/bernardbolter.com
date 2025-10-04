@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
-import { ArtworksContext } from '@/providers/ArtworkProvider';
+import React, { useState, useEffect, useRef } from 'react'
+import { useArtworks } from '@/providers/ArtworkProvider';
 
 // import ArtworkDetail from './ArtworkDetail';
 
@@ -14,7 +14,7 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
     filteredArtworks, 
     autoPlayInterval = 5000
 }) => {
-    const [artworks, setArtworks] = useContext(ArtworksContext);
+    const [artworks, setArtworks] = useArtworks();
     const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
     const currentIndexRef = useRef<number>(artworks.currentArtworkIndex)

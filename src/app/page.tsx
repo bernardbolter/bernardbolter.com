@@ -3,7 +3,7 @@ import Info from '@/components/Info/Info'
 import Nav from '@/components/Navs/Nav'
 
 // import { getAllArtwork } from '@/lib/graphql'
-import { getArtworkData } from '@/lib/dataService'
+// import { getArtworkData } from '@/lib/dataService'
 // import { Artwork } from '@/types/artworks'
 
 // async function getArtwork(): Promise<Artwork[]> {
@@ -23,14 +23,13 @@ import { getArtworkData } from '@/lib/dataService'
 // }
 
 const Home = async () => {
-  const allData = await getArtworkData()
   // console.log('gArtworks: ', gArtworks)
 
   return (
     <main className="main-container">
       <Info />
       <Nav />
-      <Artworks allData={allData} />
+      <Artworks/>
     </main>
   ) 
 }
