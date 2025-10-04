@@ -16,6 +16,11 @@ interface GetAllArtworkData {
   artistInfo: { artistInfo: AllData['artistInfo'] } | null;
 }
 
+// Define response type for single artwork query
+interface GetArtworkBySlugData {
+  artwork: Artwork | null;
+}
+
 // Define the type for cached item based on JSON structure
 interface CachedArtwork {
   slug: string;
@@ -63,6 +68,66 @@ interface CachedArtwork {
 
 const GET_ALL_DATA: TypedDocumentNode<GetAllArtworkData> = gql`
   ${getAllArtwork}
+`;
+
+const GET_ARTWORK_BY_SLUG: TypedDocumentNode<GetArtworkBySlugData> = gql`
+  query GetArtworkBySlug($slug: ID!) {
+    artwork(id: $slug, idType: SLUG) {
+      id
+      title
+      slug
+      date
+      content
+      databaseId
+      artworkFields {
+        artworkImage {
+          mediaDetails {
+            sizes {
+              sourceUrl
+              width
+              height
+            }
+            width
+            height
+          }
+          mediaItemUrl
+        }
+        width
+        height
+        medium
+        style
+        orientation
+        size
+        series
+        city
+        country
+        lat
+        lng
+        year
+        forsale
+        proportion
+        metadescription
+        metakeywords
+        artworklink {
+          url
+          title
+        }
+      }
+      colorfulFields {
+        wikiLinkEn
+        wikiLinkDe
+        storyEn
+        storyDe
+        ar
+      }
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+    }
+  }
 `;
 
 export async function getArtworkData(): Promise<AllData> {
@@ -154,5 +219,70 @@ export async function getArtworkData(): Promise<AllData> {
     }
 
     throw error;
+  }
+}
+
+export async function getArtworkBySlug(slug: string): Promise<Artwork | null> {
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  try {
+    const client = getClient();
+    const result = await client.query({
+      query: GET_ARTWORK_BY_SLUG,
+      variables: { slug },
+    });
+
+    if (result.error) {
+      throw new Error(`GraphQL error: ${result.error.message}`);
+    }
+
+    const data = result.data;
+
+    if (!data || !data.artwork) {
+      console.log(`No artwork found for slug: ${slug}`);
+      return null;
+    }
+
+    console.log('Successfully fetched artwork by slug from GraphQL');
+    return data.artwork;
+  } catch (error: unknown) {
+    console.error(`Failed to fetch artwork with slug ${slug} from GraphQL:`, error);
+
+    // Fallback to cached data in development
+    if (isDevelopment && cachedArtworks) {
+      console.log('Searching cached artwork data as fallback');
+      const cachedItem = cachedArtworks.find((item: CachedArtwork) => item.slug === slug);
+      
+      if (cachedItem) {
+        const transformedArtwork: Artwork = {
+          ...cachedItem,
+          index: 0,
+          artworkFields: {
+            ...cachedItem.artworkFields,
+            height: cachedItem.artworkFields.height
+              ? parseFloat(cachedItem.artworkFields.height.replace(/[^0-9.]/g, '')) || null
+              : null,
+            width: cachedItem.artworkFields.width
+              ? parseFloat(cachedItem.artworkFields.width.replace(/[^0-9.]/g, '')) || null
+              : null,
+            year: cachedItem.artworkFields.year ? parseInt(cachedItem.artworkFields.year, 10) || null : null,
+            series: Array.isArray(cachedItem.artworkFields.series)
+              ? cachedItem.artworkFields.series
+              : cachedItem.artworkFields.series
+              ? [cachedItem.artworkFields.series]
+              : [],
+            lat: cachedItem.artworkFields.lat ? parseFloat(cachedItem.artworkFields.lat) || null : null,
+            lng: cachedItem.artworkFields.lng ? parseFloat(cachedItem.artworkFields.lng) || null : null,
+          },
+          colorfulFields: {
+            ...cachedItem.colorfulFields,
+            ar: typeof cachedItem.colorfulFields.ar === 'boolean' ? cachedItem.colorfulFields.ar : null,
+          },
+        };
+        return transformedArtwork;
+      }
+    }
+
+    return null;
   }
 }

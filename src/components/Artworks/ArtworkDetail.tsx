@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 // Assuming Artwork type includes artworkFields.orientation and artworkFields.size
 import { Artwork } from '@/types/artworks' 
 
@@ -44,7 +45,7 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
     // Access original image dimensions and aspect ratio
     const originalWidth = artwork.artworkFields?.artworkImage?.mediaDetails?.sizes[1]?.width || 1;
     const originalHeight = artwork.artworkFields?.artworkImage?.mediaDetails?.sizes[1]?.height || 1;
-    const aspectRatio = originalWidth / originalHeight;
+    const aspectRatio = (originalWidth as number) / (originalHeight as number);
 
     const { orientation, size } = artwork.artworkFields;
 
@@ -148,24 +149,30 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
 
 
     // Logging for debugging
-    useEffect(() => {
-        console.log(`Container: ${artworkContainerWidth}x${artworkContainerHeight}`);
-        console.log(`Artwork: ${orientation}/${size}`);
-        console.log(`Display: ${displayWidth}x${displayHeight}`);
-    }, [artworkContainerWidth, artworkContainerHeight, orientation, size, displayWidth, displayHeight]);
+    // useEffect(() => {
+    //     console.log(`Container: ${artworkContainerWidth}x${artworkContainerHeight}`);
+    //     console.log(`Artwork: ${orientation}/${size}`);
+    //     console.log(`Display: ${displayWidth}x${displayHeight}`);
+    // }, [artworkContainerWidth, artworkContainerHeight, orientation, size, displayWidth, displayHeight]);
 
 
     // The 'width' and 'height' props are for the *rendered* dimensions
     // The 'src' should ideally point to an optimized source URL
     return (
-        <Image
-            src={artwork.artworkFields?.artworkImage?.mediaDetails?.sizes[1]?.sourceUrl || ''}
-            alt={artwork.title}
-            width={displayWidth} 
-            height={displayHeight}
-            // Add 'style' for centering or other layout needs
-            style={{ objectFit: 'contain' }}
-        />
+        <Link
+            href={`/${artwork.slug}`}
+            className="artwork-detail__link"
+        >
+            <Image
+                className="artwork-detail__image"
+                src={artwork.artworkFields?.artworkImage?.mediaDetails?.sizes[1]?.sourceUrl || ''}
+                alt={artwork.title}
+                width={displayWidth} 
+                height={displayHeight}
+                // Add 'style' for centering or other layout needs
+                style={{ objectFit: 'contain' }}
+            />
+        </Link>
     )
 }
 
