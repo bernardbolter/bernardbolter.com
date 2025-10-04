@@ -4,6 +4,10 @@
     position: fixed;
     top: 7px;
     right: 0;
+
+    @media screen and (min-width: $break-m) {
+        top: 130px;
+    }
 }
 
 .nav-button {
@@ -42,6 +46,10 @@
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
     border-top: 1px solid $svg-dark;
     border-bottom: 1px solid $svg-dark;
+
+    @media screen and (min-width: $break-m) {
+        top: 137px;
+    }
 }
 
 .search-nav__container--open {
@@ -102,6 +110,10 @@
     // border-bottom: 1px solid $svg-dark;
     // border-left: 1px solid $svg-dark;
     background: $svg-dark;
+
+    @media screen and (min-width: $break-m) {
+        top: 204px;
+    }
 }
 
 .filter-nav__container--open {

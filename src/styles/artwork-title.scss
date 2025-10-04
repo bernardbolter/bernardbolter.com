@@ -9,19 +9,50 @@
 
 .artwork-title__container--desktop {
     top: 0;
-    left: 60%;
-    transform: translate(-60%, 0); 
+    right: 1px;
 }
 
 .artwork-title__container--mobile {
     right: 0;
-    bottom: 0; 
+    bottom: 0;
+
+    .artwork-title__border-top--middle {
+        border-top: 1px solid #ddd;
+    }
 }
 
 .artwork-title__container--slideshow {
     left: 0;
     bottom: 0;
     z-index: 8000;
+
+    .artwork-title__border-top--middle {
+        background: $title-text;
+    }
+
+    .artwork-title__border-middle--right {
+        background: $title-text;
+    }
+
+    .artwork-title__title {
+        color: $title-light;
+    }
+
+    .artwork-title__year {
+        color: $title-light;
+    }
+
+    .artwork-title__medium {
+        color: $title-light;
+    }
+
+    .artwork-title__size {
+        color: $title-light;
+    }
+
+    .artwork-title__size--converted {
+        color: $title-light;
+    }
 }
 
 .artwork-title__border-top {
@@ -45,6 +76,7 @@
     flex-grow: 1;
     height: 10px;
     background: $title-light;
+    border-top: 1px solid $title-dark;
 }
 
 .artwork-title__border-top--show {
@@ -87,74 +119,95 @@
 }
 
 .artwork-title__inside--desktop {
-    padding: 10px 5px 0 5px;
+    padding: 10px 10px 0 5px;
     align-items: flex-start;
 }
 
 .artwork-title__inside--mobile {
-    padding: 0 5px 10px 5px;
+    padding: 0 10px 10px 5px;
     align-items: flex-start;
 }
 
 .artwork-title__inside--slideshow {
     padding: 0 5px 10px 5px;
     align-items: flex-start;
+    background: $title-text;
 }
 
 .artwork-title__title {
     font-family: $heading;
     font-weight: 800;
     font-size: 22px;
-    color: $title-dark;
+    color: $title-text-dark;
     line-height: 1em;
     padding: 0;
     margin: 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 24px;
+    }
 }
 
 .artwork-title__year {
     font-family: $heading;
-    color: $title-dark;
+    color: $title-text;
     font-size: 14px;
     font-weight: 500;
     line-height: 1em;
     padding: 0;
     margin: 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
 }
 
 .artwork-title__medium {
     font-family: $heading;
-    color: $title-dark;
+    color: $title-text;
     font-size: 14px;
     font-weight: 500;
     line-height: 1em;
-    padding: 0;
+    padding: 0 0 4px;
     margin: 0;
+
+     @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
 }
 
 .artwork-title__size {
     font-family: $heading;
-    color: $title-dark;
+    color: $title-text;
     font-size: 14px;
     font-weight: 500;
     line-height: 1em;
     padding: 0;
     margin: 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
 }
 
 .artwork-title__size--converted {
     font-family: $heading;
-    color: $title-dark;
+    color: $title-text;
     font-size: 11px;
     font-weight: 200;
     line-height: 1em;
     padding: 0;
     margin: 0;
+
+     @media screen and (min-width: $break-s) {
+        font-size: 12px;
+    }
 }
 
 .artwork-title__border-middle--right {
     width: 10px;
     flex-grow: 1;
-    background: $title-light;
+    background: $title-shadow;
 }
 
 .artwork-title__border-middle-right--show {

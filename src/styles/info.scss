@@ -48,10 +48,10 @@
 .info__content {
     width: 120px;
     background: $nav-background;
-    padding: 0 0 10px 0;
+    padding: 0 0 10px 8px;
     border-bottom-right-radius: 10px;
     position: relative;
-    left: 8px;
+    left: 0;
     transform: translateX(-120px);
     transition: all .5s ease-in-out;
     position: fixed;

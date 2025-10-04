@@ -18,12 +18,16 @@ $ins: #A27E8E;
 $pho: #2D4654;
 $vid: #996a3e;
 
-$svg-light: #FDFEFF;
+$svg-light: #efefef;
+$svg-face: #eee;
 $svg-dark: #666;
 
-$title-light: yellow;
-$title-dark: #333;
+$title-light: #efefef;
+$title-dark: #999;
 $title-space: 15px;
+$title-shadow: #ddd;
+$title-text: #666;
+$title-text-dark: #444;
 
 $timeline: #878585;
 
@@ -58,4 +62,6 @@ $body-font: "Barlow Condensed", sans-serif;
     --title-light: #{$title-light};
     --title-dark: #{$title-dark};
     --title-space: #{$title-space};
+    --title-shadow: #{$title-shadow};
+    --title-text: #{$title-text}; 
 }
