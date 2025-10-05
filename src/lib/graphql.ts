@@ -1,4 +1,188 @@
 export const getAllArtwork = `
+  query getAllArtwork {
+    allArtwork(first: 500) {
+      nodes {
+        content(format: RENDERED)
+        date
+        id
+        title(format: RENDERED)
+        slug
+        artworkFields {
+          area
+          artworkImage {
+            node {
+              altText
+              mediaDetails {
+                  width
+                  height
+              }
+              srcSet(size: LARGE)
+              sourceUrl(size: LARGE)
+            }
+          }
+          artworklink {
+            target
+            title
+            url
+          }
+          city
+          coordinates
+          country
+          density
+          elevation
+          extraimages
+          forsale
+          height
+          lat
+          lng
+          medium
+          metadescription
+          metakeywords
+          performance
+          orientation
+          population
+          proportion
+          series
+          size
+          slug
+          style
+          width
+          year
+        }
+        colorfulFields {
+          storyDe
+          storyEn
+          wikiLinkDe
+          wikiLinkEn
+          ar
+        }
+      }
+    }
+    biography(id: "cG9zdDo1NzQ=") {
+      bio {
+        tagline
+        bioimage1 {
+          node {
+            altText
+            mediaDetails {
+              width
+              height
+            }
+            sourceUrl(size: LARGE)
+            srcSet(size: LARGE)
+          }
+        }
+        bioimage2 {
+          node {
+            altText
+            mediaDetails {
+              width
+              height
+            }
+            sourceUrl(size: LARGE)
+            srcSet(size: LARGE)
+          }
+        }
+        bioimage3 {
+          node {
+            altText
+            mediaDetails {
+              width
+              height
+            }
+            sourceUrl(size: LARGE)
+            srcSet(size: LARGE)
+          }
+        }
+        bioimage4 {
+          node {
+            altText
+            mediaDetails {
+              width
+              height
+            }
+            sourceUrl(size: LARGE)
+            srcSet(size: LARGE)
+          }
+        }
+        bioimage5 {
+          node {
+            altText
+            mediaDetails {
+              width
+              height
+            }
+            sourceUrl(size: LARGE)
+            srcSet(size: LARGE)
+          }
+        }
+      }
+      content
+    }
+    artistInfo(id: "cG9zdDozNQ==") {
+      id
+      artistData {
+        birthcity
+        birthyear
+        fieldGroupName
+        link1 {
+          target
+          title
+          url
+        }
+        link2 {
+          target
+          title
+          url
+        }
+        link3 {
+          target
+          title
+          url
+        }
+        link4 {
+          target
+          title
+          url
+        }
+        link5 {
+          target
+          title
+          url
+        }
+        name
+        workcity1
+        workcity2
+        workcity3
+      }
+    }
+    cvinfos(first: 500) {
+      nodes {
+        cvInfoFields {
+          city
+          gallery
+          role
+          school
+          section
+          title
+          year
+        }
+      }
+    }
+  }
+`
+
+export const getAllArtworkTest = `
+  query getAllArtwork {
+    allArtwork(first: 500) {
+      nodes {
+          slug
+      }
+    }
+  }
+`
+
+export const getAllArtworkThree = `
     query getAllArtwork {
         allArtwork(first: 1000) {
             nodes {
@@ -10,16 +194,19 @@ export const getAllArtwork = `
                         title
                     }
                     artworkImage {
-                        mediaDetails {
-                            sizes(include: [MEDIUM, LARGE, THUMBNAIL]) {
-                                sourceUrl
-                                height
+                        # FIX: Assuming the image object is nested under 'mediaItem'
+                        mediaItem { 
+                            sourceUrl
+                            mediaDetails {
+                                sizes(include: [MEDIUM, LARGE, THUMBNAIL]) {
+                                    sourceUrl
+                                    height
+                                    width
+                                }
                                 width
+                                height
                             }
-                            width
-                            height
                         }
-                        mediaItemUrl
                     }
                     country
                     forsale
@@ -49,32 +236,31 @@ export const getAllArtwork = `
                 databaseId
                 id
                 date
-                featuredImage {
-                    node {
-                        sourceUrl
-                        altText
-                    }
+            }
+        }
+        
+        allBiography: pages(where: {title: "Biography"}) { 
+            nodes {
+                content(format: RENDERED)
+            }
+        }
+        
+        cvinfos {
+            nodes {
+                cvInfoFields {
+                    city
+                    gallery
+                    role
+                    school
+                    section
+                    title
+                    year
                 }
             }
         }
-        page(id: "cG9zdDo1MQ==") {
-          content(format: RENDERED)
-        }
-        cvinfos(first:1000) {
-          nodes {
-            cv_info_fields {
-              city
-              gallery
-              role
-              school
-              section
-              title
-              year
-            }
-          }
-        }
-        artistInfo(id: "cG9zdDozNQ==") {
-          artistInfo {
+        
+        artistInfo: artistInfo(id: "cG9zdDozNQ==") {
+          artistData { 
             birthcity
             birthyear
             link1 {
@@ -104,7 +290,7 @@ export const getAllArtwork = `
           }
         }
     }
-`
+`;
 
 export const getAllArtistInfo = `
 cvinfos(first:1000) {
@@ -152,6 +338,59 @@ cvinfos(first:1000) {
         }
 `
 
-export const singleArtwork = `
-  query
-`
+export const getSingleArtwork = ` 
+  query GetArtworkBySlug($slug: ID!) {
+    artwork(id: $slug, idType: SLUG) {
+      id
+      title
+      slug
+      date
+      content
+      databaseId
+      artworkFields {
+        artworkImage {
+          altText
+          mediaDetails {
+            width
+            height
+          }
+          srcSet(size: LARGE)
+          sourceUrl(size: LARGE)
+        }
+        width
+        height
+        medium
+        style
+        orientation
+        size
+        series
+        city
+        country
+        lat
+        lng
+        year
+        forsale
+        proportion
+        metadescription
+        metakeywords
+        artworklink {
+          url
+          title
+        }
+      }
+      colorfulFields {
+        wikiLinkEn
+        wikiLinkDe
+        storyEn
+        storyDe
+        ar
+      }
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+    }
+  }
+`;

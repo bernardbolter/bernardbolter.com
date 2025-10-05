@@ -3,7 +3,7 @@ import { useArtworks } from '@/providers/ArtworkProvider';
 
 // import ArtworkDetail from './ArtworkDetail';
 
-import { Artwork } from '@/types/artworks'
+import { Artwork } from '@/types/artworksTypes'
 
 interface ArtworksSlideshowProps {
   filteredArtworks: Artwork[];

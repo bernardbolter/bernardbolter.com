@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 // Assuming Artwork type includes artworkFields.orientation and artworkFields.size
-import { Artwork } from '@/types/artworks' 
+import { Artwork } from '@/types/artworksTypes' 
 
 interface ArtworkDetailProps {
 	artwork: Artwork,

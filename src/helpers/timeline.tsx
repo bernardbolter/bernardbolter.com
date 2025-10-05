@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Artwork } from "@/types/artworks";
+import { Artwork } from "@/types/artworksTypes";
 
 import {
   TimelineArtwork,
@@ -7,7 +7,7 @@ import {
   GenerateSmallLinesProps,
   TimelineConfig,
   TimelineResult
-} from '@/types/timline'
+} from '@/types/timlineTypes'
 
 
 // Constants

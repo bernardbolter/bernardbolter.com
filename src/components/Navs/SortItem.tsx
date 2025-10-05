@@ -1,6 +1,6 @@
 import { useArtworks } from '@/providers/ArtworkProvider'
 
-import { SortProps } from '@/types/filter'
+import { SortProps } from '@/types/filterTypes'
 
 const SortItem: React.FC<SortProps> = ({
     slug,

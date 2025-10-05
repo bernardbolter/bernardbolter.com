@@ -11,7 +11,7 @@ import SortItem from '@/components/Navs/SortItem'
 import { filterValues } from '@/data/filterValues'
 import { sortValues } from '@/data/sortValues'
 
-import { FilterNavProps} from '@/types/filter'
+import { FilterNavProps} from '@/types/filterTypes'
 
 
 const FilterNav: React.FC<FilterNavProps> = () => {

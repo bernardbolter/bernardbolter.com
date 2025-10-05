@@ -10,8 +10,8 @@ import RightArrowSvg from '@/svgs/RightArrowSvg';
 
 import useWindowSize from '@/hooks/useWindowSize';
 
-import { Artwork } from '@/types/artworks';
-import { SortingType } from '@/types/timline';
+import { Artwork } from '@/types/artworksTypes';
+import { SortingType } from '@/types/timlineTypes';
 import {
     generateTimeline,
     generateSmallLines

@@ -4,9 +4,188 @@
     display: block;
 }
 
-.bio__container {
+.bio-container {
     width: 100%;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     background: $background;
+    padding: 100px 5%;
+
+    @media screen and (min-width: $break-m) {
+        max-width: 650px;
+        margin: 0 auto;
+    }
+
+    @media screen and (min-width: $break-m) {
+        max-width: 800px;
+    }
+}
+
+
+.bio__content-wrapper {
+    display: flex;
+    flex-direction: column; 
+    gap: 3rem;
+}
+
+.bio__header {
+    position: fixed;
+    top: -30px;
+    right: -40px;
+    font-size: 120px;
+    opacity: .6;
+    text-transform: uppercase;
+    font-weight: 900;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 150px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        font-size: 180px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        font-size: 220px;
+        top: -60px;
+        right: -70px;
+    }
+}
+
+.bio__tagline {
+    font-family: serif;
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 200;
+    opacity: .6;
+    color: $dark;
+    padding: 20px 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 22px;
+    }
+}
+
+.bio__main-content {
+
+    p {
+        font-size: 14px;
+        line-height: 1.5;
+        padding-bottom: 30px;
+
+         @media screen and (min-width: $break-s) {
+            font-size: 18px;
+         }
+    }
+}
+
+/* --- Square Image Grid Styling --- */
+.bio__image-grid {
+    display: grid;
+    /* 2 columns on mobile */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 5px;
+    padding-top: 1rem;
+    padding-bottom: 120px;
+
+    @media screen and (min-width: $break-m) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+    }
+}
+
+.bio__grid-item {
+    position: relative;
+    /* KEY: This creates the square aspect ratio */
+    padding-bottom: 100%; 
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.bio__grid-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.bio__image-square {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* KEY: Next.js Image property to crop content to square container */
+    object-fit: cover; 
+}
+
+/* --- Lightbox Modal --- */
+.lightbox__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85); /* Dark semi-opacity background */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox__overlay--open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lightbox__content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Full-size image inside the lightbox */
+.lightbox__image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox__alt-text {
+    color: white;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    font-size: 1rem;
+    max-width: 100%;
+    text-align: center;
+}
+
+.lightbox__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    z-index: 1001;
+    transition: color 0.2s;
+}
+.lightbox__close-button:hover {
+    color: #aaa;
 }

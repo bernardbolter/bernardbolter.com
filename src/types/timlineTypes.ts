@@ -1,4 +1,4 @@
-import { Artwork } from "./artworks";
+import { Artwork } from "./artworksTypes";
 
 // Simplified artwork interface for the artworks array
 export interface TimelineArtwork extends Artwork {

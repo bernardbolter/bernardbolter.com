@@ -4,7 +4,7 @@ import AnimationWrapper from './AnimationWrapper';
 import { Geist, Staatliches, Sofia_Sans_Extra_Condensed, Manrope, Barlow_Condensed } from 'next/font/google';
 import { getArtworkData } from '@/lib/dataService';
 import ArtworksProvider from '@/providers/ArtworkProvider';
-import { AllData } from '@/types/artworkProvider';
+import { AllData } from '@/types/artworkProviderTypes';
 import { ApolloProvider } from '@/lib/apollo-provider';
 import '@/styles/index.scss';
 

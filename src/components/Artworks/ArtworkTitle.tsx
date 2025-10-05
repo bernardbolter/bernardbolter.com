@@ -6,7 +6,7 @@ import useWindowSize from '@/hooks/useWindowSize'
 
 import { convertUnits } from '@/helpers/sizeConversion'
 
-import { TimelineResult } from '@/types/timline'
+import { TimelineResult } from '@/types/timlineTypes'
 
 import TitleCornerTopLeft from '@/svgs/TitleCornerTopLeft'
 import TitleCornerTopRight from '@/svgs/TitleCornerTopRight'

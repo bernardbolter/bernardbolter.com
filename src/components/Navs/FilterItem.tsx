@@ -1,6 +1,6 @@
 import { useArtworks } from '@/providers/ArtworkProvider'
 
-import { FilterProps } from '@/types/filter'
+import { FilterProps } from '@/types/filterTypes'
 
 const FilterItem: React.FC<FilterProps> = ({
     name,

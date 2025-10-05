@@ -10,18 +10,38 @@ import TiktokPlainSvg from '@/svgs/TiktokPlainSvg'
 import LinkedinPlainSvg from '@/svgs/LinkedinPlainSvg'
 import YoutubePlainSvg from '@/svgs/YoutubePlainSvg'
 import LinkSvg from '@/svgs/LinkSvg'
+import BackArrowSvg from '@/svgs/BackArrowSvg'
 
 const Info = () => {
     const [artworks, setArtworks] = useArtworks();
     const pathname = usePathname()
-    console.log(pathname)
+    // console.log(pathname)
+    // console.log(artworks.artistData)
+
+    const staticRoutes = ['/', '/bio', '/cv', '/statement', '/contact']
+    const isDynamicRoute = !staticRoutes.includes(pathname)
 
     return (
         <>
             <div className="name__container">
-                <h1 className="name__bernard">Bernard John Bolter IV</h1>
-                <h3 className="name__city">b. San Francisco 1974</h3>
-                <h2 className="name__location">Lives and works Berlin</h2>
+                <h1 className="name__full">{artworks.artistData.name}</h1>
+                {!isDynamicRoute 
+                    ? (
+                    <>
+                        <h3 className="name__city">b. {artworks.artistData.birthcity}, {artworks.artistData.birthyear}</h3>
+                        <h2 className="name__location">Lives and works {artworks.artistData.workcity1} and {artworks.artistData.workcity2}</h2>  
+                    </>
+                    ) : (
+                    <Link 
+                        className="name__back--container"
+                        href="/"
+                    >
+                        <div className="name__back--svg">
+                            <BackArrowSvg />
+                        </div>
+                        <p>All Artwork</p>
+                    </Link>
+                )}
             </div>
             <div 
                 className={artworks.infoOpen ? "info-button__container info-button__container--open" : "info-button__container"}

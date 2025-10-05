@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, createContext, useContext, ReactNode, useMemo, Dispatch, SetStateAction } from 'react'
-import { Artwork } from '@/types/artworks'
-import { ArtworksState, AllData } from '@/types/artworkProvider'
+import { Artwork } from '@/types/artworksTypes'
+import { ArtworksState, AllData } from '@/types/artworkProviderTypes'
 
 // Keep your original tuple type
 type ArtworksContextType = [ArtworksState, Dispatch<SetStateAction<ArtworksState>>]
@@ -23,7 +23,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     searchValue: "",
     infoOpen: false,
     cvData: [],
-    bioData: '',
+    bioData: {},
     artistData: {}
   },
   () => {}
@@ -50,11 +50,11 @@ const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
     searchValue: "",
     infoOpen: false,
     cvData: allData.cvinfos.nodes || [],
-    bioData: allData.page.content || '',
+    bioData: allData.page || {},
     artistData: allData.artistInfo || {}
   })
 
-  console.log(allData)
+  // console.log(allData)
 
   // Initialize original artwork on mount
   useEffect(() => {
@@ -64,7 +64,7 @@ const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
         original: allData.allArtwork.nodes,
         filtered: allData.allArtwork.nodes,
         cvData: allData.cvinfos.nodes,
-        bioData: allData.page.content,
+        bioData: allData.biography,
         artistData: allData.artistInfo,
       }));
     }

@@ -5,29 +5,67 @@
 .name__container {
     position: fixed;
     z-index: 2000;
-    background: $nav-background-light;
-    top: 4px;
-    left: 4px;
-    padding: 3px 6px 6px 3px;
+    background: $nav-background;
+    top: 0;
+    left: 0;
+    padding: 7px;
     border-bottom-right-radius: 6px;
 }
 
-.name__bernard {
+.name__full {
     font-family: $heading;
     font-size: 26px;
     font-weight: 700;
+    color: $title-text-dark;
 }
 
 .name__city {
     font-family: $body-font;
     font-size: 14px;
     font-weight: 300;
+    color: $title-text;
 }
 
 .name__location {
     font-family: $body-font;
     font-size: 14px;
     font-weight: 300;
+    color: $title-text;
+}
+
+// BACK LINK
+.name__back--container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 8px;
+    transition: opacity .5s ease-in-out;
+    opacity: .7;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        opacity: 1; 
+    }
+
+    .name__back--svg {
+        width: 16px;
+        height: 16px;
+
+        svg {
+            fill: $title-text;
+            width: 100%;
+        }
+    }
+
+    p {
+        font-size: 14px;
+        font-weight: 800;
+        color: $title-text;
+        padding: 0;
+        margin: 0;
+    }
 }
 
 // BUTTON

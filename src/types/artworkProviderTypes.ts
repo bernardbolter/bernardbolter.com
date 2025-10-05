@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { Artwork } from '@/types/artworks'
+import { Artwork } from '@/types/artworksTypes'
+import { BiographyData } from "./bioTypes";
+
 export interface ArtworksState {
   original: Artwork[];
   filtered: Artwork[];
@@ -14,9 +16,12 @@ export interface ArtworksState {
   isTimelineScrollingProgamatically: boolean;
   searchValue: string;
   infoOpen: boolean;
-  cvData: CVitem[];
+  cvData: CVItem[];
   artistData: ArtistInfo;
-  bioData: string;
+  bioData: { 
+      content: string; 
+      bio: BiographyData | null;
+  } | null;
 }
 
 export interface ArtistInfoLink {
@@ -38,7 +43,7 @@ export interface ArtistInfo {
   workcity3?: string;
 }
 
-export interface CVitem {
+export interface CVItem {
   city?: string;
   gallery?: string;
   role?: string;
@@ -49,13 +54,16 @@ export interface CVitem {
 }
 
 export interface BioInfo {
-  content: string;
+  content?: string;
 }
 
 export interface AllData {
   allArtwork: { nodes: Artwork[] };
-  page: { content: string }; // Adjust based on actual page data
-  cvinfos: { nodes: CVitem[] };
+  page: { 
+      content: string; 
+      bio: BiographyData | null;
+  } | null;
+  cvinfos: { nodes: CVItem[] };
   artistInfo: ArtistInfo;
 }
 
