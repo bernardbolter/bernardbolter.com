@@ -1,12 +1,226 @@
 @use './vars.scss' as *;
 
-.cv-page__container {
-    display: block;
-}
-
 .cv__container {
     width: 100%;
     height: 100vh;
-    display: flex;
     background: $background;
+    overflow: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        background: transparent; /* Chrome/Safari/Webkit */
+        width: 0px;
+    }
+}
+
+.cv__title {
+    position: fixed;
+    top: -30px;
+    right: -40px;
+    font-size: 120px;
+    opacity: .6;
+    text-transform: uppercase;
+    font-weight: 900;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 150px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        font-size: 180px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        font-size: 220px;
+        top: -60px;
+        right: -70px;
+    }
+}
+
+.cv__header {
+    font-size: 18px;
+    color: $title-text-dark;
+    margin: 0;
+    padding: 0 0 5px;
+    font-weight: 900;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 22px;
+    }
+}
+
+.cv__print-button {
+    position: fixed;
+    right: 10px;
+    top: 100px;
+    transition: all .5s ease-in-out;
+    cursor: pointer;
+
+    @media screen and (min-width: $break-s) {
+        top: 115px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        top: 140px;
+    }
+}
+
+.cv__content {
+    width: 90%;
+    margin: 120px 5%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 50px;
+
+    @media screen and (min-width: $break-s) {
+        width: 84%;
+        margin: 120px 8%;
+    }
+
+    @media screen and (min-width: $break-m) {
+        width: 78%;
+        margin: 140px auto;
+        max-width: 800px;
+    }
+}
+
+.cv__content::-webkit-scrollbar {
+  background: transparent; /* Chrome/Safari/Webkit */
+  width: 0px;
+}
+
+.cv__entry {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-bottom: 4px;
+
+    h2 {
+        font-size: 11px;
+        color: $title-text-dark;
+        font-weight: 500;
+        padding: 0 4px 0 0;
+        font-family: monospace;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 14px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 16px;
+        }
+    }
+
+    h3 {
+        font-size: 11px;
+        color: $title-text-dark;
+        font-weight: 600;
+        padding: 0 4px 0 0;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 14px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 16px;
+        }
+    }
+
+    h4 {
+        font-size: 11px;
+        color: $title-text-dark;
+        font-weight: 300;
+        font-family: sans-serif;
+        padding: 3px 4px 0 0;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 14px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 16px;
+        }
+    }
+
+    h5 {
+        font-size: 10px;
+        color: $title-text-dark;
+        font-weight: 700;
+        padding: 2px 0 0 0;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 13px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 14px;
+        }
+    }
+}
+
+/* ======================================================= */
+/* CSS PRINT MEDIA QUERY FOR A4 FORMAT (FIXED)             */
+/* ======================================================= */
+
+@media print {
+    /* 1. Define the A4 page size and margins */
+    @page {
+        size: A4;
+        margin: 20mm 15mm; /* Set print margins */
+    }
+
+    /* FIX 1: Override screen-specific dimensions/scrolling for main containers */
+    .cv__container {
+        height: auto !important;
+        overflow: visible !important;
+        background-color: white !important;
+    }
+    
+    /* FIX 2: Hide specific UI elements (no aggressive body > * selector) */
+    .cv__print-button,
+    .cv__title,
+    .info-button__container {
+        display: none !important;
+    }
+
+    /* FIX 3: Centering and width adjustment */
+    .cv__content {
+        width: 80% !important; /* Make list narrower */
+        margin: 0 auto !important; /* Center the list on the page */
+        padding: 0 !important;
+        
+        display: block !important;
+        position: static;
+        max-width: 100%;
+        page-break-after: always; /* Ensure content flows to new pages */
+    }
+    
+    /* FIX 4: Reduce text size and vertical spacing for single-page fit */
+    .cv__header {
+        font-size: 14pt !important;
+        margin-top: 10pt !important;
+        padding-bottom: 2pt !important;
+    }
+
+    .cv__entry {
+        margin-bottom: 1pt !important; /* Reduced space between entries */
+        page-break-inside: avoid !important; /* Prevents splitting a single entry */
+        
+        /* Adjusting font sizes for tight fit */
+        h2 { font-size: 9pt !important; }
+        h3 { font-size: 8.5pt !important; }
+        h4 { font-size: 8.5pt !important; }
+        h5 { font-size: 8pt !important; }
+    }
+    
+    /* Ensure the name container doesn't break from the top content */
+    .name__container {
+        display: block !important;
+        position: static !important;
+        margin-bottom: 10pt; 
+        page-break-after: avoid; 
+    }
 }

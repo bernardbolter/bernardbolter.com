@@ -1,11 +1,11 @@
-// Define the structure of a single CV node
 interface CvNode {
     __typename: string;
     city: string | null;
     gallery: string | null;
     role: string | null;
     school: string | null;
-    section: string; // The key we are grouping by
+    // FIX: Updated type to string[] as the data comes in as an array with one value.
+    section: string[]; 
     title: string | null;
     year: number | null;
 }
@@ -16,38 +16,53 @@ interface GroupedCvNodes {
 }
 
 /**
- * Groups CV nodes by their 'section' key.
+ * Groups CV nodes by their 'section' key and sorts the items within each section
+ * from latest year to oldest year (descending order).
  * * @param nodes - The array of CvNode objects (passed directly from the provider).
  * @returns A new object with keys corresponding to the section names, 
- * and values being an array of CvNode objects belonging to that section.
+ * and values being an array of CvNode objects belonging to that section, sorted by year.
  */
 export const groupCvNodesBySection = (nodes: CvNode[]): GroupedCvNodes => {
     
-    // Check if the input is a valid array
     if (!Array.isArray(nodes)) {
         console.error("groupCvNodesBySection received invalid input: not an array.");
         return {};
     }
 
-    // Use Array.prototype.reduce to create the grouped object
+    // 1. Group the nodes by section
     const grouped = nodes.reduce((acc: GroupedCvNodes, node: CvNode) => {
-        // Ensure the section key exists and is a string
-        const sectionKey = node.section?.toUpperCase(); 
+        // FIX: Safely access the first element of the section array and convert it to uppercase.
+        const sectionKey = Array.isArray(node.section) 
+            ? node.section[0]?.toUpperCase() 
+            : null; 
         
         if (typeof sectionKey === 'string' && sectionKey.length > 0) {
-            // If the accumulator doesn't have an entry for this section, create an empty array
             if (!acc[sectionKey]) {
                 acc[sectionKey] = [];
             }
-            // Push the current node into the array for that section
             acc[sectionKey].push(node);
         } else {
-            // Optional: Log a warning for data with a missing or invalid section
             console.warn("Node found with a missing or invalid 'section' key, skipping:", node);
         }
 
         return acc;
-    }, {}); // Initialize the accumulator as an empty object
+    }, {});
+
+    // 2. Sort the nodes within each section
+    for (const sectionKey in grouped) {
+        if (Object.hasOwnProperty.call(grouped, sectionKey)) {
+            // Sort the array: b.year - a.year results in descending order (Latest to Oldest)
+            grouped[sectionKey].sort((a, b) => {
+                // Handle null/undefined years by treating them as 0 for sorting,
+                // or you might place null years at the end by returning a negative/positive number.
+                const yearA = a.year ?? 0;
+                const yearB = b.year ?? 0;
+                
+                // Descending sort (latest first)
+                return yearB - yearA;
+            });
+        }
+    }
 
     return grouped;
 };

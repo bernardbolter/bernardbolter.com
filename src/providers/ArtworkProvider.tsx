@@ -54,7 +54,7 @@ const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
     artistData: allData.artistInfo || {}
   })
 
-  // console.log(allData)
+  console.log(allData)
 
   // Initialize original artwork on mount
   useEffect(() => {

@@ -1,8 +1,12 @@
 "use client"
 
-import {useState, useEffect, JSX } from 'react'
-import { useArtworks } from '@/providers/ArtworkProvider';
+import {useState, useEffect, JSX, useMemo } from 'react'
+import { useArtworks } from '@/providers/ArtworkProvider'
+
+import Loading from '../Loading'
+
 import { groupCvNodesBySection } from '@/helpers/cv'
+import { getRandomArtColor } from '@/helpers/randomColor'
 
 // Define the type for a single CV Node
 interface CvNode {
@@ -11,7 +15,7 @@ interface CvNode {
     gallery: string | null;
     role: string | null;
     school: string | null;
-    section: string;
+    section: string[];
     title: string | null;
     year: number | null;
 }
@@ -26,6 +30,11 @@ const CV = () => {
     console.log(artworks.cvData)
 
     const [formattedCV, setFormattedCV] = useState<GroupedCvNodes>({})
+    const [buttonHovered, setButtonHovered] = useState<boolean>(false)
+
+    const handlePrint = () => {
+        window.print();
+    };
         
     useEffect(() => {
         const cvNodesArray = artworks.cvData as CvNode[] | undefined;
@@ -50,7 +59,7 @@ const CV = () => {
 
         return (
             <>
-                <h1>{title}</h1>
+                <h1 className="cv__header">{title}</h1>
                 {entries.map((item, index) => {
                     // 🔑 Create a unique key by combining section, title, and index
                     const uniqueKey = `${sectionKey}-${item.title}-${index}`; 
@@ -60,77 +69,95 @@ const CV = () => {
         );
     }
 
+    const randomColor = useMemo(() => getRandomArtColor(), []);
     const isLoading = Object.keys(formattedCV).length === 0;
 
     return (
         <div className="cv__container">
             {isLoading
             ? (
-                <p>Loading CV</p>
+                <Loading />
             ): (
                 <>
-                    <h1>Solo</h1>
-                    {/* Render SOLO */}
-                    {renderSection('SOLO', 'SOLO', (solo, key) => (
-                        <div className="cv-entry" key={key}> 
-                            <h4>{solo.year}</h4>
-                            <h3>{solo.gallery}</h3>
-                            <h2>&apos;{solo.title}&apos;</h2>
-                            <h5>- {solo.city}</h5>
-                        </div>
-                    ))}
+                    <h1 
+                        className="cv__title"
+                        style={{ color: randomColor}}    
+                    >CV</h1>
 
-                    <h1>Group</h1>
-                    {/* Render GROUP */}
-                    {renderSection('GROUP', 'GROUP', (group, key) => (
-                        <div className="cv-entry" key={key}>
-                            <h4>{group.year}</h4>
-                            <h3>{group.gallery}</h3>
-                            <h2>&apos;{group.title}&apos;</h2>
-                            <h5>- {group.city}</h5>
-                        </div>
-                    ))}
-                    
-                    {/* Render PERFORMANCE */}
-                    {renderSection('PERFORMANCE', 'PERFORMANCE', (performance, key) => (
-                        <div className="cv-entry" key={key}>
-                            <h4>{performance.year}</h4>
-                            <h3>{performance.gallery}</h3>
-                            <h2>&apos;{performance.title}&apos;</h2>
-                            <h5>- {performance.city}</h5>
-                        </div>
-                    ))}
+                    <button 
+                        onClick={handlePrint} 
+                        className="cv__print-button"
+                        aria-label="Print Curriculum Vitae (A4 Format)"
+                        onMouseEnter={() => setButtonHovered(true)}
+                        onMouseLeave={() => setButtonHovered(false)}
+                        style={{
+                            background: buttonHovered ? randomColor : '#ededed',
+                            color: buttonHovered ? 'white' : '#222'
+                        }}
+                    >
+                        Print CV
+                    </button>
+                    <div className="cv__content">
+                        {/* Render SOLO */}
+                        {renderSection('SOLO', 'SOLO', (solo, key) => (
+                            <div className="cv__entry" key={key}> 
+                                <h2>{solo.year}</h2>
+                                <h3>{solo.gallery}</h3>
+                                <h4>&apos;{solo.title}&apos;</h4>
+                                <h5>- {solo.city}</h5>
+                            </div>
+                        ))}
 
-                    {/* Render EDUCATION */}
-                    {renderSection('EDUCATION', 'EDUCATION', (edu, key) => (
-                        <div className="cv-entry" key={key}>
-                            <h4>{edu.year}</h4>
-                            <h2>{edu.school}</h2>
-                            <h3>&apos;{edu.title}&apos;</h3>
-                            <h5>- {edu.city}</h5>
-                        </div>
-                    ))}
-                    
-                    {/* Render PUBLICATIONS */}
-                    {renderSection('PUBLICATIONS', 'PUBLICATIONS', (pubs, key) => (
-                        <div className="cv-entry" key={key}>
-                            <h4>{pubs.year}</h4>
-                            <h2>{pubs.title}</h2>
-                            <h5>{pubs.role}</h5>
-                        </div>
-                    ))}
+                        {/* Render GROUP */}
+                        {renderSection('GROUP', 'GROUP', (group, key) => (
+                            <div className="cv__entry" key={key}>
+                                <h2>{group.year}</h2>
+                                <h3>{group.gallery}</h3>
+                                <h4>&apos;{group.title}&apos;</h4>
+                                <h5>- {group.city}</h5>
+                            </div>
+                        ))}
+                        
+                        {/* Render PERFORMANCE */}
+                        {renderSection('PERFORMANCE', 'PERFORMANCE', (performance, key) => (
+                            <div className="cv__entry" key={key}>
+                                <h2>{performance.year}</h2>
+                                <h3>{performance.gallery}</h3>
+                                <h4>&apos;{performance.title}&apos;</h4>
+                                <h5>- {performance.city}</h5>
+                            </div>
+                        ))}
 
-                    {/* Render ORGANIZATIONS */}
-                    {renderSection('ORGANIZATIONS', 'ORGANIZATIONS', (orgs, key) => (
-                        <div className="cv-entry" key={key}>
-                            <h4>{orgs.year}</h4>
-                            <h2>{orgs.title}</h2>
-                            <h5>{orgs.role}</h5>
-                        </div>
-                    ))}
+                        {/* Render EDUCATION */}
+                        {renderSection('EDUCATION', 'EDUCATION', (edu, key) => (
+                            <div className="cv__entry" key={key}>
+                                <h2>{edu.year}</h2>
+                                <h3>{edu.school}</h3>
+                                <h4>&apos;{edu.title}&apos;</h4>
+                                <h5>- {edu.city}</h5>
+                            </div>
+                        ))}
+                        
+                        {/* Render PUBLICATIONS */}
+                        {renderSection('PUBLICATIONS', 'PUBLICATIONS', (pubs, key) => (
+                            <div className="cv__entry" key={key}>
+                                <h2>{pubs.year}</h2>
+                                <h3>{pubs.title}</h3>
+                                <h4>{pubs.role}</h4>
+                            </div>
+                        ))}
+
+                        {/* Render ORGANIZATIONS */}
+                        {renderSection('ORGANIZATIONS', 'ORGANIZATIONS', (orgs, key) => (
+                            <div className="cv__entry" key={key}>
+                                <h2>{orgs.year}</h2>
+                                <h3>{orgs.title}</h3>
+                                <h4>{orgs.role}</h4>
+                            </div>
+                        ))}
+                    </div>
                 </>
             )}
-            <h1>CV</h1>
         </div>
     )
 }

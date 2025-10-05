@@ -44,11 +44,12 @@ export interface ArtistInfo {
 }
 
 export interface CVItem {
+  __typename?: string;
   city?: string;
   gallery?: string;
   role?: string;
   school?: string;
-  section?: string;
+  section?: string[];
   title?: string;
   year?: number
 }
