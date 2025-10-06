@@ -11,9 +11,16 @@ export interface ArtworkMediaDetails {
     height: number;
 }
 
-export interface ArtworkImage {
+export interface ArtworkImageNode {
+    altText?: string | null;
     mediaDetails: ArtworkMediaDetails;
-    mediaItemUrl: string;
+    sourceUrl: string; // Sized URL from the query
+    srcSet: string; // Sized srcSet from the query
+}
+
+// and the flat structure (for single artwork/cached data).
+export interface ArtworkImage {
+    node?: ArtworkImageNode | null; 
 }
 
 export interface ArtworkLink {
@@ -24,7 +31,7 @@ export interface ArtworkLink {
 export interface ArtworkFields {
     city: string;
     artworklink: ArtworkLink;
-    artworkImage: ArtworkImage;
+    artworkImage: ArtworkImage | null; 
     country: string;
     forsale: boolean;
     height: string;
@@ -62,14 +69,7 @@ export interface Artwork {
   artworkFields: {
     city: string | null;
     artworklink: { url: string; title: string } | null;
-    artworkImage: {
-      mediaDetails: {
-        sizes: { sourceUrl: string; height: string; width: string }[];
-        width: number;
-        height: number;
-      };
-      mediaItemUrl: string;
-    } | null;
+    artworkImage: ArtworkImage | null;
     country: string | null;
     forsale: boolean | null;
     height: number | null;
@@ -78,10 +78,10 @@ export interface Artwork {
     medium: string | null;
     metadescription: string | null;
     metakeywords: string | null;
-    orientation: string | null;
+    orientation: string | 'square';
     proportion: number | null;
     series: string[];
-    size: string | null;
+    size: string | 'l';
     style: string | null;
     width: number | null;
     year: number | null;
