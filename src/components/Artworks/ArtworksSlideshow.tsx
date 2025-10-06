@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useArtworks } from '@/providers/ArtworkProvider';
+import { useArtworks } from '@/providers/ArtworkProvider'
+import useWindowSize from '@/hooks/useWindowSize'
+import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
+import Image from 'next/image'
 
 // import ArtworkDetail from './ArtworkDetail';
 
@@ -15,14 +18,29 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
     autoPlayInterval = 5000
 }) => {
     const [artworks, setArtworks] = useArtworks();
-    const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+    const [imageLoaded, setImageLoaded] = useState<boolean>(false)
+    const vport = useWindowSize()
+    const [artworkContainerWidth, setArtworkContainerWidth] = useState<number>(0);
+    const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0);
 
     const currentIndexRef = useRef<number>(artworks.currentArtworkIndex)
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
-    const animationRef = useRef<number | null>(null); // Store the animation frame ID here
-    const startTimeRef = useRef<number>(0);
-    const pausedProgressRef = useRef<number>(0); // Store paused progress
-    const progressRef = useRef<number>(0); // Store progress value
+    const intervalRef = useRef<NodeJS.Timeout | null>(null)
+    const animationRef = useRef<number | null>(null) // Store the animation frame ID here
+    const startTimeRef = useRef<number>(0)
+    const pausedProgressRef = useRef<number>(0) // Store paused progress
+    const progressRef = useRef<number>(0) // Store progress value
+
+    useEffect(() => {
+    if (vport.width && vport.height) {
+        if (vport.width > 767) {
+            setArtworkContainerHeight(vport.height - 125)
+            setArtworkContainerWidth(vport.height - 125)
+    } else {
+            setArtworkContainerWidth(vport.width - 50);
+            setArtworkContainerHeight(vport.width - 50);
+            }
+        }
+    }, [vport])
 
     // Keep the ref in sync with context
     useEffect(() => {
@@ -149,18 +167,32 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
     };
 
     const currentArtwork = filteredArtworks[artworks.currentArtworkIndex];
+    const imageNode = currentArtwork.artworkFields?.artworkImage?.node; 
+    const imageSrc = imageNode?.sourceUrl || '';
+    const imageSrcSet = imageNode?.srcSet || '';
+    const artworkTitle = currentArtwork.title || 'Artwork Image';
+
+    const { displayWidth, displayHeight } = useArtworkDimensions({
+        artwork : currentArtwork,
+        artworkContainerWidth,
+        artworkContainerHeight
+    });
 
     return (
         <div className="artworks-slideshow__container">
             {/* Render the slideshow content */}
-            <img 
-                src={currentArtwork.artworkFields.artworkImage.mediaItemUrl}
-                style={{
-                    width: 300,
-                    height: 300
-                }}
-                onLoad={handleImageLoad}
-            />
+            <Image 
+            src={imageSrc}
+            // Conditionally apply srcSet if it exists
+            {...(imageSrcSet && { srcSet: imageSrcSet })}
+            alt={artworkTitle}
+            // IMPORTANT: Next/Image requires static width/height OR fill={true}. 
+            // Since the slideshow container is fixed (300x300 in the old img tag), use those for now.
+            width={displayWidth || 300 } 
+            height={displayHeight || 300 }
+            style={{ objectFit: 'contain' }}
+            onLoad={handleImageLoad} // Keep the handler to trigger animation
+        />
         </div>
     )
     
