@@ -7,6 +7,7 @@ export interface ArtworksState {
   filtered: Artwork[];
   currentArtworkIndex: number;
   sorting: string;
+  artworkViewTimeline: boolean;
   filtersArray: Array<string>;
   filterNavOpen: boolean;
   searchNavOpen: boolean;

@@ -1,20 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useArtworks } from '@/providers/ArtworkProvider'
 import useWindowSize from '@/hooks/useWindowSize'
 import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
 import Image from 'next/image'
 
-// import ArtworkDetail from './ArtworkDetail';
-
-import { Artwork } from '@/types/artworksTypes'
-
 interface ArtworksSlideshowProps {
-  filteredArtworks: Artwork[];
   autoPlayInterval?: number;
 }
 
 const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({ 
-    filteredArtworks, 
     autoPlayInterval = 5000
 }) => {
     const [artworks, setArtworks] = useArtworks();
@@ -25,19 +19,18 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
 
     const currentIndexRef = useRef<number>(artworks.currentArtworkIndex)
     const intervalRef = useRef<NodeJS.Timeout | null>(null)
-    const animationRef = useRef<number | null>(null) // Store the animation frame ID here
+    const animationRef = useRef<number | null>(null)
     const startTimeRef = useRef<number>(0)
-    const pausedProgressRef = useRef<number>(0) // Store paused progress
-    const progressRef = useRef<number>(0) // Store progress value
+    const pausedProgressRef = useRef<number>(0)
 
     useEffect(() => {
-    if (vport.width && vport.height) {
-        if (vport.width > 767) {
-            setArtworkContainerHeight(vport.height - 125)
-            setArtworkContainerWidth(vport.height - 125)
-    } else {
-            setArtworkContainerWidth(vport.width - 50);
-            setArtworkContainerHeight(vport.width - 50);
+        if (vport.width && vport.height) {
+            if (vport.width > 767) {
+                setArtworkContainerHeight(vport.height - 125)
+                setArtworkContainerWidth(vport.height - 125)
+            } else {
+                setArtworkContainerWidth(vport.width - 50);
+                setArtworkContainerHeight(vport.width - 50);
             }
         }
     }, [vport])
@@ -47,60 +40,57 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
         currentIndexRef.current = artworks.currentArtworkIndex;
     }, [artworks.currentArtworkIndex]);
 
-    // Initialize start time when slideshow starts for the first time or when image changes
-    useEffect(() => {
-        // When slideshow is first shown, ensure it starts with the current index
-        if (artworks.showSlideshow) {
-            // Reset progress for the current image
-            pausedProgressRef.current = 0;
-            progressRef.current = 0;
-            setImageLoaded(false);
-            
-            // Update progress in context
-            setArtworks(prevState => ({
-                ...prevState,
-                slideshowTimerProgress: 0
-            }));
-        }
-    }, [artworks.showSlideshow]);
-
-    // Update Progress
-    const updateProgress = () => {
-        if (!artworks.slideshowPlaying) return;
-        
+    // Stable updateProgress function using useCallback
+    const updateProgress = useCallback(() => {
         const now = Date.now();
         const elapsed = now - startTimeRef.current;
         const newProgress = Math.min((elapsed / autoPlayInterval) * 100, 100);
         
-        // Store progress in refs
         pausedProgressRef.current = newProgress;
-        progressRef.current = newProgress
 
-        // Update context with current progress - but throttle updates to reduce re-renders
-        if (Math.abs(newProgress - artworks.slideshowTimerProgress) > 1) {
-            setArtworks(prevState => ({
-                ...prevState,
-                slideshowTimerProgress: newProgress
-            }));
-        }
+        // Throttle updates to reduce re-renders
+        setArtworks(prevState => {
+            if (Math.abs(newProgress - prevState.slideshowTimerProgress) > 1) {
+                return {
+                    ...prevState,
+                    slideshowTimerProgress: newProgress
+                };
+            }
+            return prevState;
+        });
         
         if (newProgress < 100) {
             animationRef.current = requestAnimationFrame(updateProgress);
         } else {
             animationRef.current = null;
         }
-    };
+    }, [autoPlayInterval, setArtworks]);
+
+    // Reset progress when slideshow opens or index changes
+    useEffect(() => {
+        if (artworks.showSlideshow) {
+            setImageLoaded(false);
+            pausedProgressRef.current = 0;
+            
+            setArtworks(prevState => ({
+                ...prevState,
+                slideshowTimerProgress: 0
+            }));
+        }
+    }, [artworks.showSlideshow, artworks.currentArtworkIndex, setArtworks]);
 
     // Handle progress animation
     useEffect(() => {
+        // Clean up any existing animation
+        if (animationRef.current) {
+            cancelAnimationFrame(animationRef.current);
+            animationRef.current = null;
+        }
+
         if (artworks.slideshowPlaying && imageLoaded) {
+            // Reset start time when starting/resuming
             startTimeRef.current = Date.now() - (pausedProgressRef.current / 100) * autoPlayInterval;
             animationRef.current = requestAnimationFrame(updateProgress);
-        } else {
-            if (animationRef.current) {
-                cancelAnimationFrame(animationRef.current);
-                animationRef.current = null;
-            }
         }
         
         return () => {
@@ -109,20 +99,24 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
                 animationRef.current = null;
             }
         };
-    }, [artworks.slideshowPlaying, imageLoaded]);
+    }, [artworks.slideshowPlaying, imageLoaded, autoPlayInterval, updateProgress]);
 
     // Auto-play functionality - advance to next image
     useEffect(() => {
-        if (artworks.slideshowPlaying && filteredArtworks.length > 1 && imageLoaded) {
+        // Clear any existing timeout
+        if (intervalRef.current) {
+            clearTimeout(intervalRef.current);
+            intervalRef.current = null;
+        }
+
+        if (artworks.slideshowPlaying && artworks.filtered.length > 1 && imageLoaded) {
             const remainingTime = autoPlayInterval - (pausedProgressRef.current / 100) * autoPlayInterval;
             
             intervalRef.current = setTimeout(() => {
-                // Calculate next index using the ref
-                const nextIndex = currentIndexRef.current === filteredArtworks.length - 1 
+                const nextIndex = currentIndexRef.current === artworks.filtered.length - 1 
                     ? 0 
                     : currentIndexRef.current + 1;
                 
-                // Update context with new index
                 setArtworks(state => ({
                     ...state,
                     currentArtworkIndex: nextIndex
@@ -136,66 +130,52 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
                 intervalRef.current = null;
             }
         };
-    }, [artworks.slideshowPlaying, filteredArtworks.length, imageLoaded]);
-
-    // Reset progress only when index changes (new image)
-    useEffect(() => {
-        setImageLoaded(false);
-        pausedProgressRef.current = 0; // Reset paused progress for new image
-        progressRef.current = 0;
-
-        // Reset progress in context when image changes
-        setArtworks(prevState => ({
-            ...prevState,
-            slideshowTimerProgress: 0
-        }));
-    }, [artworks.currentArtworkIndex]);
+    }, [artworks.slideshowPlaying, artworks.filtered.length, imageLoaded, autoPlayInterval, setArtworks]);
 
     // Update context progress when paused
     useEffect(() => {
-        if (!artworks.slideshowPlaying) {
+        if (!artworks.slideshowPlaying && pausedProgressRef.current > 0) {
             setArtworks(prevState => ({
                 ...prevState,
                 slideshowTimerProgress: pausedProgressRef.current
             }));
         }
-    }, [artworks.slideshowPlaying]);
+    }, [artworks.slideshowPlaying, setArtworks]);
 
-    const handleImageLoad = () => {
+    const handleImageLoad = useCallback(() => {
         setImageLoaded(true);
-        startTimeRef.current = Date.now(); // Reset start time when image loads
-    };
+    }, []);
 
-    const currentArtwork = filteredArtworks[artworks.currentArtworkIndex];
+    const currentArtwork = artworks.filtered[artworks.currentArtworkIndex];
+    
+    const { displayWidth, displayHeight } = useArtworkDimensions({
+        artwork: currentArtwork,
+        artworkContainerWidth,
+        artworkContainerHeight
+    });
+    
+    if (!currentArtwork) {
+        return null;
+    }
+
     const imageNode = currentArtwork.artworkFields?.artworkImage?.node; 
     const imageSrc = imageNode?.sourceUrl || '';
     const imageSrcSet = imageNode?.srcSet || '';
     const artworkTitle = currentArtwork.title || 'Artwork Image';
 
-    const { displayWidth, displayHeight } = useArtworkDimensions({
-        artwork : currentArtwork,
-        artworkContainerWidth,
-        artworkContainerHeight
-    });
-
     return (
         <div className="artworks-slideshow__container">
-            {/* Render the slideshow content */}
             <Image 
-            src={imageSrc}
-            // Conditionally apply srcSet if it exists
-            {...(imageSrcSet && { srcSet: imageSrcSet })}
-            alt={artworkTitle}
-            // IMPORTANT: Next/Image requires static width/height OR fill={true}. 
-            // Since the slideshow container is fixed (300x300 in the old img tag), use those for now.
-            width={displayWidth || 300 } 
-            height={displayHeight || 300 }
-            style={{ objectFit: 'contain' }}
-            onLoad={handleImageLoad} // Keep the handler to trigger animation
-        />
+                src={imageSrc}
+                {...(imageSrcSet && { srcSet: imageSrcSet })}
+                alt={artworkTitle}
+                width={displayWidth || artworkContainerWidth * .7} 
+                height={displayHeight || artworkContainerHeight * .7}
+                style={{ objectFit: 'contain' }}
+                onLoad={handleImageLoad}
+            />
         </div>
     )
-    
 }
 
 export default ArtworksSlideshow

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useArtworks } from '@/providers/ArtworkProvider'
 
 import ArtworksTimeline from './ArtworksTimeline'
+import ArtworksGrid from './ArtworksGrid'
+import ArtworkSwitcher from './ArtworkSwitcher'
 import ArtworksSlideshow from './ArtworksSlideshow'
 import Loading from '@/components/Loading'
 import NoArtworks from '@/components/Artworks/NoArtworks'
@@ -27,9 +29,12 @@ const Artworks = () => {
 
     return (
         <section className="artworks-container">
+            <ArtworkSwitcher />
             { noArtworks 
                 ?   <NoArtworks />
-                :   <ArtworksTimeline filteredArtworks={artworks.filtered} />
+                :   artworks.artworkViewTimeline
+                    ? <ArtworksTimeline filteredArtworks={artworks.filtered} />
+                    : <ArtworksGrid />
             }
             {artworks.showSlideshow && <ArtworksSlideshow filteredArtworks={artworks.filtered} />}
         </section>

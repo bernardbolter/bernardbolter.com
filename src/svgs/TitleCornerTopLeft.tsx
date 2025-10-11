@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import { useArtworks } from "@/providers/ArtworkProvider";
-import useWindowSize from "@/hooks/useWindowSize";
-
+import { useEffect, useState } from "react"
+import { useArtworks } from "@/providers/ArtworkProvider"
+import useWindowSize from "@/hooks/useWindowSize"
 
 const TitleCornerTopLeft = () => {
     const [artworks] = useArtworks()
@@ -9,7 +8,7 @@ const TitleCornerTopLeft = () => {
     const [viewState, setViewState] = useState('desktop')
 
     const titleDark = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-dark').trim();
+    .getPropertyValue('--title-dark').trim()
 
     console.log(titleDark)
 

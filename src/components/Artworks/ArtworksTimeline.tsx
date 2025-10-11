@@ -1,40 +1,37 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { useArtworks } from '@/providers/ArtworkProvider';
-import ArtworkDetail from '@/components/Artworks/ArtworkDetail';
-import ArtworkTitle from '@/components/Artworks/ArtworkTitle';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { useArtworks } from '@/providers/ArtworkProvider'
+import ArtworkDetail from '@/components/Artworks/ArtworkDetail'
+import ArtworkTitle from '@/components/Artworks/ArtworkTitle'
+import Loading from '@/components/Loading'
 
-import LeftArrowSvg from '@/svgs/LeftArrowSvg';
-import RightArrowSvg from '@/svgs/RightArrowSvg';
+import LeftArrowSvg from '@/svgs/LeftArrowSvg'
+import RightArrowSvg from '@/svgs/RightArrowSvg'
 
-import useWindowSize from '@/hooks/useWindowSize';
+import useWindowSize from '@/hooks/useWindowSize'
 
-import { Artwork } from '@/types/artworksTypes';
-import { SortingType } from '@/types/timlineTypes';
+import { SortingType } from '@/types/timlineTypes'
 import {
     generateTimeline,
     generateSmallLines
-} from '@/helpers/timeline';
+} from '@/helpers/timeline'
 
-interface ArtworksTimelineProps {
-  filteredArtworks: Artwork[];
-}
-
-const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = [] }) => {
-    const [artworks, setArtworks] = useArtworks();
+const ArtworksTimeline = () => {
+    const [artworks, setArtworks] = useArtworks()
     
-    const artworkTimelineRef = useRef<HTMLDivElement>(null);
+    const artworkTimelineRef = useRef<HTMLDivElement>(null)
 
-    const vport = useWindowSize(); // Get the size of the viewport
-    const [artworkContainerWidth, setArtworkContainerWidth] = useState<number>(0);
-    const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0);
-    const [artworkDesktopSideWidth, setArtworkDektopSideWidth] = useState<number>(0);
-    const [totalTimelineWidth, setTotalTimelineWidth] = useState<number>(0);
-    const [totalTimelineHeight, setTotalTimelineHeight] = useState<number>(0);
+    const vport = useWindowSize()
+    const [artworkContainerWidth, setArtworkContainerWidth] = useState<number>(0)
+    const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0)
+    const [artworkDesktopSideWidth, setArtworkDektopSideWidth] = useState<number>(0)
+    const [totalTimelineWidth, setTotalTimelineWidth] = useState<number>(0)
+    const [totalTimelineHeight, setTotalTimelineHeight] = useState<number>(0)
+    const [isReady, setIsReady] = useState<boolean>(false)
  
-    const isProgramScroll = useRef<boolean>(false);
-    const hasUserScrolledRef = useRef<boolean>(false);
+    const isProgramScroll = useRef<boolean>(false)
+    const hasUserScrolledRef = useRef<boolean>(false)
 
     // set width and height of each artwork container
     useEffect(() => {
@@ -51,46 +48,35 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
         }
     }, [vport])
 
-
     const formattedArtworks = useMemo(() => {
         return generateTimeline({
-            artworks: filteredArtworks,
+            artworks: artworks.filtered,
             sorting: artworks.sorting as SortingType,
             artworkContainerWidth,
             artworkContainerHeight,
-            desktopSideWidth:artworkDesktopSideWidth,
+            desktopSideWidth: artworkDesktopSideWidth,
             viewportWidth: vport.width || 0,
             viewportHeight: vport.height || 0
         });
-    }, [filteredArtworks, artworks.sorting, artworkContainerWidth, artworkContainerHeight, artworkDesktopSideWidth, vport.width, vport.height]);
-
-    console.log("Formatted artworks:", formattedArtworks);
+    }, [artworks.filtered, artworks.sorting, artworkContainerWidth, artworkContainerHeight, artworkDesktopSideWidth, vport.width, vport.height]);
 
     useEffect(() => {
         setTotalTimelineWidth(formattedArtworks.totalTimelineWidth);
         setTotalTimelineHeight(formattedArtworks.totalTimelineHeight);
     }, [formattedArtworks.totalTimelineWidth, formattedArtworks.totalTimelineHeight])
 
-    // calculate scrollable dimensions
-    // const totalTimelineWidth = useMemo(() => {
-    //     return calculateTotalTimelineWidth(formattedArtworks, artworkContainerWidth, artworkDesktopSideWidth);
-    // }, [formattedArtworks, artworkContainerWidth, artworkDesktopSideWidth]);
-
-    // const totalTimelineHeight = useMemo(() => {
-    //     return calculateTotalTimelineHeight(formattedArtworks, artworkContainerHeight);
-    // }, [formattedArtworks, artworkContainerHeight]);
-
-    // // calculate scroll points for centering artworks
-    // const horizontalScrollPoints = useMemo(() => {
-    //     return calculateHorizontalScrollPoints(formattedArtworks, artworkContainerWidth, artworkDesktopSideWidth, vport.width || 0 );
-    // }, [formattedArtworks, artworkContainerWidth, artworkDesktopSideWidth, vport.width]);
-
-    // const verticalScrollPoints = useMemo(() => {
-    //     return calculateVerticalScrollPoints(formattedArtworks, artworkContainerHeight, vport.height || 0);
-    // }, [formattedArtworks, artworkContainerHeight, vport.height]);
-
-
-
+    // Check if everything is ready to display
+    useEffect(() => {
+        const hasArtworks = formattedArtworks.artworksArray.length > 0;
+        const hasDimensions = artworkContainerWidth > 0 && artworkContainerHeight > 0;
+        const hasViewport = vport.width && vport.height;
+        
+        if (hasArtworks && hasDimensions && hasViewport) {
+            setIsReady(true);
+        } else {
+            setIsReady(false);
+        }
+    }, [formattedArtworks.artworksArray.length, artworkContainerWidth, artworkContainerHeight, vport.width, vport.height]);
 
     const scrollToIndex = useCallback((index: number): void => {
         if (index < 0 || index >= formattedArtworks.artworksArray.length) return;
@@ -111,38 +97,34 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
             artworkTimelineRef.current?.scrollTo({ left: scrollPosition, behavior: 'smooth'});
         }
         setTimeout(() => {
-            isProgramScroll.current = false; // Reset flag after scrolling completes
+            isProgramScroll.current = false;
         }, 500);        
-    }, [formattedArtworks.artworksArray.length, vport.width, formattedArtworks.artworksArray, setArtworks]);
+    }, [artworks.currentArtworkIndex, vport.width, formattedArtworks.artworksArray, setArtworks]);
 
     const scrollNext = (): void => {
-        if (isProgramScroll.current) return; // Skip if scrolling is already in progress
+        if (isProgramScroll.current) return;
 
         const nextIndex = artworks.currentArtworkIndex < formattedArtworks.artworksArray.length - 1 
             ? artworks.currentArtworkIndex + 1 
             : 0;
         
-        console.log("Scrolling to next index:", nextIndex);
         scrollToIndex(nextIndex);
     };
 
     const scrollPrevious = (): void => {
-        if (isProgramScroll.current) return; // Skip if scrolling is already in progress
+        if (isProgramScroll.current) return;
 
         const prevIndex = artworks.currentArtworkIndex > 0 
             ? artworks.currentArtworkIndex - 1 
             : formattedArtworks.artworksArray.length - 1;
         
-        console.log("Scrolling to previous index:", prevIndex);
         scrollToIndex(prevIndex);
     };
 
-    // Effect to scroll to currentArtworkindex when the slideshow closes
     useEffect(() => {
         if (artworks.isTimelineScrollingProgamatically) {
             scrollToIndex(artworks.currentArtworkIndex);
             
-            // Reset the flag after scrolling
             setTimeout(() => {
                 setArtworks(prev => ({ ...prev, isTimelineScrollingProgamatically: false }));
             }, 500);
@@ -150,12 +132,10 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
     }, [artworks.isTimelineScrollingProgamatically, artworks.currentArtworkIndex, scrollToIndex, setArtworks]);
     
     const handleArtScroll = useCallback(() => {
-        // Skip if programmatic scrolling is active
         if (isProgramScroll.current || artworks.isTimelineScrollingProgamatically) {
             return;
         }
         
-        // This is manual user scrolling - update the current artwork index
         if (artworkTimelineRef.current) {
             const isMobile = vport.width && vport.width <= 767;
             let currentScrollPosition: number = 0;
@@ -207,7 +187,6 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
     }, [vport, artworkContainerHeight, artworkContainerWidth, artworkDesktopSideWidth, formattedArtworks, artworks.currentArtworkIndex, artworks.isTimelineScrollingProgamatically, setArtworks]);
 
     useEffect(() => {
-        // Only reset hasUserScrolledRef if the index change was programmatic
         if (isProgramScroll.current) {
             hasUserScrolledRef.current = false;
         }
@@ -227,7 +206,6 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
         };
     }, [handleArtScroll]);
 
-
     const smallLines = useMemo(() => {
         const isMobile: boolean = Boolean(vport.width && vport.width <= 767);
         
@@ -238,7 +216,7 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
             artworkContainerHeight,
             artworkContainerWidth,
             artworkDesktopSideWidth,
-            targetSpacing: 20 // Optional: customize spacing
+            targetSpacing: 20
         });
     }, [
         vport.width,
@@ -248,6 +226,10 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
         artworkContainerWidth,
         artworkDesktopSideWidth
     ]);
+
+    if (!isReady) {
+        return <Loading />;
+    }
 
     return (
         <div className="artworks-timeline__container">
@@ -260,7 +242,6 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                     height: vport.width && vport.height && vport.width > 767 ? `${vport.height}px` : '100vh'
                 }}  
             >
-
                 <div
                     className="artworks-timeline__artworks"
                     style={{
@@ -276,8 +257,8 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                                 className="artworks-timeline__artwork-inside"
                                 key={artwork.id}
                                 style={{
-                                    marginRight: vport.width && vport.width > 767 && index < filteredArtworks.length - 1 ? `${artwork.marginRight || 0}px` : '0px',
-                                    marginBottom: vport.width && vport.width <= 767 && index < filteredArtworks.length - 1 ? `${artwork.marginBottom || 0}px` : '0px',
+                                    marginRight: vport.width && vport.width > 767 && index < artworks.filtered.length - 1 ? `${artwork.marginRight || 0}px` : '0px',
+                                    marginBottom: vport.width && vport.width <= 767 && index < artworks.filtered.length - 1 ? `${artwork.marginBottom || 0}px` : '0px',
                                     minWidth: `${artworkContainerWidth}px`,
                                     minHeight: `${artworkContainerHeight}px`,
                                 }}
@@ -304,8 +285,8 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                     <div
                         className="artworks-timeline__line"
                         style={{
-                            width: vport.width && vport.width > 767 ? `${formattedArtworks.totalTimelineWidth - artworkContainerWidth - (artworkDesktopSideWidth * 2) }px` : '1px',
-                            height: vport.width && vport.width > 767 ? '1px' :`${formattedArtworks.totalTimelineHeight - artworkContainerHeight}px`,
+                            width: vport.width && vport.width > 767 ? `${formattedArtworks.totalTimelineWidth - artworkContainerWidth - (artworkDesktopSideWidth * 2)}px` : '1px',
+                            height: vport.width && vport.width > 767 ? '1px' : `${formattedArtworks.totalTimelineHeight - artworkContainerHeight}px`,
                             left: vport.width && vport.width > 767 ? `${artworkContainerWidth / 2}px` : '24px',
                             top: vport.width && vport.width > 767 ? '24px' : `${artworkContainerHeight / 2}px`,
                         }}
@@ -314,7 +295,7 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                         className="artworks-timeline__small-lines"
                         style={{
                             marginLeft: vport.width && vport.width > 767 ? `${artworkContainerWidth / 2}px` : '0px',
-                            marginTop: vport.width && vport.width > 767 ?  '0px' : `${artworkContainerHeight / 2}px`,
+                            marginTop: vport.width && vport.width > 767 ? '0px' : `${artworkContainerHeight / 2}px`,
                         }}    
                     >
                         {smallLines}
@@ -350,25 +331,18 @@ const ArtworksTimeline: React.FC<ArtworksTimelineProps> = ({ filteredArtworks = 
                 <div className="artworks-timeline__controls-container">
                     <div 
                         className="artworks-timeline__control"
-                        onClick={() => {
-                            console.log("left")
-                            scrollPrevious()
-                        }}    
+                        onClick={scrollPrevious}    
                     >
                         <LeftArrowSvg />
                     </div>
                     <div 
                         className="artworks-timeline__control"
-                        onClick={() => {
-                            console.log("right")
-                            scrollNext()
-                        }}    
+                        onClick={scrollNext}    
                     >
                         <RightArrowSvg />
                     </div>
                 </div>
             )}
-            
         </div>
     )
 }

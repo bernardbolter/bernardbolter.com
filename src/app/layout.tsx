@@ -41,7 +41,8 @@ export const metadata: Metadata = {
 export const revalidate = 100;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const allData: AllData = await getArtworkData();
+  const allData: AllData = await getArtworkData()
+
   return (
     <html lang="en">
       <body

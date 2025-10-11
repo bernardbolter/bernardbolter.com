@@ -13,6 +13,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     filtered: [],
     currentArtworkIndex: 0,
     sorting: "latest",
+    artworkViewTimeline: true,
     filtersArray: [],
     filterNavOpen: false,
     searchNavOpen: false,
@@ -23,7 +24,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     searchValue: "",
     infoOpen: false,
     cvData: [],
-    bioData: {},
+    bioData: null,
     artistData: {}
   },
   () => {}
@@ -40,6 +41,7 @@ const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
     filtered: allData.allArtwork.nodes || [],
     currentArtworkIndex: 0,
     sorting: "latest",
+    artworkViewTimeline: true,
     filtersArray: [],
     filterNavOpen: false,
     searchNavOpen: false,
@@ -50,7 +52,7 @@ const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
     searchValue: "",
     infoOpen: false,
     cvData: allData.cvinfos.nodes || [],
-    bioData: allData.page || {},
+    bioData: allData.page || null,
     artistData: allData.artistInfo || {}
   })
 
@@ -64,7 +66,7 @@ const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
         original: allData.allArtwork.nodes,
         filtered: allData.allArtwork.nodes,
         cvData: allData.cvinfos.nodes,
-        bioData: allData.biography,
+        bioData: allData.page,
         artistData: allData.artistInfo,
       }));
     }
