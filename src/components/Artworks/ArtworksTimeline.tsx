@@ -11,11 +11,7 @@ import RightArrowSvg from '@/svgs/RightArrowSvg'
 
 import useWindowSize from '@/hooks/useWindowSize'
 
-import { SortingType } from '@/types/timlineTypes'
-import {
-    generateTimeline,
-    generateSmallLines
-} from '@/helpers/timeline'
+import { generateSmallLines } from '@/helpers/timeline'
 
 const ArtworksTimeline = () => {
     const [artworks, setArtworks] = useArtworks()
@@ -23,63 +19,116 @@ const ArtworksTimeline = () => {
     const artworkTimelineRef = useRef<HTMLDivElement>(null)
 
     const vport = useWindowSize()
-    const [artworkContainerWidth, setArtworkContainerWidth] = useState<number>(0)
-    const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0)
-    const [artworkDesktopSideWidth, setArtworkDektopSideWidth] = useState<number>(0)
-    const [totalTimelineWidth, setTotalTimelineWidth] = useState<number>(0)
-    const [totalTimelineHeight, setTotalTimelineHeight] = useState<number>(0)
     const [isReady, setIsReady] = useState<boolean>(false)
  
     const isProgramScroll = useRef<boolean>(false)
     const hasUserScrolledRef = useRef<boolean>(false)
-
-    // set width and height of each artwork container
+    
+    // Use refs to avoid recreating handleArtScroll on every state change
+    const artworksRef = useRef(artworks)
+    const vportRef = useRef(vport)
+    
+    // Keep refs in sync with state
     useEffect(() => {
-        if (vport.width && vport.height) {
-            if (vport.width > 767) {
-                setArtworkContainerHeight(vport.height - 125)
-                setArtworkContainerWidth(vport.height - 125)
-                setArtworkDektopSideWidth(((vport.width) - (vport.height - 125))  / 2);
-            } else {
-                setArtworkContainerWidth(vport.width - 50);
-                setArtworkContainerHeight(vport.width - 50);
-                setArtworkDektopSideWidth(0);
-            }
-        }
+        artworksRef.current = artworks
+    }, [artworks])
+    
+    useEffect(() => {
+        vportRef.current = vport
     }, [vport])
 
-    const formattedArtworks = useMemo(() => {
-        return generateTimeline({
-            artworks: artworks.filtered,
-            sorting: artworks.sorting as SortingType,
-            artworkContainerWidth,
-            artworkContainerHeight,
-            desktopSideWidth: artworkDesktopSideWidth,
-            viewportWidth: vport.width || 0,
-            viewportHeight: vport.height || 0
-        });
-    }, [artworks.filtered, artworks.sorting, artworkContainerWidth, artworkContainerHeight, artworkDesktopSideWidth, vport.width, vport.height]);
-
+    // Update viewport dimensions in provider when they change
     useEffect(() => {
-        setTotalTimelineWidth(formattedArtworks.totalTimelineWidth);
-        setTotalTimelineHeight(formattedArtworks.totalTimelineHeight);
-    }, [formattedArtworks.totalTimelineWidth, formattedArtworks.totalTimelineHeight])
+        if (vport.width && vport.height) {
+            const viewportWidth = vport.width;
+            const viewportHeight = vport.height;
+            let artworkContainerWidth = 0;
+            let artworkContainerHeight = 0;
+            let artworkDesktopSideWidth = 0;
+
+            if (viewportWidth > 767) {
+                artworkContainerHeight = viewportHeight - 125;
+                artworkContainerWidth = viewportHeight - 125;
+                artworkDesktopSideWidth = ((viewportWidth) - (viewportHeight - 125)) / 2;
+            } else {
+                artworkContainerWidth = viewportWidth - 50;
+                artworkContainerHeight = viewportWidth - 50;
+                artworkDesktopSideWidth = 0;
+            }
+
+            // Only update if values have actually changed to prevent unnecessary recalculations
+            setArtworks(prev => {
+                if (
+                    prev.viewportWidth === viewportWidth &&
+                    prev.viewportHeight === viewportHeight &&
+                    prev.artworkContainerWidth === artworkContainerWidth &&
+                    prev.artworkContainerHeight === artworkContainerHeight &&
+                    prev.artworkDesktopSideWidth === artworkDesktopSideWidth
+                ) {
+                    return prev;
+                }
+                
+                return {
+                    ...prev,
+                    viewportWidth,
+                    viewportHeight,
+                    artworkContainerWidth,
+                    artworkContainerHeight,
+                    artworkDesktopSideWidth
+                };
+            });
+        }
+    }, [vport, setArtworks])
 
     // Check if everything is ready to display
     useEffect(() => {
-        const hasArtworks = formattedArtworks.artworksArray.length > 0;
-        const hasDimensions = artworkContainerWidth > 0 && artworkContainerHeight > 0;
+        const hasFormattedArtworks = artworks.formattedArtworks !== null;
+        const hasArtworks = artworks.formattedArtworks?.artworksArray.length || 0 > 0;
+        const hasDimensions = artworks.artworkContainerWidth > 0 && artworks.artworkContainerHeight > 0;
         const hasViewport = vport.width && vport.height;
         
-        if (hasArtworks && hasDimensions && hasViewport) {
+        console.log("Ready check:", {
+            hasFormattedArtworks,
+            hasArtworks,
+            hasDimensions,
+            hasViewport,
+            formattedArtworks: artworks.formattedArtworks
+        });
+        
+        if (hasFormattedArtworks && hasArtworks && hasDimensions && hasViewport) {
             setIsReady(true);
         } else {
             setIsReady(false);
         }
-    }, [formattedArtworks.artworksArray.length, artworkContainerWidth, artworkContainerHeight, vport.width, vport.height]);
+    }, [artworks.formattedArtworks, artworks.artworkContainerWidth, artworks.artworkContainerHeight, vport.width, vport.height]);
+
+    // Restore saved timeline position when returning to timeline view
+    useEffect(() => {
+        if (isReady && artworks.artworkViewTimeline && artworks.savedTimelineIndex > 0) {
+            // Restore the saved index and scroll to it
+            setArtworks(prev => ({
+                ...prev,
+                currentArtworkIndex: prev.savedTimelineIndex,
+                isTimelineScrollingProgamatically: true
+            }));
+        }
+    }, [isReady, artworks.artworkViewTimeline, artworks.savedTimelineIndex, setArtworks]);
+
+    // Save timeline position when leaving timeline view
+    useEffect(() => {
+        return () => {
+            // On unmount, save current position if we're in timeline view
+            if (artworks.artworkViewTimeline && artworks.currentArtworkIndex > 0) {
+                setArtworks(prev => ({
+                    ...prev,
+                    savedTimelineIndex: prev.currentArtworkIndex
+                }));
+            }
+        };
+    }, []);
 
     const scrollToIndex = useCallback((index: number): void => {
-        if (index < 0 || index >= formattedArtworks.artworksArray.length) return;
+        if (!artworks.formattedArtworks || index < 0 || index >= artworks.formattedArtworks.artworksArray.length) return;
 
         isProgramScroll.current = true;
 
@@ -90,21 +139,21 @@ const ArtworksTimeline = () => {
         const isMobile = vport.width && vport.width <= 767;
 
         if (isMobile) {
-            const scrollPosition = formattedArtworks.artworksArray[index].verticalScrollPoint;
+            const scrollPosition = artworks.formattedArtworks.artworksArray[index].verticalScrollPoint;
             artworkTimelineRef.current?.scrollTo({ top: scrollPosition, behavior: 'smooth'});
         } else {
-            const scrollPosition = formattedArtworks.artworksArray[index].horizontalScrollPoint;
+            const scrollPosition = artworks.formattedArtworks.artworksArray[index].horizontalScrollPoint;
             artworkTimelineRef.current?.scrollTo({ left: scrollPosition, behavior: 'smooth'});
         }
         setTimeout(() => {
             isProgramScroll.current = false;
         }, 500);        
-    }, [artworks.currentArtworkIndex, vport.width, formattedArtworks.artworksArray, setArtworks]);
+    }, [artworks.currentArtworkIndex, artworks.formattedArtworks, vport.width, setArtworks]);
 
     const scrollNext = (): void => {
-        if (isProgramScroll.current) return;
+        if (isProgramScroll.current || !artworks.formattedArtworks) return;
 
-        const nextIndex = artworks.currentArtworkIndex < formattedArtworks.artworksArray.length - 1 
+        const nextIndex = artworks.currentArtworkIndex < artworks.formattedArtworks.artworksArray.length - 1 
             ? artworks.currentArtworkIndex + 1 
             : 0;
         
@@ -112,11 +161,11 @@ const ArtworksTimeline = () => {
     };
 
     const scrollPrevious = (): void => {
-        if (isProgramScroll.current) return;
+        if (isProgramScroll.current || !artworks.formattedArtworks) return;
 
         const prevIndex = artworks.currentArtworkIndex > 0 
             ? artworks.currentArtworkIndex - 1 
-            : formattedArtworks.artworksArray.length - 1;
+            : artworks.formattedArtworks.artworksArray.length - 1;
         
         scrollToIndex(prevIndex);
     };
@@ -132,12 +181,17 @@ const ArtworksTimeline = () => {
     }, [artworks.isTimelineScrollingProgamatically, artworks.currentArtworkIndex, scrollToIndex, setArtworks]);
     
     const handleArtScroll = useCallback(() => {
-        if (isProgramScroll.current || artworks.isTimelineScrollingProgamatically) {
+        const currentArtworks = artworksRef.current;
+        const currentVport = vportRef.current;
+        
+        console.log("in handle scroll")
+        
+        if (isProgramScroll.current || currentArtworks.isTimelineScrollingProgamatically || !currentArtworks.formattedArtworks) {
             return;
         }
         
         if (artworkTimelineRef.current) {
-            const isMobile = vport.width && vport.width <= 767;
+            const isMobile = currentVport.width && currentVport.width <= 767;
             let currentScrollPosition: number = 0;
             let artworkDimension: number = 0;
             let viewportDimension: number = 0;
@@ -145,22 +199,30 @@ const ArtworksTimeline = () => {
 
             if (isMobile) {
                 currentScrollPosition = artworkTimelineRef.current.scrollTop;
-                viewportDimension = vport.height || 0;
-                artworkDimension = artworkContainerHeight;
+                viewportDimension = currentVport.height || 0;
+                artworkDimension = currentArtworks.artworkContainerHeight;
             } else {
                 currentScrollPosition = artworkTimelineRef.current.scrollLeft;
-                artworkDimension = artworkContainerWidth;
-                viewportDimension = vport.width || 0;
-                sideOffset = artworkDesktopSideWidth;
+                artworkDimension = currentArtworks.artworkContainerWidth;
+                viewportDimension = currentVport.width || 0;
+                sideOffset = currentArtworks.artworkDesktopSideWidth;
             }
 
             const viewportCenterAbsolute = currentScrollPosition + (viewportDimension / 2); 
+            
+            console.log("Scroll calc:", {
+                scrollPosition: currentScrollPosition,
+                viewportDimension,
+                viewportCenter: viewportCenterAbsolute,
+                artworkDimension,
+                sideOffset
+            });
 
             let bestIndex = 0
             let minDistance = Infinity;
             let accumulatedDimension = sideOffset;
 
-            formattedArtworks.artworksArray.forEach((artwork, index) => {
+            currentArtworks.formattedArtworks.artworksArray.forEach((artwork, index) => {
                 const artworkStart = accumulatedDimension;
                 const artworkCenter = artworkStart + (artworkDimension / 2);
                 const distance = Math.abs(artworkCenter - viewportCenterAbsolute);
@@ -171,7 +233,7 @@ const ArtworksTimeline = () => {
                 }
 
                 accumulatedDimension += artworkDimension;
-                if (index < formattedArtworks.artworksArray.length - 1) {
+                if (index < currentArtworks.formattedArtworks!.artworksArray.length - 1) {
                     if (isMobile) {
                         accumulatedDimension += artwork.marginBottom;
                     } else {
@@ -180,11 +242,16 @@ const ArtworksTimeline = () => {
                 }
             });
 
-            if (bestIndex !== artworks.currentArtworkIndex) {
+            console.log("best index: ", bestIndex, "current index:", currentArtworks.currentArtworkIndex)
+            
+            if (bestIndex !== currentArtworks.currentArtworkIndex) {
+                console.log("Updating index from", currentArtworks.currentArtworkIndex, "to", bestIndex);
                 setArtworks(state => ({ ...state, currentArtworkIndex: bestIndex }));
+            } else {
+                console.log("Index unchanged, still at", bestIndex);
             }
         }
-    }, [vport, artworkContainerHeight, artworkContainerWidth, artworkDesktopSideWidth, formattedArtworks, artworks.currentArtworkIndex, artworks.isTimelineScrollingProgamatically, setArtworks]);
+    }, [setArtworks]);
 
     useEffect(() => {
         if (isProgramScroll.current) {
@@ -195,45 +262,61 @@ const ArtworksTimeline = () => {
     useEffect(() => {
         const currentElement = artworkTimelineRef.current;
 
-        if (currentElement) {
+        if (currentElement && isReady) {
+            console.log("Adding scroll listener - isReady is true");
+            console.log("Element scroll dimensions:", {
+                scrollWidth: currentElement.scrollWidth,
+                scrollHeight: currentElement.scrollHeight,
+                clientWidth: currentElement.clientWidth,
+                clientHeight: currentElement.clientHeight,
+                scrollLeft: currentElement.scrollLeft,
+                scrollTop: currentElement.scrollTop
+            });
+            
             currentElement.addEventListener('scroll', handleArtScroll);
+            
+            // Immediately calculate the correct index based on current scroll position
+            // This handles cases where the page is already scrolled when component mounts
+            // handleArtScroll();
         }
 
         return () => {
             if (currentElement) {
+                console.log("Removing scroll listener");
                 currentElement.removeEventListener('scroll', handleArtScroll);
             }
         };
-    }, [handleArtScroll]);
+    }, [handleArtScroll, isReady]);
 
     const smallLines = useMemo(() => {
+        if (!artworks.formattedArtworks) return null;
+
         const isMobile: boolean = Boolean(vport.width && vport.width <= 767);
         
         return generateSmallLines({
             isMobile,
-            totalTimelineHeight,
-            totalTimelineWidth,
-            artworkContainerHeight,
-            artworkContainerWidth,
-            artworkDesktopSideWidth,
+            totalTimelineHeight: artworks.formattedArtworks.totalTimelineHeight,
+            totalTimelineWidth: artworks.formattedArtworks.totalTimelineWidth,
+            artworkContainerHeight: artworks.artworkContainerHeight,
+            artworkContainerWidth: artworks.artworkContainerWidth,
+            artworkDesktopSideWidth: artworks.artworkDesktopSideWidth,
             targetSpacing: 20
         });
     }, [
         vport.width,
-        totalTimelineHeight,
-        totalTimelineWidth,
-        artworkContainerHeight,
-        artworkContainerWidth,
-        artworkDesktopSideWidth
+        artworks.formattedArtworks,
+        artworks.artworkContainerHeight,
+        artworks.artworkContainerWidth,
+        artworks.artworkDesktopSideWidth
     ]);
 
-    if (!isReady) {
+    if (!isReady || !artworks.formattedArtworks) {
         return <Loading />;
     }
 
     return (
         <div className="artworks-timeline__container">
-            <ArtworkTitle formattedArtworks={formattedArtworks} />
+            <ArtworkTitle />
             <div 
                 className="artworks-timeline__artworks-container"
                 ref={artworkTimelineRef}
@@ -245,13 +328,13 @@ const ArtworksTimeline = () => {
                 <div
                     className="artworks-timeline__artworks"
                     style={{
-                        width: vport.width && vport.width > 767 ? `${formattedArtworks.totalTimelineWidth}px` : 'auto',
-                        height: vport.width && vport.width <= 767 ? `${formattedArtworks.totalTimelineHeight}px` : 'auto',
-                        paddingLeft: vport.width && vport.width > 767 ? `${artworkDesktopSideWidth}px` : '0px',
-                        paddingRight: vport.width && vport.width > 767 ? `${artworkDesktopSideWidth}px` : '0px',
+                        width: vport.width && vport.width > 767 ? `${artworks.formattedArtworks.totalTimelineWidth}px` : 'auto',
+                        height: vport.width && vport.width <= 767 ? `${artworks.formattedArtworks.totalTimelineHeight}px` : 'auto',
+                        paddingLeft: vport.width && vport.width > 767 ? `${artworks.artworkDesktopSideWidth}px` : '0px',
+                        paddingRight: vport.width && vport.width > 767 ? `${artworks.artworkDesktopSideWidth}px` : '0px',
                     }}
                 >
-                    {formattedArtworks.artworksArray.map((artwork, index) => {
+                    {artworks.formattedArtworks.artworksArray.map((artwork, index) => {
                         return (
                             <div
                                 className="artworks-timeline__artwork-inside"
@@ -259,14 +342,14 @@ const ArtworksTimeline = () => {
                                 style={{
                                     marginRight: vport.width && vport.width > 767 && index < artworks.filtered.length - 1 ? `${artwork.marginRight || 0}px` : '0px',
                                     marginBottom: vport.width && vport.width <= 767 && index < artworks.filtered.length - 1 ? `${artwork.marginBottom || 0}px` : '0px',
-                                    minWidth: `${artworkContainerWidth}px`,
-                                    minHeight: `${artworkContainerHeight}px`,
+                                    minWidth: `${artworks.artworkContainerWidth}px`,
+                                    minHeight: `${artworks.artworkContainerHeight}px`,
                                 }}
                             >
                                 <ArtworkDetail
                                     artwork={artwork}
-                                    artworkContainerWidth={artworkContainerWidth}
-                                    artworkContainerHeight={artworkContainerHeight}
+                                    artworkContainerWidth={artworks.artworkContainerWidth}
+                                    artworkContainerHeight={artworks.artworkContainerHeight}
                                 />
                             </div>
                         )
@@ -276,26 +359,26 @@ const ArtworksTimeline = () => {
                 <div
                     className="artworks-timeline__timeline-container"
                     style={{
-                        width: vport.width && vport.width > 767 ? `${formattedArtworks.totalTimelineWidth - (artworkDesktopSideWidth * 2)}px` : '50px',
-                        height: vport.width && vport.width <= 767 ? `${formattedArtworks.totalTimelineHeight}px` : '50px',
-                        marginLeft: vport.width && vport.width > 767 ? `${artworkDesktopSideWidth}px` : '0px',
-                        marginRight: vport.width && vport.width > 767 ? `${artworkDesktopSideWidth}px` : '0px',
+                        width: vport.width && vport.width > 767 ? `${artworks.formattedArtworks.totalTimelineWidth - (artworks.artworkDesktopSideWidth * 2)}px` : '50px',
+                        height: vport.width && vport.width <= 767 ? `${artworks.formattedArtworks.totalTimelineHeight}px` : '50px',
+                        marginLeft: vport.width && vport.width > 767 ? `${artworks.artworkDesktopSideWidth}px` : '0px',
+                        marginRight: vport.width && vport.width > 767 ? `${artworks.artworkDesktopSideWidth}px` : '0px',
                     }}
                 >
                     <div
                         className="artworks-timeline__line"
                         style={{
-                            width: vport.width && vport.width > 767 ? `${formattedArtworks.totalTimelineWidth - artworkContainerWidth - (artworkDesktopSideWidth * 2)}px` : '1px',
-                            height: vport.width && vport.width > 767 ? '1px' : `${formattedArtworks.totalTimelineHeight - artworkContainerHeight}px`,
-                            left: vport.width && vport.width > 767 ? `${artworkContainerWidth / 2}px` : '24px',
-                            top: vport.width && vport.width > 767 ? '24px' : `${artworkContainerHeight / 2}px`,
+                            width: vport.width && vport.width > 767 ? `${artworks.formattedArtworks.totalTimelineWidth - artworks.artworkContainerWidth - (artworks.artworkDesktopSideWidth * 2)}px` : '1px',
+                            height: vport.width && vport.width > 767 ? '1px' : `${artworks.formattedArtworks.totalTimelineHeight - artworks.artworkContainerHeight}px`,
+                            left: vport.width && vport.width > 767 ? `${artworks.artworkContainerWidth / 2}px` : '24px',
+                            top: vport.width && vport.width > 767 ? '24px' : `${artworks.artworkContainerHeight / 2}px`,
                         }}
                     />
                     <div 
                         className="artworks-timeline__small-lines"
                         style={{
-                            marginLeft: vport.width && vport.width > 767 ? `${artworkContainerWidth / 2}px` : '0px',
-                            marginTop: vport.width && vport.width > 767 ? '0px' : `${artworkContainerHeight / 2}px`,
+                            marginLeft: vport.width && vport.width > 767 ? `${artworks.artworkContainerWidth / 2}px` : '0px',
+                            marginTop: vport.width && vport.width > 767 ? '0px' : `${artworks.artworkContainerHeight / 2}px`,
                         }}    
                     >
                         {smallLines}
@@ -303,18 +386,18 @@ const ArtworksTimeline = () => {
                     <div 
                         className="artworks-timeline__year-markers"
                         style={{
-                            left: vport.width && vport.width > 767 ? `-${artworkContainerWidth / 2}px` : '0px',
-                            top: vport.width && vport.width > 767 ? '0px' : `-${artworkContainerHeight / 2}px`,
+                            left: vport.width && vport.width > 767 ? `-${artworks.artworkContainerWidth / 2}px` : '0px',
+                            top: vport.width && vport.width > 767 ? '0px' : `-${artworks.artworkContainerHeight / 2}px`,
                         }}
                     >
-                        {formattedArtworks.timepointsArray.map(yearMarker => {
+                        {artworks.formattedArtworks.timepointsArray.map(yearMarker => {
                             return (
                                 <div
                                     key={yearMarker.id}
                                     className="artworks-timeline__year-marker"
                                     style={{
-                                        left: vport.width && vport.width > 767 ? `${(artworkContainerWidth / 2) + yearMarker.distanceFromStart}px` : '0px',
-                                        top: vport.width && vport.width <= 767 ? `${(artworkContainerHeight / 2) + yearMarker.distanceFromStart}px` : '0px',
+                                        left: vport.width && vport.width > 767 ? `${(artworks.artworkContainerWidth / 2) + yearMarker.distanceFromStart}px` : '0px',
+                                        top: vport.width && vport.width <= 767 ? `${(artworks.artworkContainerHeight / 2) + yearMarker.distanceFromStart}px` : '0px',
                                     }}
                                 >
                                     <div className="artworks-timeline__year-tick" />

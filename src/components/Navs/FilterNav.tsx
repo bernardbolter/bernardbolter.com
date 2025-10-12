@@ -11,12 +11,9 @@ import SortItem from '@/components/Navs/SortItem'
 import { filterValues } from '@/data/filterValues'
 import { sortValues } from '@/data/sortValues'
 
-import { FilterNavProps} from '@/types/filterTypes'
-
-
-const FilterNav: React.FC<FilterNavProps> = () => {
+const FilterNav: React.FC = () => {
     const [artworks] = useArtworks()
-    // console.log(filterValues)
+    
     return (
         <div 
             className={artworks.filterNavOpen ? "filter-nav__container filter-nav__container--open" : "filter-nav__container"}
@@ -40,7 +37,6 @@ const FilterNav: React.FC<FilterNavProps> = () => {
 
             <div className="filter-nav__content">
                 {filterValues.map(value => {
-                    // console.log(value)
                     return <FilterItem key={value.id} {...value} />
                 })}
             </div>

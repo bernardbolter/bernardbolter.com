@@ -7,7 +7,6 @@ const SortItem: React.FC<SortProps> = ({
     name
 }) => {
     const [artworks, setArtworks] = useArtworks()
-    console.log(artworks.sorting)
 
     return (
         <div 

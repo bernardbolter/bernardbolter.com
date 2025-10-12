@@ -68,16 +68,14 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
 
     // Reset progress when slideshow opens or index changes
     useEffect(() => {
-        if (artworks.showSlideshow) {
-            setImageLoaded(false);
-            pausedProgressRef.current = 0;
-            
-            setArtworks(prevState => ({
-                ...prevState,
-                slideshowTimerProgress: 0
-            }));
-        }
-    }, [artworks.showSlideshow, artworks.currentArtworkIndex, setArtworks]);
+        setImageLoaded(false);
+        pausedProgressRef.current = 0;
+        
+        setArtworks(prevState => ({
+            ...prevState,
+            slideshowTimerProgress: 0
+        }));
+    }, [artworks.currentArtworkIndex, setArtworks]);
 
     // Handle progress animation
     useEffect(() => {
@@ -130,7 +128,7 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
                 intervalRef.current = null;
             }
         };
-    }, [artworks.slideshowPlaying, artworks.filtered.length, imageLoaded, autoPlayInterval, setArtworks]);
+    }, [artworks.slideshowPlaying, artworks.filtered.length, imageLoaded, autoPlayInterval, setArtworks, artworks.currentArtworkIndex]);
 
     // Update context progress when paused
     useEffect(() => {

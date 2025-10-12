@@ -1,6 +1,7 @@
 'use client'
 
 import { useArtworks } from '@/providers/ArtworkProvider'
+import useWindowSize from '@/hooks/useWindowSize'
 import FilterSvg from '@/svgs/FilterSvg'
 import SearchSvg from '@/svgs/SearchSvg'
 import PlaySvg from '@/svgs/PlaySvg'
@@ -11,17 +12,24 @@ import SearchNav from './SearchNav'
 import FilterNav from './FilterNav'
 
 const Nav = () => {
-    const [artworks, setArtworks] = useArtworks()
+  const [artworks, setArtworks] = useArtworks()
+  const size = useWindowSize()
 
   return (
     <nav 
       className="nav-container"
-      style={{ zIndex: artworks.showSlideshow ? 5000 : 1000}}  
+      style={{ 
+          zIndex: artworks.showSlideshow ? 5000 : 1000,
+          top: artworks.showSlideshow 
+            ? 4
+            : size.width && size.width > 768
+            ? 125 : 4
+        }}  
     >
         <div
           className="nav-button"
           role="button"
-          style={{ display: artworks.showSlideshow ? 'block' : 'none'}}
+          style={{ display: artworks.showSlideshow ? 'block' : 'none' }}
         >
           <TimerSvg />
         </div>

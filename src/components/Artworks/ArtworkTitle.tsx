@@ -5,28 +5,36 @@ import { useArtworks } from '@/providers/ArtworkProvider'
 import useWindowSize from '@/hooks/useWindowSize'
 
 import { convertUnits } from '@/helpers/sizeConversion'
-
-import { TimelineResult } from '@/types/timlineTypes'
+import { getSeriesColor } from '@/helpers/seriesColor'
 
 import TitleCornerTopLeft from '@/svgs/TitleCornerTopLeft'
 import TitleCornerTopRight from '@/svgs/TitleCornerTopRight'
 import TitleCornerBottomLeft from '@/svgs/TitleCornerBottomLeft'
 import TitleCornerBottomRight from '@/svgs/TitleCornerBottomRight'
 
-const ArtworkTitle = ({formattedArtworks}: { formattedArtworks: TimelineResult}) => {
+const ArtworkTitle = () => {
     const [artworks] = useArtworks()
-    const [convertedWidth, setConvertedWidth] = useState('')
-    const [convertedHeight, setConvertedHeight] = useState('')
+    const [convertedWidth, setConvertedWidth] = useState<string>('')
+    const [convertedHeight, setConvertedHeight] = useState<string>('')
     const size = useWindowSize()
-    console.log(formattedArtworks.artworksArray[artworks.currentArtworkIndex])
+
+    // Get current artwork from formattedArtworks or fall back to filtered
+    const currentArtwork = artworks.formattedArtworks?.artworksArray?.[artworks.currentArtworkIndex] 
+        ?? artworks.filtered[artworks.currentArtworkIndex];
 
     useEffect(() => {
-        if (formattedArtworks.artworksArray.length > 0) {
-             setConvertedWidth(convertUnits(formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.width).value)
-             setConvertedHeight(convertUnits(formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.height).value)
+        if (currentArtwork?.artworkFields?.width && currentArtwork?.artworkFields?.height) {
+            const width = String(currentArtwork.artworkFields.width);
+            const height = String(currentArtwork.artworkFields.height);
+            
+            setConvertedWidth(convertUnits(width).value)
+            setConvertedHeight(convertUnits(height).value)
         }
-       
-    }, [formattedArtworks.artworksArray, artworks.currentArtworkIndex])
+    }, [currentArtwork])
+
+    if (!currentArtwork) {
+        return null;
+    }
 
     return (
         <div 
@@ -42,7 +50,12 @@ const ArtworkTitle = ({formattedArtworks}: { formattedArtworks: TimelineResult})
                     <TitleCornerTopLeft />
                 </div>
                 <div 
-                    className={size.width && size.width > 768 ? "artwork-title__border-top--middle artwork-title__border-top--show" : 'artwork-title__border-top--middle'}
+                    className={
+                        artworks.showSlideshow 
+                        ? 'artwork-title__border-top--middle'
+                        : size.width && size.width > 768 
+                        ? "artwork-title__border-top--middle artwork-title__border-top--show" 
+                        : 'artwork-title__border-top--middle'}
                 />
                 <div className="artwork-title__border-top--right">
                     <TitleCornerTopRight />
@@ -57,7 +70,7 @@ const ArtworkTitle = ({formattedArtworks}: { formattedArtworks: TimelineResult})
                     }
                     
                 />
-                {formattedArtworks.artworksArray.length > 0  && 
+                {currentArtwork && 
                     <div
                     className={
                         artworks.showSlideshow
@@ -66,16 +79,24 @@ const ArtworkTitle = ({formattedArtworks}: { formattedArtworks: TimelineResult})
                         ? "artwork-title__inside artwork-title__inside--mobile"
                         : "artwork-title__inside artwork-title__inside--desktop"
                     }>
-                        <h1 className="artwork-title__title">{formattedArtworks.artworksArray[artworks.currentArtworkIndex].title}</h1>
+                        <h1 className="artwork-title__title">{currentArtwork.title}</h1>
                         
-                        <h2 className="artwork-title__year">{new Date(formattedArtworks.artworksArray[artworks.currentArtworkIndex].date).getFullYear()}</h2>
-                        {formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.style ? (
-                            <h3 className="artwork-title__medium">{formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.style}</h3>
+                        <h2 className="artwork-title__year">{new Date(currentArtwork.date).getFullYear()}</h2>
+                        {currentArtwork.artworkFields.style ? (
+                            <h3 className="artwork-title__medium">{currentArtwork.artworkFields.style}</h3>
                         ) : (
-                            <h3 className="artwork-title__medium">{formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.medium}</h3> 
+                            <h3 className="artwork-title__medium">{currentArtwork.artworkFields.medium}</h3> 
                         )}
-                        <h4 className="artwork-title__size">{formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.width} x {formattedArtworks.artworksArray[artworks.currentArtworkIndex].artworkFields.height}</h4>
+                        <h4 className="artwork-title__size">{currentArtwork.artworkFields.width} x {currentArtwork.artworkFields.height}</h4>
                         <h5 className="artwork-title__size--converted">({convertedWidth} X {convertedHeight})</h5>
+                        <div
+                            className="artwork-title__series-box"
+                            style={{
+                                background: getSeriesColor(currentArtwork.artworkFields.series[0]),
+                                right: artworks.showSlideshow ? 0 : 10,
+                                bottom: size.width && size.width <= 768 ? 10 : 0,
+                            }}
+                        />
                     </div>
                 }
                 <div 

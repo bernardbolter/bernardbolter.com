@@ -11,8 +11,6 @@ const TitleCornerBottomLeft = () => {
     const titleDark = getComputedStyle(document.documentElement)
     .getPropertyValue('--title-dark').trim();
 
-    console.log(titleDark)
-
     useEffect(() => {
         if (artworks.showSlideshow) {
             setViewState('slideshow')

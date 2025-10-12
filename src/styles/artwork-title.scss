@@ -116,6 +116,16 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+}
+
+.artwork-title__series-box {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    // bottom: 0px;
+    // right: 10px;
+    border-radius: 50%;
 }
 
 .artwork-title__inside--desktop {

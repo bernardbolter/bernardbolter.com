@@ -29,14 +29,14 @@ const Artworks = () => {
 
     return (
         <section className="artworks-container">
-            <ArtworkSwitcher />
+            {!artworks.showSlideshow && <ArtworkSwitcher />}
             { noArtworks 
                 ?   <NoArtworks />
                 :   artworks.artworkViewTimeline
-                    ? <ArtworksTimeline filteredArtworks={artworks.filtered} />
+                    ? <ArtworksTimeline />
                     : <ArtworksGrid />
             }
-            {artworks.showSlideshow && <ArtworksSlideshow filteredArtworks={artworks.filtered} />}
+            {artworks.showSlideshow && <ArtworksSlideshow />}
         </section>
     )
 }
