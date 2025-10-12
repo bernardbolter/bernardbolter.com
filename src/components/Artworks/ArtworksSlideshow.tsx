@@ -167,8 +167,8 @@ const ArtworksSlideshow: React.FC<ArtworksSlideshowProps> = ({
                 src={imageSrc}
                 {...(imageSrcSet && { srcSet: imageSrcSet })}
                 alt={artworkTitle}
-                width={displayWidth || artworkContainerWidth * .7} 
-                height={displayHeight || artworkContainerHeight * .7}
+                width={displayWidth || Number(artworkContainerWidth) * .7} 
+                height={displayHeight || Number(artworkContainerHeight) * .7}
                 style={{ objectFit: 'contain' }}
                 onLoad={handleImageLoad}
             />

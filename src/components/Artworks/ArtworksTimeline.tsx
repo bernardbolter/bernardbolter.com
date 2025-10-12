@@ -49,10 +49,10 @@ const ArtworksTimeline = () => {
             if (viewportWidth > 767) {
                 artworkContainerHeight = viewportHeight - 125;
                 artworkContainerWidth = viewportHeight - 125;
-                artworkDesktopSideWidth = ((viewportWidth) - (viewportHeight - 125)) / 2;
+                artworkDesktopSideWidth = Number((viewportWidth) - (viewportHeight - 125)) / 2;
             } else {
-                artworkContainerWidth = viewportWidth - 50;
-                artworkContainerHeight = viewportWidth - 50;
+                artworkContainerWidth = Number(viewportWidth - 50);
+                artworkContainerHeight = Number(viewportWidth - 50);
                 artworkDesktopSideWidth = 0;
             }
 
@@ -359,7 +359,7 @@ const ArtworksTimeline = () => {
                 <div
                     className="artworks-timeline__timeline-container"
                     style={{
-                        width: vport.width && vport.width > 767 ? `${artworks.formattedArtworks.totalTimelineWidth - (artworks.artworkDesktopSideWidth * 2)}px` : '50px',
+                        width: vport.width && vport.width > 767 ? `${Number(artworks.formattedArtworks.totalTimelineWidth - (artworks.artworkDesktopSideWidth * 2))}px` : '50px',
                         height: vport.width && vport.width <= 767 ? `${artworks.formattedArtworks.totalTimelineHeight}px` : '50px',
                         marginLeft: vport.width && vport.width > 767 ? `${artworks.artworkDesktopSideWidth}px` : '0px',
                         marginRight: vport.width && vport.width > 767 ? `${artworks.artworkDesktopSideWidth}px` : '0px',
@@ -368,17 +368,17 @@ const ArtworksTimeline = () => {
                     <div
                         className="artworks-timeline__line"
                         style={{
-                            width: vport.width && vport.width > 767 ? `${artworks.formattedArtworks.totalTimelineWidth - artworks.artworkContainerWidth - (artworks.artworkDesktopSideWidth * 2)}px` : '1px',
+                            width: vport.width && vport.width > 767 ? `${Number(artworks.formattedArtworks.totalTimelineWidth - artworks.artworkContainerWidth - (artworks.artworkDesktopSideWidth * 2))}px` : '1px',
                             height: vport.width && vport.width > 767 ? '1px' : `${artworks.formattedArtworks.totalTimelineHeight - artworks.artworkContainerHeight}px`,
-                            left: vport.width && vport.width > 767 ? `${artworks.artworkContainerWidth / 2}px` : '24px',
-                            top: vport.width && vport.width > 767 ? '24px' : `${artworks.artworkContainerHeight / 2}px`,
+                            left: vport.width && vport.width > 767 ? `${Number(artworks.artworkContainerWidth / 2)}px` : '24px',
+                            top: vport.width && vport.width > 767 ? '24px' : `${Number(artworks.artworkContainerHeight / 2)}px`,
                         }}
                     />
                     <div 
                         className="artworks-timeline__small-lines"
                         style={{
-                            marginLeft: vport.width && vport.width > 767 ? `${artworks.artworkContainerWidth / 2}px` : '0px',
-                            marginTop: vport.width && vport.width > 767 ? '0px' : `${artworks.artworkContainerHeight / 2}px`,
+                            marginLeft: vport.width && vport.width > 767 ? `${Number(artworks.artworkContainerWidth / 2)}px` : '0px',
+                            marginTop: vport.width && vport.width > 767 ? '0px' : `${Number(artworks.artworkContainerHeight / 2)}px`,
                         }}    
                     >
                         {smallLines}
@@ -386,8 +386,8 @@ const ArtworksTimeline = () => {
                     <div 
                         className="artworks-timeline__year-markers"
                         style={{
-                            left: vport.width && vport.width > 767 ? `-${artworks.artworkContainerWidth / 2}px` : '0px',
-                            top: vport.width && vport.width > 767 ? '0px' : `-${artworks.artworkContainerHeight / 2}px`,
+                            left: vport.width && vport.width > 767 ? `-${Number(artworks.artworkContainerWidth / 2)}px` : '0px',
+                            top: vport.width && vport.width > 767 ? '0px' : `-${Number(artworks.artworkContainerHeight / 2)}px`,
                         }}
                     >
                         {artworks.formattedArtworks.timepointsArray.map(yearMarker => {
@@ -396,8 +396,8 @@ const ArtworksTimeline = () => {
                                     key={yearMarker.id}
                                     className="artworks-timeline__year-marker"
                                     style={{
-                                        left: vport.width && vport.width > 767 ? `${(artworks.artworkContainerWidth / 2) + yearMarker.distanceFromStart}px` : '0px',
-                                        top: vport.width && vport.width <= 767 ? `${(artworks.artworkContainerHeight / 2) + yearMarker.distanceFromStart}px` : '0px',
+                                        left: vport.width && vport.width > 767 ? `${(Number(artworks.artworkContainerWidth) / 2) + Number(yearMarker.distanceFromStart)}px`  : '0px',
+                                        top: vport.width && vport.width <= 767 ? `${(Number(artworks.artworkContainerHeight) / 2) + Number(yearMarker.distanceFromStart)}px` : '0px',
                                     }}
                                 >
                                     <div className="artworks-timeline__year-tick" />

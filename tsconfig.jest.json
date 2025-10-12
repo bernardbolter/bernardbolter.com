@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // This overrides Next.js's "preserve" setting for testing
+    "jsx": "react-jsx", 
+    // This is often needed in complex setups to ensure modules resolve correctly
+    "module": "commonjs", 
+    "moduleResolution": "node",
+    // Ensure all required types for testing are included
+    "types": ["jest", "node", "@testing-library/jest-dom"] 
+  },
+  // Include all test files and source files
+  "include": [
+    "**/*.ts", 
+    "**/*.tsx", 
+    "**/*.test.ts", 
+    "**/*.test.tsx",
+    "src/**/*"
+  ]
+}

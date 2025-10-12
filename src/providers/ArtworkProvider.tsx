@@ -44,7 +44,7 @@ interface ArtworksProviderProps {
   allData: AllData;
 }
 
-const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
+export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
   const [state, setState] = useState<ArtworksState>({
     original: allData.allArtwork.nodes || [],
     filtered: allData.allArtwork.nodes || [],
