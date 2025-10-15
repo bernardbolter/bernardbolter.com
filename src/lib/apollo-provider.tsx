@@ -9,7 +9,7 @@ function makeClient() {
     cache: new InMemoryCache(),
     link: new HttpLink({
       uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-      useGETForQueries: true, // Use GET for WPGraphQL Smart Cache
+      useGETForQueries: false, // Use GET for WPGraphQL Smart Cache
     }),
     defaultOptions: {
       query: {

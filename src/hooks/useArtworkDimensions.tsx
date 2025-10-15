@@ -1,7 +1,7 @@
 // hooks/useArtworkDimensions.ts
 
 import { useMemo } from 'react';
-import { Artwork } from '@/types/artworksTypes';
+import { Artwork } from '@/types/artworkTypes';
 
 // --- FACTOR CONSTANTS ---
 // Consolidate size factors and use 'lg' for consistency with 'md'

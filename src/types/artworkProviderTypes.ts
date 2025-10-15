@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Artwork } from '@/types/artworksTypes'
+import { Artwork } from '@/types/artworkTypes'
 import { BiographyData } from "./bioTypes";
 import { TimelineResult } from "./timlineTypes";
 
@@ -20,7 +20,7 @@ export interface ArtworksState {
   searchValue: string;
   infoOpen: boolean;
   cvData: CVItem[];
-  artistData: ArtistInfo;
+  artistData: ArtistData;
   bioData: { 
       content: string; 
       bio: BiographyData | null;
@@ -38,9 +38,10 @@ export interface ArtworksState {
 export interface ArtistInfoLink {
   title?: string;
   url?: string;
+  target?: string;
 }
 
-export interface ArtistInfo {
+export interface ArtistData {
   birthcity?: string;
   birthyear?: string;
   link1?: ArtistInfoLink;
@@ -71,12 +72,9 @@ export interface BioInfo {
 
 export interface AllData {
   allArtwork: { nodes: Artwork[] };
-  page: { 
-      content: string; 
-      bio: BiographyData | null;
-  } | null;
+  page: { content: string; bio: BiographyData | null } | null;
   cvinfos: { nodes: CVItem[] };
-  artistInfo: ArtistInfo;
+  artistData: ArtistData | null;
 }
 
 export type ArtworksContextType = [ArtworksState, Dispatch<SetStateAction<ArtworksState>>];

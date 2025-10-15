@@ -8,6 +8,7 @@ export interface BioImageNode {
             width: number;
             height: number;
         };
+        blurDataURL?: string;
     };
 }
 

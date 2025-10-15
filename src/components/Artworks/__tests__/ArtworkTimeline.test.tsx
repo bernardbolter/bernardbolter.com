@@ -14,7 +14,7 @@ import {
 import { ArtworksState } from '@/types/artworkProviderTypes';
 import useWindowSize from '@/hooks/useWindowSize';
 import { generateSmallLines } from '@/helpers/timeline';
-import { Artwork } from '@/types/artworksTypes';
+import { Artwork } from '@/types/artworkTypes';
 
 
 // Type assertion for jest functions

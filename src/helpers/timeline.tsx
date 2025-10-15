@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Artwork } from "@/types/artworksTypes";
+import { Artwork } from "@/types/artworkTypes";
 
 import {
   TimelineArtwork,

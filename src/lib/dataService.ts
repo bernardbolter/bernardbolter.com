@@ -1,166 +1,225 @@
-// lib/dataService.ts
+// src/lib/dataService.ts
+
 import { getClient } from '@/lib/apollo-client';
-import { gql, TypedDocumentNode } from '@apollo/client';
-import { AllData, ArtistInfo } from '@/types/artworkProviderTypes'; // Re-importing core types
-import { Artwork } from '@/types/artworksTypes';
-import { GqlGetAllArtworkResponse, GqlGetSingleArtworkResponse } from '@/types/gqlTypes'; // NEW: Imported GQL response types
+import { gql } from '@apollo/client';
+import { AllData, CVItem, ArtistInfoLink, ArtistInfo } from '@/types/artworkProviderTypes';
+import { 
+  GqlGetAllArtworkResponse, 
+  GqlGetSingleArtworkResponse, 
+  GqlCVInfo,
+  GqlLink,
+  GqlBiographyData,
+  GqlImage,
+  // GqlArtworkFields is no longer needed since ALL_IMAGE_FIELDS is removed
+} from '@/types/gqlTypes';
+// Updated import: transformArtwork now only takes one argument
+import { transformArtwork } from '@/lib/dataTransformers'; 
 import { getAllArtwork, getSingleArtwork } from '@/lib/graphql';
+import { Artwork } from '@/types/artworkTypes';
+import { BiographyData, BioImageNode } from "@/types/bioTypes";
 
-// Import cached data for fallback
-import cachedArtworks from '../../data/cached-posts-with-images.json';
+// REMOVED: Blur utility imports (generateBlurDataURL, getSmallestSrcUrl)
 
-// --- Interface for Cached Artworks (Must match JSON structure) ---
-// NOTE: This type is defined locally as it relates ONLY to the JSON file structure.
-// It reflects the expected data shape in your cached JSON file for the fallback logic.
-interface CachedArtwork {
-  slug: string;
-  artworkFields: {
-    city: string | null;
-    artworklink: { url: string; title: string; target: string } | null;
-    artworkImage: {
-      node: {
-        altText: string;
-        srcSet: string;
-        sourceUrl: string;
-        mediaDetails: {
-          width: number;
-          height: number;
-        }
-      };
-    } | null;
-    country: string | null;
-    forsale: boolean | null;
-    height: string | null; // Stored as string in cache
-    lat: string | null;
-    lng: string | null;
-    medium: string | null;
-    metadescription: string | null;
-    metakeywords: string | null;
-    orientation: string | null;
-    proportion: number | null;
-    series: string | string[];
-    size: string | null;
-    style: string | null;
-    width: string | null; // Stored as string in cache
-    year: string | null; // Stored as string in cache
-  };
-  colorfulFields: {
-    wikiLinkEn: string | null;
-    wikiLinkDe: string | null;
-    storyEn: string | null;
-    storyDe: string | null;
-    ar: boolean | null;
-  };
-  title: string;
-  content: string | null;
-  databaseId: number;
-  id: string;
-  date: string;
-  featuredImage?: { node: { sourceUrl: string; altText: string } } | null;
+const GET_ALL_DATA = gql`${getAllArtwork}`;
+const GET_ARTWORK_BY_SLUG = gql`${getSingleArtwork}`;
+
+
+// -----------------------------------------------------------
+// HELPER TRANSFORMERS (No changes needed for blur removal)
+// -----------------------------------------------------------
+
+/**
+ * Transform GraphQL Link to app ArtistInfoLink
+ */
+function transformArtistLink(gqlLink: GqlLink | null | undefined): ArtistInfoLink | undefined {
+    // FIX: Changed condition to match ArtistInfoLink which has optional properties
+    if (!gqlLink?.url && !gqlLink?.title) return undefined; 
+    return {
+        url: gqlLink.url || undefined,
+        title: gqlLink.title || undefined,
+        target: gqlLink.target || undefined,
+    }
 }
 
-// Map the imported queries to the GQL response types
-const GET_ALL_DATA: TypedDocumentNode<GqlGetAllArtworkResponse> = gql`
-  ${getAllArtwork}
-`;
+/**
+ * Transform GraphQL Image to BioImageNode
+ */
+function transformBioImage(gqlImage: GqlImage | null | undefined): BioImageNode | null {
+  const node = gqlImage?.node;
+  if (!node) return null;
+  
+  const details = node.mediaDetails;
 
-const GET_ARTWORK_BY_SLUG: TypedDocumentNode<GqlGetSingleArtworkResponse> = gql`
-  ${getSingleArtwork}
-`;
+  // CRITICAL CHECK for Error 2: Check for required non-nullable properties
+  if (!node.sourceUrl || !node.srcSet || !details) {
+    return null;
+  }
+
+  // CRITICAL CHECK for Error 1: Check for required mediaDetails properties
+  if (details.width === undefined || details.width === null ||
+      details.height === undefined || details.height === null) {
+    return null; 
+  }
+
+  return {
+    node: {
+        altText: node.altText || null,
+        // Non-null assertion (!) is now safe because the checks passed
+        sourceUrl: node.sourceUrl!, 
+        srcSet: node.srcSet!, 
+        mediaDetails: {
+            width: details.width!, 
+            height: details.height!, 
+        },
+    }
+  };
+}
+
+/**
+ * Transform GraphQL BiographyData to app BiographyData
+ */
+function transformBiography(gqlBio: GqlBiographyData | null | undefined): BiographyData | null {
+    if (!gqlBio) return null;
+
+    const imagesArray: BioImageNode[] = [];
+    // Transform and collect bio images
+    const bioImage1 = transformBioImage(gqlBio.bioimage1);
+    const bioImage2 = transformBioImage(gqlBio.bioimage2);
+    const bioImage3 = transformBioImage(gqlBio.bioimage3);
+    const bioImage4 = transformBioImage(gqlBio.bioimage4);
+    const bioImage5 = transformBioImage(gqlBio.bioimage5);
+    
+    if (bioImage1) imagesArray.push(bioImage1);
+    if (bioImage2) imagesArray.push(bioImage2);
+    if (bioImage3) imagesArray.push(bioImage3);
+    if (bioImage4) imagesArray.push(bioImage4);
+    if (bioImage5) imagesArray.push(bioImage5);
 
 
-// --- Main Data Fetcher ---
+    return {
+        tagline: gqlBio.tagline || null,
+        bioimage1: bioImage1,
+        bioimage2: bioImage2,
+        bioimage3: bioImage3,
+        bioimage4: bioImage4,
+        bioimage5: bioImage5,
+        imagesArray: imagesArray,
+    };
+}
 
+
+/**
+ * Transform GraphQL CV info to app CV item
+ */
+function transformCVItem(node: GqlCVInfo): CVItem {
+  return {
+    city: node.cvInfoFields.city || undefined,
+    gallery: node.cvInfoFields.gallery || undefined,
+    role: node.cvInfoFields.role || undefined,
+    school: node.cvInfoFields.school || undefined,
+    section: node.cvInfoFields.section || undefined,
+    title: node.cvInfoFields.title || undefined,
+    year: node.cvInfoFields.year || undefined,
+  };
+}
+
+// REMOVED: IMAGE METADATA COLLECTION LOGIC (collectImageMetadata function)
+
+// -----------------------------------------------------------
+// MAIN TRANSFORMER
+// -----------------------------------------------------------
+
+/**
+ * Transform GraphQL response to application data structure
+ * FIX: Removed blurMap parameter.
+ */
+function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
+  // FIX: transformArtwork now only takes gqlArtwork as an argument.
+  const artworks = (data.allArtwork?.nodes || []).map((gqlArtwork) => 
+    transformArtwork(gqlArtwork) 
+  );
+  
+  // Transform CV and Artist Info
+  const cvInfos = (data.cvinfos?.nodes || []).map(transformCVItem);
+
+  const gqlArtistData = data.artistInfo?.artistData;
+
+  // Transform Artist Data (ArtistInfo)
+  const artistDataFinal: ArtistInfo | null = gqlArtistData ? {
+      name: gqlArtistData.name || undefined,
+      birthcity: gqlArtistData.birthcity || undefined,
+      birthyear: gqlArtistData.birthyear || undefined,
+      workcity1: gqlArtistData.workcity1 || undefined,
+      workcity2: gqlArtistData.workcity2 || undefined,
+      workcity3: gqlArtistData.workcity3 || undefined,
+      link1: transformArtistLink(gqlArtistData.link1),
+      link2: transformArtistLink(gqlArtistData.link2),
+      link3: transformArtistLink(gqlArtistData.link3),
+      link4: transformArtistLink(gqlArtistData.link4),
+      link5: transformArtistLink(gqlArtistData.link5),
+  } : null;
+
+  const biography = data.biography;
+
+  return {
+    allArtwork: { nodes: artworks },
+    page: biography
+      ? {
+          content: biography.content || '',
+          bio: transformBiography(biography.bio),
+        }
+      : null,
+    cvinfos: { nodes: cvInfos },
+    
+    artistData: artistDataFinal, 
+  };
+}
+
+
+// -----------------------------------------------------------
+// DATA FETCHERS (CLEANED UP)
+// -----------------------------------------------------------
+
+/**
+ * Fetch all artwork data
+ */
 export async function getArtworkData(): Promise<AllData> {
-  const isDevelopment = process.env.NODE_ENV === 'development'; 
-
   try {
     const client = getClient();
-    // Fetch data using the GQL response type interface
-    const result = await client.query<GqlGetAllArtworkResponse>({ query: GET_ALL_DATA });
+    const result = await client.query<GqlGetAllArtworkResponse>({
+      query: GET_ALL_DATA,
+      // Add fetch context for better caching/revalidation in Next.js
+      context: {
+        fetchOptions: {
+          next: { revalidate: 60 }, 
+        },
+      },
+    });
 
     if (result.error) {
       throw new Error(`GraphQL error: ${result.error.message}`);
     }
 
-    const data = result.data;
-
-    if (!data) {
+    if (!result.data) {
       throw new Error('GraphQL query returned no data');
     }
 
-    console.log('Successfully fetched all data from GraphQL');
+    const rawData = result.data;
     
-    // --- Data Transformation to fit AllData (Application State) ---
-    return {
-      allArtwork: data.allArtwork && data.allArtwork.nodes ? { nodes: data.allArtwork.nodes } : { nodes: [] },
-      
-      // FIX 1: Transform 'biography' field to the application's 'page' property
-      page: data.biography 
-        ? { content: data.biography.content || '', bio: data.biography.bio || null }
-        : null, // Use null if no biography data is returned
-      
-      // FIX 2: Correct access from 'cvinfos.nodes.cvInfoFields' (camelCase)
-      cvinfos: data.cvinfos && data.cvinfos.nodes
-        ? { nodes: data.cvinfos.nodes.map((node) => node.cvInfoFields) }
-        : { nodes: [] },
-        
-      // FIX 3: Ensure artistInfo returns the core data object
-      artistInfo: data.artistInfo?.artistData || {} as ArtistInfo, // Initialize with empty object if null
-    };
-  } catch (error: unknown) {
-    console.error('Failed to fetch artwork from GraphQL:', error);
+    // REMOVED: All blur generation and mapping logic.
 
-    // --- Fallback to Cached Data in Development ---
-    if (isDevelopment && cachedArtworks) {
-      console.log('Using cached artwork data as fallback');
-      const transformedArtworks: Artwork[] = (cachedArtworks as CachedArtwork[]).map((item: CachedArtwork, idx: number) => ({
-        ...item,
-        index: idx,
-        // Ensure parsing logic handles the string fields from the JSON cache
-        artworkFields: {
-          ...item.artworkFields,
-          // Numeric parsing from string fields
-          height: item.artworkFields.height
-            ? parseFloat(item.artworkFields.height.replace(/[^0-9.]/g, '')) || null
-            : null,
-          width: item.artworkFields.width
-            ? parseFloat(item.artworkFields.width.replace(/[^0-9.]/g, '')) || null
-            : null,
-          year: item.artworkFields.year ? parseInt(item.artworkFields.year, 10) || null : null,
-          // Array parsing for series
-          series: Array.isArray(item.artworkFields.series)
-            ? item.artworkFields.series
-            : item.artworkFields.series
-            ? [item.artworkFields.series]
-            : [],
-          lat: item.artworkFields.lat ? parseFloat(item.artworkFields.lat) || null : null,
-          lng: item.artworkFields.lng ? parseFloat(item.artworkFields.lng) || null : null,
-        },
-        colorfulFields: {
-          ...item.colorfulFields,
-          ar: typeof item.colorfulFields.ar === 'boolean' ? item.colorfulFields.ar : null,
-        },
-      } as Artwork));
-
-      // Return a full AllData object from the cache
-      return {
-        allArtwork: { nodes: transformedArtworks },
-        page: null, // Cannot reconstruct bio/page data from artwork cache
-        cvinfos: { nodes: [] }, // Cannot reconstruct CV data from artwork cache
-        artistInfo: {} as ArtistInfo, // Cannot reconstruct artist info from artwork cache
-      };
-    }
-
+    // 4. Transform the raw data (without blur map)
+    return transformGqlResponse(rawData);
+  } catch (error) {
+    console.error('❌ Failed to fetch artwork from GraphQL:', error);
     throw error;
   }
 }
 
-// --- Single Artwork Fetcher ---
-
+/**
+ * Fetch single artwork by slug
+ */
 export async function getArtworkBySlug(slug: string): Promise<Artwork | null> {
-  const isDevelopment = process.env.NODE_ENV === 'development';
-
   try {
     const client = getClient();
     const result = await client.query<GqlGetSingleArtworkResponse>({
@@ -172,28 +231,14 @@ export async function getArtworkBySlug(slug: string): Promise<Artwork | null> {
       throw new Error(`GraphQL error: ${result.error.message}`);
     }
 
-    const data = result.data;
+    const gqlArtwork = result.data?.artwork;
 
-    if (!data || !data.artwork) {
-      console.log(`No artwork found for slug: ${slug}`);
-      return null;
-    }
+    if (!gqlArtwork) return null;
 
-    return data.artwork;
-  } catch (error: unknown) {
-    console.error(`Failed to fetch artwork with slug ${slug} from GraphQL:`, error);
-
-    // Fallback logic remains the same (searching the cache)
-    if (isDevelopment && cachedArtworks) {
-      const cachedItem = (cachedArtworks as CachedArtwork[]).find((item: CachedArtwork) => item.slug === slug);
-      
-      if (cachedItem) {
-        // ... (Transformation logic from the getArtworkData fallback would be repeated here) ...
-        // Since the logic is extensive, we simplify the fallback for single fetch
-        return cachedItem as unknown as Artwork;
-      }
-    }
-
+    // FIX: Call transformArtwork with the single argument
+    return transformArtwork(gqlArtwork); 
+  } catch (error) {
+    console.error(`❌ Failed to fetch artwork by slug (${slug}) from GraphQL:`, error);
     return null;
   }
 }

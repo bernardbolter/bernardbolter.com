@@ -87,13 +87,13 @@ const ArtworksTimeline = () => {
         const hasDimensions = artworks.artworkContainerWidth > 0 && artworks.artworkContainerHeight > 0;
         const hasViewport = vport.width && vport.height;
         
-        console.log("Ready check:", {
-            hasFormattedArtworks,
-            hasArtworks,
-            hasDimensions,
-            hasViewport,
-            formattedArtworks: artworks.formattedArtworks
-        });
+        // console.log("Ready check:", {
+        //     hasFormattedArtworks,
+        //     hasArtworks,
+        //     hasDimensions,
+        //     hasViewport,
+        //     formattedArtworks: artworks.formattedArtworks
+        // });
         
         if (hasFormattedArtworks && hasArtworks && hasDimensions && hasViewport) {
             setIsReady(true);
@@ -184,8 +184,6 @@ const ArtworksTimeline = () => {
         const currentArtworks = artworksRef.current;
         const currentVport = vportRef.current;
         
-        console.log("in handle scroll")
-        
         if (isProgramScroll.current || currentArtworks.isTimelineScrollingProgamatically || !currentArtworks.formattedArtworks) {
             return;
         }
@@ -210,13 +208,13 @@ const ArtworksTimeline = () => {
 
             const viewportCenterAbsolute = currentScrollPosition + (viewportDimension / 2); 
             
-            console.log("Scroll calc:", {
-                scrollPosition: currentScrollPosition,
-                viewportDimension,
-                viewportCenter: viewportCenterAbsolute,
-                artworkDimension,
-                sideOffset
-            });
+            // console.log("Scroll calc:", {
+            //     scrollPosition: currentScrollPosition,
+            //     viewportDimension,
+            //     viewportCenter: viewportCenterAbsolute,
+            //     artworkDimension,
+            //     sideOffset
+            // });
 
             let bestIndex = 0
             let minDistance = Infinity;
@@ -242,13 +240,13 @@ const ArtworksTimeline = () => {
                 }
             });
 
-            console.log("best index: ", bestIndex, "current index:", currentArtworks.currentArtworkIndex)
+            // console.log("best index: ", bestIndex, "current index:", currentArtworks.currentArtworkIndex)
             
             if (bestIndex !== currentArtworks.currentArtworkIndex) {
-                console.log("Updating index from", currentArtworks.currentArtworkIndex, "to", bestIndex);
+                // console.log("Updating index from", currentArtworks.currentArtworkIndex, "to", bestIndex);
                 setArtworks(state => ({ ...state, currentArtworkIndex: bestIndex }));
             } else {
-                console.log("Index unchanged, still at", bestIndex);
+                // console.log("Index unchanged, still at", bestIndex);
             }
         }
     }, [setArtworks]);
@@ -263,15 +261,15 @@ const ArtworksTimeline = () => {
         const currentElement = artworkTimelineRef.current;
 
         if (currentElement && isReady) {
-            console.log("Adding scroll listener - isReady is true");
-            console.log("Element scroll dimensions:", {
-                scrollWidth: currentElement.scrollWidth,
-                scrollHeight: currentElement.scrollHeight,
-                clientWidth: currentElement.clientWidth,
-                clientHeight: currentElement.clientHeight,
-                scrollLeft: currentElement.scrollLeft,
-                scrollTop: currentElement.scrollTop
-            });
+            // console.log("Adding scroll listener - isReady is true");
+            // console.log("Element scroll dimensions:", {
+            //     scrollWidth: currentElement.scrollWidth,
+            //     scrollHeight: currentElement.scrollHeight,
+            //     clientWidth: currentElement.clientWidth,
+            //     clientHeight: currentElement.clientHeight,
+            //     scrollLeft: currentElement.scrollLeft,
+            //     scrollTop: currentElement.scrollTop
+            // });
             
             currentElement.addEventListener('scroll', handleArtScroll);
             
@@ -282,7 +280,7 @@ const ArtworksTimeline = () => {
 
         return () => {
             if (currentElement) {
-                console.log("Removing scroll listener");
+                // console.log("Removing scroll listener");
                 currentElement.removeEventListener('scroll', handleArtScroll);
             }
         };

@@ -1,10 +1,24 @@
 "use client"
 
 import { useState, useEffect, createContext, useContext, ReactNode, useMemo, Dispatch, SetStateAction } from 'react'
-import { Artwork } from '@/types/artworksTypes'
-import { ArtworksState, AllData } from '@/types/artworkProviderTypes'
+import { Artwork } from '@/types/artworkTypes'
+import { ArtworksState, AllData, ArtistData } from '@/types/artworkProviderTypes'
 import { SortingType } from '@/types/timlineTypes'
 import { generateTimeline } from '@/helpers/timeline'
+
+const DEFAULT_ARTIST_INFO: ArtistData = {
+    birthcity: undefined,
+    birthyear: undefined,
+    link1: undefined,
+    link2: undefined,
+    link3: undefined,
+    link4: undefined,
+    link5: undefined,
+    name: undefined,
+    workcity1: undefined,
+    workcity2: undefined,
+    workcity3: undefined,
+};
 
 type ArtworksContextType = [ArtworksState, Dispatch<SetStateAction<ArtworksState>>]
 
@@ -27,7 +41,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     infoOpen: false,
     cvData: [],
     bioData: null,
-    artistData: {},
+    artistData: DEFAULT_ARTIST_INFO,
     viewportWidth: 0 as number,
     viewportHeight: 0 as number,
     artworkContainerWidth: 0 as number,
@@ -46,31 +60,31 @@ interface ArtworksProviderProps {
 
 export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
   const [state, setState] = useState<ArtworksState>({
-    original: allData.allArtwork.nodes || [],
-    filtered: allData.allArtwork.nodes || [],
-    formattedArtworks: null,
-    currentArtworkIndex: 0,
-    sorting: "latest",
-    artworkViewTimeline: true,
-    filtersArray: [],
-    filterNavOpen: false,
-    searchNavOpen: false,
-    showSlideshow: false,
-    slideshowPlaying: false,
-    slideshowTimerProgress: 0,
-    isTimelineScrollingProgamatically: false,
-    searchValue: "",
-    infoOpen: false,
-    cvData: allData.cvinfos.nodes || [],
-    bioData: allData.page || null,
-    artistData: allData.artistInfo || {},
-    viewportWidth: 0,
-    viewportHeight: 0,
-    artworkContainerWidth: 0,
-    artworkContainerHeight: 0,
-    artworkDesktopSideWidth: 0,
-    savedTimelineIndex: 0,
-    savedTimelineFiltersHash: "",
+        original: allData.allArtwork.nodes || [],
+        filtered: allData.allArtwork.nodes || [],
+        formattedArtworks: null,
+        currentArtworkIndex: 0,
+        sorting: "latest",
+        artworkViewTimeline: true,
+        filtersArray: [],
+        filterNavOpen: false,
+        searchNavOpen: false,
+        showSlideshow: false,
+        slideshowPlaying: false,
+        slideshowTimerProgress: 0,
+        isTimelineScrollingProgamatically: false,
+        searchValue: "",
+        infoOpen: false,
+        cvData: allData.cvinfos.nodes || [],
+        bioData: allData.page || null,
+        artistData: (allData.artistData || DEFAULT_ARTIST_INFO) as ArtistData,
+        viewportWidth: 0,
+        viewportHeight: 0,
+        artworkContainerWidth: 0,
+        artworkContainerHeight: 0,
+        artworkDesktopSideWidth: 0,
+        savedTimelineIndex: 0,
+        savedTimelineFiltersHash: "",
   })
 
   // Initialize original artwork on mount
@@ -82,7 +96,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         filtered: allData.allArtwork.nodes,
         cvData: allData.cvinfos.nodes,
         bioData: allData.page,
-        artistData: allData.artistInfo,
+        artistData: allData.artistData || {},
       }));
     }
   }, [allData, state.original.length]);
@@ -95,11 +109,21 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
     let result = state.original.filter(art => art.artworkFields.artworkImage !== null)
 
     // Apply series filters
-    if (state.filtersArray.length > 0) {
+     if (state.filtersArray.length > 0) {
       result = result.filter((artwork: Artwork) => {
-        return state.filtersArray.every(filter => 
-          artwork.artworkFields.series.includes(filter)
-        )
+        
+        // 1. Get the single series value (string | null)
+        const series = artwork.artworkFields.series;
+
+        // 2. If series is null, it doesn't match any filter.
+        if (!series) {
+            return false;
+        }
+
+        // 3. Check if the *active filters array* contains the artwork's single *series value*.
+        // This is the correct, type-safe replacement for the old logic.
+        return state.filtersArray.includes(series);
+        
       })
     }
 

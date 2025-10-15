@@ -4,7 +4,7 @@ import React from 'react';
 import { renderHook, act } from '@testing-library/react'
 import { ArtworksProvider, useArtworks } from '../ArtworkProvider';
 import {  AllData } from '@/types/artworkProviderTypes';
-import { Artwork } from '@/types/artworksTypes';
+import { Artwork } from '@/types/artworkTypes';
 import { generateTimeline } from '@/helpers/timeline';
 
 // --- MOCK DEPENDENCIES ---

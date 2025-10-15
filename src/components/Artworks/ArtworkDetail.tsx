@@ -1,11 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
 
-import { Artwork } from '@/types/artworksTypes' 
+import { Artwork } from '@/types/artworkTypes' 
 
 interface ArtworkDetailProps {
 	artwork: Artwork,
@@ -19,6 +20,7 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
     artworkContainerWidth,
     artworkContainerHeight
 }) => {
+    const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
 
     const { displayWidth, displayHeight } = useArtworkDimensions({
         artwork,
@@ -36,15 +38,25 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
             href={`/${artwork.slug}`}
             className="artwork-detail__link"
         >
-            <Image
-                className="artwork-detail__image"
-                src={imageSrc} 
-                {...(imageSrcSet && { srcSet: imageSrcSet })} 
-                alt={artwork.title}
-                width={displayWidth} 
-                height={displayHeight}
-                style={{ objectFit: 'contain' }}
-            />
+            <div 
+                className="artwork-detail__image-container"
+                style={{ width: displayWidth, height: displayHeight}}    
+            >
+                {!isImageLoaded && <div className="artwork-detail__placeholder" />}
+                <Image
+                    className={`artwork-detail__image ${isImageLoaded ? 'is-loaded' : ''}`}
+                    src={imageSrc} 
+                    {...(imageSrcSet && { srcSet: imageSrcSet })} 
+                    alt={artwork.title}
+                    width={displayWidth} 
+                    height={displayHeight}
+                    style={{ objectFit: 'contain' }}
+                    placeholder="empty"
+                    onLoad={() => {
+                        setIsImageLoaded(true)
+                    }}
+                />
+            </div>
         </Link>
     )
 }

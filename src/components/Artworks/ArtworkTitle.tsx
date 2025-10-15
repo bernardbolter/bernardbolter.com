@@ -92,7 +92,7 @@ const ArtworkTitle = () => {
                         <div
                             className="artwork-title__series-box"
                             style={{
-                                background: getSeriesColor(currentArtwork.artworkFields.series[0]),
+                                background: getSeriesColor(currentArtwork.artworkFields?.series),
                                 right: artworks.showSlideshow ? 0 : 10,
                                 bottom: size.width && size.width <= 768 ? 10 : 0,
                             }}

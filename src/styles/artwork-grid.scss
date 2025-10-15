@@ -1,0 +1,44 @@
+@use './vars.scss' as *;
+
+.artwork-grid__container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); 
+    gap: 5px;
+    max-width: 1500px;
+    margin: 0 auto;
+
+    @media (min-width: $break-s) { // 2 columns from 550px
+        grid-template-columns: repeat(2, 1fr);
+        gap: 7px; 
+    }
+
+    @media (min-width: $break-m) { // 3 columns from 767px
+        grid-template-columns: repeat(3, 1fr);
+        gap: 9px; 
+    }
+    
+    @media (min-width: $break-l) { // 4 columns from 979px
+        grid-template-columns: repeat(4, 1fr);
+        gap: 11px
+    }
+
+    @media (min-width: $break-xl) { // 5 columns from 1200px
+        grid-template-columns: repeat(5, 1fr);
+        gap: 13px
+    }
+}
+
+.artwork-grid__image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: grey;
+
+    p {
+        color: white;
+    }
+}
+
+.artwork-grid__image {
+    object-fit: contain;
+}

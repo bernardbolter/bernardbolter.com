@@ -12,7 +12,7 @@ import {
 
 import useWindowSize from '@/hooks/useWindowSize';
 import { ArtworksState } from '@/types/artworkProviderTypes';
-import { Artwork } from '@/types/artworksTypes';
+import { Artwork } from '@/types/artworkTypes';
 
 // Mock requestAnimationFrame for controlling animation loop in slideshow
 const mockRAF = jest.fn();

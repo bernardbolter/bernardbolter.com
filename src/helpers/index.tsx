@@ -1,4 +1,4 @@
-import { Artwork } from "@/types/artworksTypes";
+import { Artwork } from "@/types/artworkTypes";
 
 // Extended artwork interface with time difference and calculated margin
 interface ArtworkWithTimeMargin extends Artwork {

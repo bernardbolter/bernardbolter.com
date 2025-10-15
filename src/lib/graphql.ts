@@ -1,25 +1,25 @@
+// Fragment for all the necessary image data
+const ImageFields = `
+  node {
+    altText
+    sourceUrl(size: LARGE)
+    srcSet(size: LARGE)
+    mediaDetails {
+      width
+      height
+    }
+  }
+`;
+
 export const getAllArtwork = `
   query getAllArtwork {
     allArtwork(first: 500) {
       nodes {
-        content(format: RENDERED)
-        date
         id
         title(format: RENDERED)
-        slug
         artworkFields {
           area
-          artworkImage {
-            node {
-              altText
-              mediaDetails {
-                  width
-                  height
-              }
-              srcSet(size: LARGE)
-              sourceUrl(size: LARGE)
-            }
-          }
+          artworkImage { ${ImageFields} }
           artworklink {
             target
             title
@@ -28,6 +28,11 @@ export const getAllArtwork = `
           city
           coordinates
           country
+          dcsFlags { ${ImageFields} }
+          dcsPhoto { ${ImageFields} }
+          dcsPhotoTitle
+          dcsRaw { ${ImageFields} }
+          dcsSatellite { ${ImageFields} }
           density
           elevation
           extraimages
@@ -38,8 +43,8 @@ export const getAllArtwork = `
           medium
           metadescription
           metakeywords
-          performance
           orientation
+          performance
           population
           proportion
           series
@@ -48,77 +53,53 @@ export const getAllArtwork = `
           style
           width
           year
+          artworkImage2 { ${ImageFields} } 
+          artworkImage3 { ${ImageFields} }
+          artworkImage4 { ${ImageFields} }
+          artworkImage5 { ${ImageFields} }
+          artworkImage6 { ${ImageFields} }
+          artworkImage7 { ${ImageFields} }
+          artworkImage8 { ${ImageFields} }
+          artworkImage9 { ${ImageFields} }
+          hasMoreImages
+          video {
+            node {
+              altText
+              mediaDetails {
+                height
+                width
+              }
+              sourceUrl(size: LARGE)
+              uri
+            }
+          }
+          videoPoster { ${ImageFields} }
+          videoYouttubeLink
         }
+        date
+        dateGmt
+        databaseId
         colorfulFields {
-          storyDe
           storyEn
-          wikiLinkDe
           wikiLinkEn
           ar
         }
       }
     }
+    
+    # FIX: Corrected structure for 'page' field
     biography(id: "cG9zdDo1NzQ=") {
+      content(format: RENDERED)
       bio {
         tagline
-        bioimage1 {
-          node {
-            altText
-            mediaDetails {
-              width
-              height
-            }
-            sourceUrl(size: LARGE)
-            srcSet(size: LARGE)
-          }
-        }
-        bioimage2 {
-          node {
-            altText
-            mediaDetails {
-              width
-              height
-            }
-            sourceUrl(size: LARGE)
-            srcSet(size: LARGE)
-          }
-        }
-        bioimage3 {
-          node {
-            altText
-            mediaDetails {
-              width
-              height
-            }
-            sourceUrl(size: LARGE)
-            srcSet(size: LARGE)
-          }
-        }
-        bioimage4 {
-          node {
-            altText
-            mediaDetails {
-              width
-              height
-            }
-            sourceUrl(size: LARGE)
-            srcSet(size: LARGE)
-          }
-        }
-        bioimage5 {
-          node {
-            altText
-            mediaDetails {
-              width
-              height
-            }
-            sourceUrl(size: LARGE)
-            srcSet(size: LARGE)
-          }
-        }
-      }
-      content
+        bioimage1 { ${ImageFields} }
+        bioimage2 { ${ImageFields} }
+        bioimage3 { ${ImageFields} }
+        bioimage4 { ${ImageFields} }
+        bioimage5 { ${ImageFields} }
+      } 
     }
+
     artistInfo(id: "cG9zdDozNQ==") {
       id
       artistData {
@@ -176,56 +157,73 @@ export const getSingleArtwork = `
   query GetArtworkBySlug($slug: ID!) {
     artwork(id: $slug, idType: SLUG) {
       id
-      title
-      slug
-      date
-      content
-      databaseId
+      title(format: RENDERED)
       artworkFields {
-        artworkImage {
+        area
+        artworkImage { ${ImageFields} }
+        artworklink {
+          target
+          title
+          url
+        }
+        city
+        coordinates
+        country
+        dcsFlags { ${ImageFields} }
+        dcsPhoto { ${ImageFields} }
+        dcsPhotoTitle
+        dcsRaw { ${ImageFields} }
+        dcsSatellite { ${ImageFields} }
+        density
+        elevation
+        extraimages
+        forsale
+        height
+        lat
+        lng
+        medium
+        metadescription
+        metakeywords
+        orientation
+        performance
+        population
+        proportion
+        series
+        size
+        slug
+        style
+        width
+        year
+        artworkImage2 { ${ImageFields} }
+        artworkImage3 { ${ImageFields} }
+        artworkImage4 { ${ImageFields} }
+        artworkImage5 { ${ImageFields} }
+        artworkImage6 { ${ImageFields} }
+        artworkImage7 { ${ImageFields} }
+        artworkImage8 { ${ImageFields} }
+        artworkImage9 { ${ImageFields} }
+        hasMoreImages
+        video {
           node {
             altText
             mediaDetails {
-              width
               height
+              width
             }
-            srcSet(size: LARGE)
             sourceUrl(size: LARGE)
+            uri
           }
         }
-        width
-        height
-        medium
-        style
-        orientation
-        size
-        series
-        city
-        country
-        lat
-        lng
-        year
-        forsale
-        proportion
-        metadescription
-        metakeywords
-        artworklink {
-          url
-          title
-        }
+        videoPoster { ${ImageFields} }
+        videoYouttubeLink
       }
+      date
+      dateGmt
+      databaseId
       colorfulFields {
-        wikiLinkEn
-        wikiLinkDe
         storyEn
-        storyDe
+        wikiLinkEn
         ar
-      }
-      featuredImage {
-        node {
-          sourceUrl
-          altText
-        }
       }
     }
   }
