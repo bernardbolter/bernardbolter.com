@@ -13,28 +13,35 @@ import {
     OrientationKey, 
     SizeKey,
     SIZE_FACTORS,
-    DisplayDimensions,
+    ArtworkDimensions,
     MagnifiedDimensions,
     DragBounds
 } from '@/types/artworkImageTypes'
+import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
 
 const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     const [artworkLoading, setArtworkLoading] = useState<boolean>(true)
+    const [magnifiedArtworkLoading, setMagnifiesARtworkLoading] = useState<boolean>(true)
     const [enlargeArtwork, setEnlargeArtwork] = useState<boolean>(false)
     const [dragBounds, setDragBounds] = useState<DragBounds>({ left: 0,right: 0,top: 0,bottom: 0})
     const size = useWindowSize()
-    console.log("in artwork image: ", artwork)
+    // console.log("in artwork image: ", artwork)
 
     const imageNode = artwork.artworkFields?.artworkImage?.node
     const imageSrc = imageNode?.sourceUrl || ''
     const imageSrcSet = imageNode?.srcSet || ''
-    const imageBlur = imageNode?.blurDataURL || ''
     const imageWidth = imageNode?.mediaDetails?.width || 800
     const imageHeight = imageNode?.mediaDetails?.height || 800
-    console.log(imageSrc, imageSrcSet, imageBlur, imageWidth, imageHeight)
+    console.log(imageSrc, imageSrcSet, imageWidth, imageHeight)
 
     const orientationArray = artwork.artworkFields?.orientation
     const sizeArray = artwork.artworkFields?.size
+
+    const { displayWidth, displayHeight } = useArtworkDimensions({
+        artwork,
+        artworkContainerWidth: size.width || 0,
+        artworkContainerHeight: size.height || 0
+    })
 
     const currentOrientation: OrientationKey = (() => {
         const rawKey = Array.isArray(orientationArray) && orientationArray[0]
@@ -125,19 +132,23 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
             <section className="artwork-image__container">
                 <Info />
                 <div 
-                    className={enlargeArtwork ? "artwork-image__magnify artwork-image__magnify--open" : "artwokr-image__magnify"}
+                    className={enlargeArtwork ? "artwork-image__magnify artwork-image__magnify--open" : "artwork-image__magnify"}
                     onClick={() => setEnlargeArtwork(!enlargeArtwork)}
                 >
                     <MagnifySvg />
                 </div>
-                <Image
-                    className="artwokr-image__image"
-                    src={imageSrc}
-                    {...(imageSrcSet && { srcSet: imageSrcSet })}
-                    alt={artwork.title}
-                    width={800}
-                    height={800}
-                />
+                <div className="artwork-image__image-container">
+                    {!artworkLoading && <div className={artworkLoading ? 'artwork-image__placeholder artwork-image__placeholder--show' : 'artwork-image__placeholder' } /> }
+                    <Image
+                        className="artwokr-image__image"
+                        src={imageSrc}
+                        {...(imageSrcSet && { srcSet: imageSrcSet })}
+                        alt={artwork.title}
+                        width={displayWidth || 800}
+                        height={displayHeight || 800}
+                        onLoad={() => setArtworkLoading(false)}
+                    />
+                </div>
             </section>
             {/* {enlargeArtwork && (
                 <Draggable

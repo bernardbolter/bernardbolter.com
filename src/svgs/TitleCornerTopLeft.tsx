@@ -1,3 +1,5 @@
+"'use client"
+
 import { useEffect, useState } from "react"
 import { useArtworks } from "@/providers/ArtworkProvider"
 import useWindowSize from "@/hooks/useWindowSize"
@@ -5,10 +7,18 @@ import useWindowSize from "@/hooks/useWindowSize"
 const TitleCornerTopLeft = () => {
     const [artworks] = useArtworks()
     const size = useWindowSize()
-    const [viewState, setViewState] = useState('desktop')
+    const [viewState, setViewState] = useState<string>('desktop')
+    const [titleDark, setTitleDark] = useState<string>('#999')
 
-    const titleDark = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-dark').trim()
+    useEffect(() => {
+        if (typeof window !== 'undefined' && document.documentElement) {
+            const computedColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-dark').trim();
+            if (computedColor) {
+                 setTitleDark(computedColor);
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (artworks.showSlideshow) {

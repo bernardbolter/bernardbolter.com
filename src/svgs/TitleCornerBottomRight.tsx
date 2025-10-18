@@ -7,11 +7,23 @@ const TitleCornerBottomRight = () => {
     const [artworks] = useArtworks()
     const size = useWindowSize()
     const [viewState, setViewState] = useState('desktop')
+    const [titleDark, setTitleDark] = useState<string>('#999')
+    const [titleShadow, setTitleShadow] = useState<string>('#ddd')
 
-    const titleDark = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-dark').trim()
-    const titleShadow = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-shadow').trim()
+    useEffect(() => {
+        if (typeof window !== 'undefined' && document.documentElement) {
+            const computedTitleDarkColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-dark').trim()
+            if (computedTitleDarkColor) {
+                 setTitleDark(computedTitleDarkColor)
+            }
+            const computedTitleShadowColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-shadow').trim()
+            if (computedTitleShadowColor) {
+                setTitleShadow(computedTitleShadowColor)
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (artworks.showSlideshow) {

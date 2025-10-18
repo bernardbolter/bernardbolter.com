@@ -2,12 +2,7 @@
 
 .nav-container {
     position: fixed;
-    top: 7px;
     right: 0;
-
-    @media screen and (min-width: $break-m) {
-        top: 130px;
-    }
 }
 
 .nav-button {

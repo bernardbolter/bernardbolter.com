@@ -6,14 +6,12 @@ import Link from 'next/link'
 
 import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
 
-import { Artwork } from '@/types/artworkTypes' 
-
+import { Artwork } from '@/types/artworkTypes'
 interface ArtworkDetailProps {
 	artwork: Artwork,
     artworkContainerWidth: number,
     artworkContainerHeight: number
 }
-
 
 const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ 
     artwork,
@@ -28,10 +26,10 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
         artworkContainerHeight
     });
     
-    // --- Image Source Retrieval (Unchanged) ---
     const imageNode = artwork.artworkFields?.artworkImage?.node; 
     const imageSrc = imageNode?.sourceUrl || '';
     const imageSrcSet = imageNode?.srcSet || '';
+    // console.log(artwork)
 
     return (
         <Link

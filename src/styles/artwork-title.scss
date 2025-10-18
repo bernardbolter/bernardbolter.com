@@ -7,6 +7,10 @@
     flex-direction: column;
 }
 
+.artwork-title__container--hide {
+    display: none;
+}
+
 .artwork-title__container--desktop {
     top: 0;
     right: 1px;

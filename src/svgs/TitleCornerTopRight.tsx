@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from "react";
 import { useArtworks } from "@/providers/ArtworkProvider";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -6,14 +8,30 @@ import useWindowSize from "@/hooks/useWindowSize";
 const TitleCornerTopRight = () => {
     const [artworks] = useArtworks()
     const size = useWindowSize()
-    const [viewState, setViewState] = useState('desktop')
+    const [viewState, setViewState] = useState<string>('desktop')
+    const [titleDark, setTitleDark] = useState<string>('#999')
+    const [titleShadow, setTitleShadow] = useState<string>('#ddd')
+    const [titleText, setTitleText] = useState<string>('#666')
 
-    const titleDark = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-dark').trim()
-    const titleShadow = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-shadow').trim()
-    const titleText = getComputedStyle(document.documentElement)
-    .getPropertyValue('--title-text').trim()
+    useEffect(() => {
+        if (typeof window !== 'undefined' && document.documentElement) {
+            const computedTitleDarkColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-dark').trim()
+            if (computedTitleDarkColor) {
+                 setTitleDark(computedTitleDarkColor)
+            }
+            const computedTitleShadowColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-shadow').trim()
+            if (computedTitleShadowColor) {
+                setTitleShadow(computedTitleShadowColor)
+            }
+            const computedTitleTextColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-text').trim()
+            if (computedTitleTextColor) {
+                setTitleText(computedTitleTextColor)
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (artworks.showSlideshow) {
@@ -38,7 +56,6 @@ const TitleCornerTopRight = () => {
             {viewState === 'desktop' && <line x1="10" y1="0" x2="10" y2="10" stroke={titleDark} strokeWidth="2" />}
             {viewState === 'mobile' && <line x1="0" y1="0" x2="0" y2="10" stroke={titleDark} strokeWidth="2" />}
             {viewState === 'mobile' && <line x1="0" y1="0" x2="10" y2="10" stroke={titleDark} strokeWidth="1" />}
-
         </svg>
     )
 }

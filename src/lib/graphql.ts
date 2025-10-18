@@ -17,6 +17,7 @@ export const getAllArtwork = `
       nodes {
         id
         title(format: RENDERED)
+        slug
         artworkFields {
           area
           artworkImage { ${ImageFields} }

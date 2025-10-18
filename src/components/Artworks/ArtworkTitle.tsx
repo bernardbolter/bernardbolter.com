@@ -39,7 +39,9 @@ const ArtworkTitle = () => {
     return (
         <div 
             className={
-                artworks.showSlideshow
+                !artworks.artworkViewTimeline && !artworks.showSlideshow 
+                ? 'artwork-title__container artwork-title__container--hide'
+                : artworks.showSlideshow
                 ? "artwork-title__container artwork-title__container--slideshow"
                 : size.width && size.width <= 768
                 ? "artwork-title__container artwork-title__container--mobile"

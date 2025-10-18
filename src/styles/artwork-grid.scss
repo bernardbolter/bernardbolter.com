@@ -6,6 +6,7 @@
     gap: 5px;
     max-width: 1500px;
     margin: 0 auto;
+    margin-top: 70px;
 
     @media (min-width: $break-s) { // 2 columns from 550px
         grid-template-columns: repeat(2, 1fr);
@@ -32,13 +33,48 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: grey;
-
-    p {
-        color: white;
-    }
+    position: relative;
 }
 
 .artwork-grid__image {
     object-fit: contain;
+    box-shadow: rgba(0, 0, 0, 0.0) 3px 3px 3px;
+    transition: box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+        box-shadow: rgba(0, 0, 0, 0.2) 3px 3px 3px;
+    }
+}
+
+.artwork-grid__info {
+    position: absolute;
+
+    h3 {
+        color: $grid-text;
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 1.5;
+    }
+}
+
+.artwork-grid__info--series {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+
+    p {
+        font-size: 10px;
+        font-weight: 500;
+        color: $grid-text-light;
+        filter: saturate(.3);
+    }
+}
+
+.artwork-grid__info--series-box {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 3px;
 }

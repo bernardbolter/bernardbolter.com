@@ -20,7 +20,9 @@ const Nav = () => {
       className="nav-container"
       style={{ 
           zIndex: artworks.showSlideshow ? 5000 : 1000,
-          top: artworks.showSlideshow 
+          top: !artworks.artworkViewTimeline 
+            ? 4
+            : artworks.showSlideshow 
             ? 4
             : size.width && size.width > 768
             ? 125 : 4

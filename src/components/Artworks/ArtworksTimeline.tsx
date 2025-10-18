@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useArtworks } from '@/providers/ArtworkProvider'
 import ArtworkDetail from '@/components/Artworks/ArtworkDetail'
-import ArtworkTitle from '@/components/Artworks/ArtworkTitle'
 import Loading from '@/components/Loading'
 
 import LeftArrowSvg from '@/svgs/LeftArrowSvg'
@@ -314,7 +313,6 @@ const ArtworksTimeline = () => {
 
     return (
         <div className="artworks-timeline__container">
-            <ArtworkTitle />
             <div 
                 className="artworks-timeline__artworks-container"
                 ref={artworkTimelineRef}
