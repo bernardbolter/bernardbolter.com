@@ -159,6 +159,7 @@ export const getSingleArtwork = `
     artwork(id: $slug, idType: SLUG) {
       id
       title(format: RENDERED)
+      content(format: RENDERED)
       artworkFields {
         area
         artworkImage { ${ImageFields} }

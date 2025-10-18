@@ -1,6 +1,6 @@
 // app/artwork/[slug]/page.tsx
 import { getArtworkBySlug, getArtworkData } from '@/lib/dataService'
-import ArtworkImage from '@/components/Artworks/ArtworkImage'
+import ArtworkContent from '@/components/Artworks/ArtworkContent'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
@@ -50,5 +50,5 @@ export default async function ArtworkPage({ params }: Props) {
     notFound()
   }
 
-  return <ArtworkImage artwork={artwork} />
+  return <ArtworkContent artwork={artwork} />
 }

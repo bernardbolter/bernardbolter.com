@@ -1,0 +1,64 @@
+@use './vars.scss' as *;
+
+.artwork-video__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    max-width: 1100px;
+}
+
+.artwork-video__player-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.artwork-video__youtube-link {
+    position: fixed;
+    top: 12px;
+    right: 20px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+
+    p {
+        font-size: 11px;
+        font-weight: 200;
+        color: $svg-dark;
+        padding: 5px 5px 0 0;
+    }
+}
+
+.artwork-video__youtube-svg {
+    width: 33px;
+    height: 33px;
+
+    svg {
+        width: 100%;
+        fill: red;
+    }
+}
+
+.artwork-video__info-container {
+    width: 90%;
+    margin: 10px 5%;
+}
+
+.artwork-grid__info--title {
+    font-size: 12px;
+    text-align: right;
+    font-weight: 300;
+
+    span {
+        font-weight: 600;
+    }
+}
+
+.artwork-video__info-content {
+    width: 90%;
+    margin: 20px 0 50px auto;
+    max-width: 600px;
+}
