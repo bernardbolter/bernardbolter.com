@@ -60,9 +60,15 @@ interface ArtworksProviderProps {
 
 export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
 
+  console.log(allData.allArtwork?.nodes)
+  
+  const originalArtworks = allData.allArtwork.nodes.filter(artwork => {
+      return !!artwork.artworkFields?.artworkImage || !!artwork.artworkFields?.videoPoster;
+  });
+
   const [state, setState] = useState<ArtworksState>({
-        original: allData.allArtwork.nodes || [],
-        filtered: allData.allArtwork.nodes || [],
+        original: originalArtworks,
+        filtered: originalArtworks,
         formattedArtworks: null,
         currentArtworkIndex: 0,
         sorting: "latest",
@@ -107,7 +113,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
     if (state.original.length === 0) return []
 
     // Filter out artworks without images
-    let result = state.original.filter(art => art.artworkFields.artworkImage !== null)
+    let result = state.original
 
     // Apply series filters
      if (state.filtersArray.length > 0) {

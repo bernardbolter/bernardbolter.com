@@ -6,6 +6,8 @@ import Link from 'next/link'
 
 import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
 
+import PlayButtonSvg from '@/svgs/PlayButtonSvg'
+
 import { Artwork } from '@/types/artworkTypes'
 interface ArtworkDetailProps {
 	artwork: Artwork,
@@ -25,11 +27,17 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
         artworkContainerWidth,
         artworkContainerHeight
     });
+
+    const isVideo = !artwork.artworkFields?.artworkImage && !!artwork.artworkFields?.videoPoster;
     
-    const imageNode = artwork.artworkFields?.artworkImage?.node; 
+    // Choose the source: main image for artwork, poster image for video
+    const imageSource = isVideo 
+        ? artwork.artworkFields?.videoPoster 
+        : artwork.artworkFields?.artworkImage;
+    
+    const imageNode = imageSource?.node; 
     const imageSrc = imageNode?.sourceUrl || '';
     const imageSrcSet = imageNode?.srcSet || '';
-    // console.log(artwork)
 
     return (
         <Link
@@ -41,6 +49,8 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
                 style={{ width: displayWidth, height: displayHeight}}    
             >
                 {!isImageLoaded && <div className="artwork-detail__placeholder" />}
+                {isVideo && <PlayButtonSvg />}
+
                 <Image
                     className={`artwork-detail__image ${isImageLoaded ? 'is-loaded' : ''}`}
                     src={imageSrc} 

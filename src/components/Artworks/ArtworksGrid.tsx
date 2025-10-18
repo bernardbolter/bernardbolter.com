@@ -2,37 +2,52 @@
 
 import { useArtworks } from '@/providers/ArtworkProvider'
 import useWindowSize from '@/hooks/useWindowSize'
+import Masonry from 'react-masonry-css'
 
 import ArtworkGridImage from './ArtworkGridImage'
 
 import { getGridItemContainerSize } from '@/helpers/getGridItemContainerSize'
+
+const BREAKPOINT_COL_COUNTS = {
+    default: 5,
+    1200: 4,
+    980: 3,
+    768: 2,
+    550: 1
+}
 
 const ArtworkGrid = ()  => {
     const [artworks] = useArtworks()
     const size = useWindowSize()
 
     const itemSize = getGridItemContainerSize(size.width)
-    const paddingValue = `${itemSize.gap}px`
+    const calculateItemSize = {
+        width: itemSize.width,
+        height: 0,
+        gap: itemSize.gap
+    }
+
+    const columnClassName = `artwork-grid__column`
+    // const columnGutter = `${itemSize.gap}px`
 
     return (
-        <div 
+        <Masonry
+            breakpointCols={BREAKPOINT_COL_COUNTS}
             className='artwork-grid__container'
-            style={{ padding: paddingValue }}    
+            columnClassName={columnClassName}
+            // columnGutter={columnGutter}
         >
             {artworks.filtered.map((artwork, i) => {
                 return (
-                    <div 
-                        key={i}
-                        className="artwork-grid__item"
-                    >
+                    <div key={i} >
                         <ArtworkGridImage
                             artwork={artwork}
-                            itemSize={itemSize}
+                            itemSize={calculateItemSize}
                         />
                     </div>
                 )
             })}
-        </div>
+        </Masonry>
     )
 }
 

@@ -1,16 +1,24 @@
 import { useState, useMemo } from 'react' 
 import Image from "next/image"
+
 import { useArtworkDimensions } from "@/hooks/useArtworkDimensions"
+
 import { Artwork } from "@/types/artworkTypes"
+
 import { getSeriesColor } from '@/helpers/seriesColor'
 import { getSeriesInitials } from '@/helpers/seriesInitals'
+
+import PlayButtonSvg from '@/svgs/PlayButtonSvg'
 interface ArtworkGridImageProps {
     artwork: Artwork,
     itemSize: {
         width: number,
-        height: number
+        height: number,
+        gap: number
     }
 }
+
+const INFO_BOX_HEIGHT = 49
 
 const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
     artwork,
@@ -19,19 +27,24 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
     const { displayWidth, displayHeight } = useArtworkDimensions({
         artwork,
         artworkContainerWidth: itemSize.width,
-        artworkContainerHeight: itemSize.height
+        artworkContainerHeight: 5000
     })
+
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const imageNode = artwork.artworkFields?.artworkImage?.node
+
+    const isVideo = !artwork.artworkFields?.artworkImage && !!artwork.artworkFields?.videoPoster
+
+    const imageSource = isVideo 
+        ? artwork.artworkFields?.videoPoster 
+        : artwork.artworkFields?.artworkImage;
+
+    const imageNode = imageSource?.node
     const imageSrc = imageNode?.sourceUrl || ''
     const imageSrcSet = imageNode?.srcSet || ''
 
-    const bottomMargin = useMemo(() => {
-        return ((itemSize.height - displayHeight) / 2) - 29
-    }, [itemSize.height, displayHeight] )
 
-    const rightMargin = useMemo(() => {
-        return ((itemSize.width - displayWidth) / 2)
+    const horozontalMargin = useMemo(() => {
+        return Math.round((itemSize.width / displayWidth) / 2)
     }, [itemSize.width, displayWidth])
 
     return (
@@ -39,37 +52,44 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
             className="artwork-grid__image-container"
             style={{
                 width: itemSize.width,
-                height: itemSize.height
+                paddingBottom: INFO_BOX_HEIGHT
             }}
         >
-            {!isLoading && <div className={isLoading ? 'artwork-grid__loading' : 'artwork-grid__loading--off'} />}
-            <Image
-                className="artwork-grid__image"
-                src={imageSrc}
-                {...(imageSrcSet && { srcSet: imageSrcSet })}
-                alt={artwork.title}
-                width={displayWidth}
-                height={displayHeight}
-                onLoad={() => setIsLoading(false)}
-            />
             <div 
-                className="artwork-grid__info"
+                className="artwork-grid__image-wrapper"
                 style={{
-                    bottom: bottomMargin,
-                    right: rightMargin
-                }}
+                    marginLeft: horozontalMargin,
+                    marginRight: horozontalMargin
+                }}    
             >
-                <h3>{artwork.title}</h3>
-                <div className="artwork-grid__info--series">
-                    <p
-                        style={{ color: getSeriesColor(artwork.artworkFields?.series || '') }}
-                    >{getSeriesInitials(artwork.artworkFields?.series || '')}</p>
-                    <div 
-                        className="artwork-grid__info--series-box"
-                        style={{
-                            backgroundColor: getSeriesColor(artwork.artworkFields?.series || '')
-                        }}   
-                    >
+                {!isLoading && <div className={isLoading ? 'artwork-grid__loading' : 'artwork-grid__loading--off'} />}
+                {isVideo && <PlayButtonSvg />}
+                
+                <Image
+                    className="artwork-grid__image"
+                    src={imageSrc}
+                    {...(imageSrcSet && { srcSet: imageSrcSet })}
+                    alt={artwork.title}
+                    width={displayWidth}
+                    height={displayHeight}
+                    onLoad={() => setIsLoading(false)}
+                />
+                <div 
+                    className="artwork-grid__info"
+
+                >
+                    <h3>{artwork.title}</h3>
+                    <div className="artwork-grid__info--series">
+                        <p
+                            style={{ color: getSeriesColor(artwork.artworkFields?.series || '') }}
+                        >{getSeriesInitials(artwork.artworkFields?.series || '')}</p>
+                        <div 
+                            className="artwork-grid__info--series-box"
+                            style={{
+                                backgroundColor: getSeriesColor(artwork.artworkFields?.series || '')
+                            }}   
+                        >
+                        </div>
                     </div>
                 </div>
             </div>

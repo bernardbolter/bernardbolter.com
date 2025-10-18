@@ -1,31 +1,22 @@
 @use './vars.scss' as *;
 
 .artwork-grid__container {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr); 
-    gap: 5px;
+    display: flex;
     max-width: 1500px;
     margin: 0 auto;
     margin-top: 70px;
+}
 
-    @media (min-width: $break-s) { // 2 columns from 550px
-        grid-template-columns: repeat(2, 1fr);
-        gap: 7px; 
-    }
+.artwork-grid__column {
+    padding-bottom: 0;
 
-    @media (min-width: $break-m) { // 3 columns from 767px
-        grid-template-columns: repeat(3, 1fr);
-        gap: 9px; 
-    }
-    
-    @media (min-width: $break-l) { // 4 columns from 979px
-        grid-template-columns: repeat(4, 1fr);
-        gap: 11px
-    }
+    > div {
+        margin-bottom: 5px; /* Default margin for vertical spacing */
 
-    @media (min-width: $break-xl) { // 5 columns from 1200px
-        grid-template-columns: repeat(5, 1fr);
-        gap: 13px
+        @media (min-width: $break-s) { margin-bottom: 7px; }
+        @media (min-width: $break-m) { margin-bottom: 9px; }
+        @media (min-width: $break-l) { margin-bottom: 11px; }
+        @media (min-width: $break-xl) { margin-bottom: 13px; }
     }
 }
 
@@ -33,6 +24,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+
+    svg {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%); 
+    }
+}
+
+.artwork-grid__image-wrapper {
     position: relative;
 }
 
@@ -49,6 +53,7 @@
 
 .artwork-grid__info {
     position: absolute;
+    right: 0;
 
     h3 {
         color: $grid-text;

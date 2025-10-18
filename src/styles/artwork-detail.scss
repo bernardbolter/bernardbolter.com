@@ -17,6 +17,15 @@
     position: relative;
     display: inline-block;
     background-color: transparent;
+
+    svg {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
 }
 
 .artwork-detail__image {
