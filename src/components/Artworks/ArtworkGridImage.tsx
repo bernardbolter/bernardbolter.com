@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react' 
 import Image from "next/image"
+import Link from 'next/link'
 
 import { useArtworkDimensions } from "@/hooks/useArtworkDimensions"
 
@@ -48,7 +49,8 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
     }, [itemSize.width, displayWidth])
 
     return (
-        <div 
+        <Link
+            href={`/${artwork.slug}`}
             className="artwork-grid__image-container"
             style={{
                 width: itemSize.width,
@@ -93,7 +95,7 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
                     </div>
                 </div>
             </div>
-       </div> 
+       </Link> 
     )
 }
 
