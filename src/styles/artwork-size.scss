@@ -1,0 +1,43 @@
+@use './vars.scss' as *;
+
+.artwork-size__container {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.artwork-size__size {
+    font-family: $heading;
+    color: $title-text;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
+}
+
+.artwork-size__size--converted {
+    font-family: $heading;
+    color: $title-text;
+    font-size: 11px;
+    font-weight: 200;
+    line-height: 1em;
+    padding: 2px 0 0 0;
+    margin: 0;
+
+    span {
+        font-size: 9px;
+    }
+
+    @media screen and (min-width: $break-s) {
+        font-size: 12px;
+
+        span {
+            font-size: 10px;
+        }
+    }
+}

@@ -23,9 +23,11 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
     const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false)
 
     const { displayWidth, displayHeight } = useArtworkDimensions({
-        artwork,
         artworkContainerWidth,
-        artworkContainerHeight
+        artworkContainerHeight,
+        imageWidth: artwork.artworkFields?.artworkImage?.node?.mediaDetails?.width || 800,
+        imageHeight: artwork.artworkFields?.artworkImage?.node?.mediaDetails?.height || 800,
+        artworkSize: artwork.artworkFields?.size || 'lg'
     });
 
     const isVideo = !artwork.artworkFields?.artworkImage && !!artwork.artworkFields?.videoPoster;

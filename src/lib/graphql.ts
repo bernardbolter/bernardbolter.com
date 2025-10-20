@@ -52,6 +52,7 @@ export const getAllArtwork = `
           size
           slug
           style
+          units
           width
           year
           artworkImage2 { ${ImageFields} } 
@@ -87,8 +88,6 @@ export const getAllArtwork = `
         }
       }
     }
-    
-    # FIX: Corrected structure for 'page' field
     biography(id: "cG9zdDo1NzQ=") {
       content(format: RENDERED)
       bio {
@@ -195,6 +194,7 @@ export const getSingleArtwork = `
         slug
         style
         width
+        units
         year
         artworkImage2 { ${ImageFields} }
         artworkImage3 { ${ImageFields} }

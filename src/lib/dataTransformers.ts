@@ -113,8 +113,9 @@ function transformArtworkFields(
     lng: parseNumber(gqlFields.lng),
     
     // Dimensions
-    height: parseNumber(gqlFields.height),
-    width: parseNumber(gqlFields.width),
+    height: gqlFields.height || null,
+    width: gqlFields.width || null,
+    units: extractTaxonomy(gqlFields.units),
     proportion: gqlFields.proportion || null,
     
     // Classification

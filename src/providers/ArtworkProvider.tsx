@@ -60,7 +60,7 @@ interface ArtworksProviderProps {
 
 export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
 
-  console.log(allData.allArtwork?.nodes)
+  // console.log(allData.allArtwork?.nodes)
   
   const originalArtworks = allData.allArtwork.nodes.filter(artwork => {
       return !!artwork.artworkFields?.artworkImage || !!artwork.artworkFields?.videoPoster;

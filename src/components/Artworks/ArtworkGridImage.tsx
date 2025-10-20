@@ -26,9 +26,11 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
     itemSize,
 })  => {
     const { displayWidth, displayHeight } = useArtworkDimensions({
-        artwork,
         artworkContainerWidth: itemSize.width,
-        artworkContainerHeight: 5000
+        artworkContainerHeight: 5000,
+        imageWidth: artwork.artworkFields?.artworkImage?.node?.mediaDetails?.width || 800,
+        imageHeight: artwork.artworkFields?.artworkImage?.node?.mediaDetails?.height || 800,
+        artworkSize: artwork.artworkFields?.size || 'lg'
     })
 
     const [isLoading, setIsLoading] = useState<boolean>(true)

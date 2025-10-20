@@ -33,6 +33,7 @@ export interface GqlArtworkFields {
   
   height?: string | null; // GraphQL returns as string!
   width?: string | null;
+  units?: string[] | null;
   proportion?: number | null;
   
   orientation?: string[] | null; // Array from taxonomy!

@@ -33,8 +33,9 @@ export interface ArtworkFields {
   lng: number | null;
   
   // Dimensions (always numbers)
-  height: number | null;
-  width: number | null;
+  height: string | null;
+  width: string | null;
+  units: string | null;
   proportion: number | null;
   
   // Classification

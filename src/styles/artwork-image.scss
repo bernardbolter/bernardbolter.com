@@ -1,18 +1,341 @@
 @use './vars.scss' as *;
 
-.artwork-image__magnify {
+// --- REGULAR VIEW STYLES ---
+
+.artwork-image__main-scroll-wrapper {
     position: fixed;
-    position: 5001;
-    width: 40px;
-    height: 40px;
-    right: 10px;
-    top: 10px;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.artwork-image__container {
+    position: relative;
     display: flex;
-    background: $nav-background;
+    flex-direction: column;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.artwork-image__slider-viewport {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    flex-shrink: 0;
+}
+
+.artwork-image__slider-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.artwork-image__image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.artwork-image__image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.artwork-image__magnify-container {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $nav-background-light;
+    opacity: 0.8;
+    transition: opacity 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    z-index: 3001;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
     border-radius: 50%;
+    padding: 5px 2px 2px 5px;
 
     svg {
         width: 100%;
-        stroke: $svg-dark;
+        fill: white;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.artwork-image__info-container {
+    position: relative;
+    pointer-events: auto;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.artwork-image__info--title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    width: 100%;
+    position: relative;
+}
+
+.artwork-image__title {
+    font-family: $heading;
+    font-weight: 800;
+    font-size: 22px;
+    color: $title-text-dark;
+    line-height: 1em;
+    padding: 10px 0 0 0;
+    margin: 5px 0 0 0;
+    border-top: 1px solid $svg-dark;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 24px;
+    }
+}
+
+.artwork-image__year {
+    font-family: $heading;
+    color: $title-text;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
+}
+
+.artwork-image__medium {
+    font-family: $heading;
+    color: $title-text;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0 0 4px;
+    margin: 0;
+
+     @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
+}
+
+.artwork-image__size {
+    font-family: $heading;
+    color: $title-text;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 16px;
+    }
+}
+
+.artwork-image__size--converted {
+    font-family: $heading;
+    color: $title-text;
+    font-size: 11px;
+    font-weight: 200;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+
+     @media screen and (min-width: $break-s) {
+        font-size: 12px;
+    }
+}
+
+.artwork-image__series-box {
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+}
+
+.artwork-image__info--line {
+    width: 100%;
+    height: 1px;
+    background-color: $svg-dark;
+    margin: 14px 0;
+}
+
+.artwork-image__buttons-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    bottom: 14px;
+    left: 14px;
+    z-index: 3002;
+}
+
+.artwork-image__buttons {
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (min-width: $break-s) {
+        flex-direction: row;
+    }
+}
+
+.artwork-image__button {
+    border: none;
+    width: 44px;
+    height: 44px;
+    padding: 0 6px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform .3s ease-in-out;
+
+    // &:hover {
+    //     transform: scale(1.05);
+    // }
+
+    svg {
+        width: 100%;
+    }
+}
+
+.artwork-image__counter {
+    background-color: rgba(0,0,0,0.4);
+    color: white;
+    padding: 3px 6px;
+    margin-bottom: 4px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+
+// --- MAGNIFY OVERLAY STYLES ---
+
+.artwork-image__magnify-overlay-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    z-index: 1000;
+}
+
+.artwork-image__magnify-frame {
+    overflow: hidden;
+}
+
+.artwork-image__magnify-slider-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    transition: transform 0.5s ease-in-out;
+}
+
+.artwork-image__magnified-slide {
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.artwork-image__magnified-image-wrapper {
+    position: relative;
+    
+    img {
+        max-width: none !important; // Critical for allowing overflow
+    }
+}
+
+.artwork-image__magnify-close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1001;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: white;
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        transform: rotate(45deg);
+    }
+}
+
+.artwork-image__arrow-left.magnified-nav,
+.artwork-image__arrow-right.magnified-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+    // Uses .artwork-image__button styles via composition or duplication
+    @extend .artwork-image__button; 
+}
+
+.artwork-image__arrow-left.magnified-nav {
+    left: 20px;
+}
+
+.artwork-image__arrow-right.magnified-nav {
+    right: 20px;
+}
+
+// --- MINI-MAP STYLES ---
+
+.artwork-image__mini-map-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 1001;
+    pointer-events: none;
+    box-sizing: content-box;
+}
+
+.artwork-image__mini-map-image-outline {
+    position: absolute;
+    background-color: rgba(180, 180, 180, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.artwork-image__mini-map-viewport-box {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid white;
 }
