@@ -8,6 +8,7 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import useWindowSize from '@/hooks/useWindowSize'
 
 import { getSeriesColor } from '@/helpers/seriesColor'
+import { seriesColorBlurDataURLs } from '@/helpers/blurURLs'
 
 import Info from '@/components/Info/Info'
 import ArtworkSize from './ArtworkSize'
@@ -23,10 +24,20 @@ interface ArtworkImageProps { artwork: Artwork }
 interface DragBounds { left: number; right: number; top: number; bottom: number; }
 interface DragPosition { x: number; y: number; }
 
-interface ArtworkImageNodeWithAlt extends Omit<ArtworkImageNode, 'altText'> {
+type ArtworkImageNodeWithAlt = 
+  Omit<ArtworkImageNode, 'altText' | 'srcSet'> & 
+  { 
+    altText?: string; 
+    srcSet?: string; 
+  }
+interface ArtworkImageDetail { 
+    imageSrc: string
+    imageWidth: number
+    imageHeight: number
     altText?: string
+    imageSrcSet?: string
+    blurDataURL?: string
 }
-
 interface ArtworkFieldsWithGallery {
     artworkImage?: { node: ArtworkImageNode } | null;
     artworkImage2?: { node: ArtworkImageNode } | null;
@@ -43,20 +54,19 @@ interface ArtworkFieldsWithGallery {
 const BORDER_PADDING = 20; // 20px white border for magnify mode
 
 const ArtworkImage = ({artwork}: ArtworkImageProps) => {
-    // const draggableRefs = useRef<HTMLDivElement[]>([])
-    const [artworkLoading, setArtworkLoading] = useState<boolean>(true);
+    const [imageLoadingStates, setImageLoadingStates] = useState<boolean[]>([])
     const [enlargedArtworkLoading, setEnlargedArtworkLoading] = useState<boolean>(true)
-    const [enlargeArtwork, setEnlargeArtwork] = useState<boolean>(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-    const [dragPositions, setDragPositions] = useState<DragPosition[]>([]);
-    
+    const [enlargeArtwork, setEnlargeArtwork] = useState<boolean>(false)
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0)
+    const [dragPositions, setDragPositions] = useState<DragPosition[]>([])
+
     const size = useWindowSize();
     const viewportWidth = size.width || 0;
     const viewportHeight = size.height || 0;
 
     const imageRefsRef = useRef<RefObject<HTMLDivElement>[]>([])
 
-    console.log("artwork image: ", artwork)
+    // console.log("artwork image: ", artwork)
 
     // --- 1. Consolidate All Images ---
     const allImageNodes = useMemo(() => {
@@ -84,17 +94,18 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         return nodes;
     }, [artwork.artworkFields]);
     
-    const maxIndex = allImageNodes.length - 1;
-    const hasMultipleImages = allImageNodes.length > 1;
+    const maxIndex = allImageNodes.length - 1
+    const hasMultipleImages = allImageNodes.length > 1
 
     // --- 2. Get Details for all images
-    const allImageDetails = useMemo(() => {
+    const allImageDetails: ArtworkImageDetail[] = useMemo(() => {
         return allImageNodes.map(node => ({
             imageSrc: node?.sourceUrl || '',
             imageSrcSet: node?.srcSet || '',
             imageWidth: node?.mediaDetails?.width || 800,
             imageHeight: node?.mediaDetails?.height || 800,
-            altText: node?.altText || artwork.title || 'Artwork Image'
+            altText: node?.altText || artwork.title || 'Artwork Image',
+            blurDataURL: seriesColorBlurDataURLs[artwork.artworkFields?.series || 'a-colorful-history']
         }))
     }, [allImageNodes, artwork.title])
 
@@ -103,20 +114,25 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         if (imageRefsRef.current.length !== allImageDetails.length) {
             imageRefsRef.current = allImageDetails.map(() => ({ current: null } as unknown as RefObject<HTMLDivElement>))
         }
-    }, [allImageDetails.length]);
+        if (imageLoadingStates.length !== allImageDetails.length) {
+        setImageLoadingStates(new Array(allImageDetails.length).fill(false))
+    }
+    }, [allImageDetails.length, imageLoadingStates.length])
 
     if (dragPositions.length === 0 && allImageDetails.length > 0) {
         setDragPositions(allImageDetails.map(() => ({ x: 0, y: 0 })))
     }
 
-    const currentImageDetail = useMemo(() => {
+    const currentImageDetail: ArtworkImageDetail = useMemo(() => {
         return allImageDetails[currentImageIndex] || {
             imageSrc: '',
             imageWidth: 800,
             imageHeight: 800,
-            altText: artwork.title || ""
+            altText: artwork.title || "",
+            imageSrcSet: '',
+            blurDataURL: ''
         }
-    }, [allImageDetails, currentImageIndex, artwork.title]);
+    }, [allImageDetails, currentImageIndex, artwork.title])
 
     const {
         imageWidth,
@@ -124,27 +140,21 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     } = currentImageDetail
 
     const currentDragPosition = useMemo(() => {
-        return dragPositions[currentImageIndex] || { x:0, y: 0 };
+        return dragPositions[currentImageIndex] || { x:0, y: 0 }
     }, [dragPositions, currentImageIndex])
 
     // Helper function to calculate the correct initial centered and clamped drag position
     const getInitialDragPosition = useCallback((index: number): DragPosition => {
-        const imageDetail = allImageDetails[index];
-        if (!imageDetail) return { x: 0, y: 0 };
+        const imageDetail = allImageDetails[index]
+        if (!imageDetail) return { x: 0, y: 0 }
 
-        const currentW = imageDetail.imageWidth;
-        const currentH = imageDetail.imageHeight;
+        const currentW = imageDetail.imageWidth
+        const currentH = imageDetail.imageHeight
         
-        // 1. Calculate the minimum and maximum translation (position) needed to respect BORDER_PADDING
-        // Min X (Left Limit): Image's right edge aligns with (viewportWidth - BORDER_PADDING)
-        const dragLimitLeft = (viewportWidth - BORDER_PADDING) - currentW; 
-        // Max X (Right Limit): Image's left edge aligns with BORDER_PADDING
-        const dragLimitRight = BORDER_PADDING; 
-
-        // Min Y (Top Limit): Image's bottom edge aligns with (viewportHeight - BORDER_PADDING)
-        const dragLimitTop = (viewportHeight - BORDER_PADDING) - currentH;
-        // Max Y (Bottom Limit): Image's top edge aligns with BORDER_PADDING
-        const dragLimitBottom = BORDER_PADDING; 
+        const dragLimitLeft = (viewportWidth - BORDER_PADDING) - currentW
+        const dragLimitRight = BORDER_PADDING
+        const dragLimitTop = (viewportHeight - BORDER_PADDING) - currentH
+        const dragLimitBottom = BORDER_PADDING
         
         // 2. Calculate the position required to center the image in the full viewport
         const centerX = (viewportWidth - currentW) / 2
@@ -153,9 +163,6 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         // 3. Clamp the center position: position must be >= min limit and <= max limit.
         const clampedInitialX = Math.max(dragLimitLeft, Math.min(dragLimitRight, centerX))
         const clampedInitialY = Math.max(dragLimitTop, Math.min(dragLimitBottom, centerY))
-
-        // If the image is smaller than the viewport, dragLimitLeft will be > BORDER_PADDING.
-        // If image is huge, centerX will be smaller than dragLimitLeft (more negative).
         
         return { x: clampedInitialX, y: clampedInitialY };
     }, [allImageDetails, viewportWidth, viewportHeight])
@@ -164,7 +171,6 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     const resetAndChangeImage = useCallback((newIndex: number) => {
         if (enlargeArtwork && allImageDetails[newIndex]) {
             if (newIndex !== currentImageIndex) {
-                // FIX 1B: Calculate and set the initial drag position for the new image
                 const newInitialPosition = getInitialDragPosition(newIndex);
                 
                 setDragPositions(prevPositions => {
@@ -189,7 +195,6 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
 
     // --- 4. Magnify Dimensions and Drag Bounds Calculation ---
     const { magnifiedDims, containerDims } = useMemo(() => {
-        // Effective container is the viewport minus padding
         const effectiveContainerW = viewportWidth - (2 * BORDER_PADDING)
         const effectiveContainerH = viewportHeight - (2 * BORDER_PADDING)
 
@@ -237,7 +242,12 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         imageWidth,
         imageHeight,
         useImageFactors: true,
-    });
+    })
+
+    const imageSizes = useMemo(() => {
+        const cappedWidth = Math.round(displayWidth)
+        return `(max-width: 768px) 100vw, ${cappedWidth}px`
+    }, [displayWidth])
 
     // --- 6. Centering Margin Calculation ---
     const { marginWidth, marginHeight } = useMemo(() => {
@@ -248,18 +258,17 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
             marginHeight: Math.max(0, calculatedMarginHeight) 
         };
     }, [displayWidth, displayHeight, viewportWidth, viewportHeight]);
-// --- 7. Event Handlers ---
+
+    // --- 7. Event Handlers ---
     const handleToggleMagnify = useCallback(() => {
         setEnlargeArtwork(state => {
             if (!state) { 
                 // When switching TO magnify mode
                 setEnlargedArtworkLoading(true); // Ensure loading state is reset
                 
-                // FIX 1A: Recalculate and apply the initial drag position ONLY for the current image
                 const initialPosition = getInitialDragPosition(currentImageIndex);
                 
                 setDragPositions(prevPositions => {
-                    // Create new array based on old, but update the current index
                     const newPositions = [...prevPositions]
                     newPositions[currentImageIndex] = initialPosition;
                     return newPositions;
@@ -279,67 +288,61 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     
     // --- 8. Mini-Map Calculations ---
     const miniMap = useMemo(() => {
-        const MINI_MAP_SIZE = 120;
-        const PADDING = 10;
-        const drawableSize = MINI_MAP_SIZE - (2 * PADDING);
-        const imgW = magnifiedDims.width;
-        const imgH = magnifiedDims.height;
-        const containerW = containerDims.width; 
-        const containerH = containerDims.height; 
-        const currentX = currentDragPosition.x;
-        const currentY = currentDragPosition.y;
+        const MINI_MAP_SIZE = 120
+        const PADDING = 10
+        const drawableSize = MINI_MAP_SIZE - (2 * PADDING)
+        const imgW = magnifiedDims.width
+        const imgH = magnifiedDims.height
+        const containerW = containerDims.width
+        const containerH = containerDims.height
+        const currentX = currentDragPosition.x
+        const currentY = currentDragPosition.y
 
         // --- Calculate bounds for fractional calculation ---
-        const dragLimitLeft = (viewportWidth - BORDER_PADDING) - imgW;
-        const dragLimitRight = BORDER_PADDING;
-        const dragLimitTop = (viewportHeight - BORDER_PADDING) - imgH;
-        const dragLimitBottom = BORDER_PADDING;
+        const dragLimitLeft = (viewportWidth - BORDER_PADDING) - imgW
+        const dragLimitRight = BORDER_PADDING
+        const dragLimitTop = (viewportHeight - BORDER_PADDING) - imgH
+        const dragLimitBottom = BORDER_PADDING
 
         // Calculate map image dimensions
-        const imgAspectRatio = imgW / imgH;
-        let mapImgW: number, mapImgH: number;
+        const imgAspectRatio = imgW / imgH
+        let mapImgW: number, mapImgH: number
         if (imgAspectRatio >= 1) {
-            mapImgW = drawableSize;
-            mapImgH = drawableSize / imgAspectRatio;
+            mapImgW = drawableSize
+            mapImgH = drawableSize / imgAspectRatio
         } else {
-            mapImgH = drawableSize;
-            mapImgW = drawableSize * imgAspectRatio;
+            mapImgH = drawableSize
+            mapImgW = drawableSize * imgAspectRatio
         }
 
         // Calculate viewport box scaled dimensions
-        const viewScaleW = mapImgW * (containerW / imgW);
-        const viewScaleH = mapImgH * (containerH / imgH);
+        const viewScaleW = mapImgW * (containerW / imgW)
+        const viewScaleH = mapImgH * (containerH / imgH)
 
         // Calculate fractional scroll distance (0 to 1)
-        const scrollDistX = dragLimitRight - dragLimitLeft;
-        const scrollOffsetX = currentX - dragLimitLeft;
-        const fracX = scrollDistX > 0 ? scrollOffsetX / scrollDistX : 0;
+        const scrollDistX = dragLimitRight - dragLimitLeft
+        const scrollOffsetX = currentX - dragLimitLeft
+        const fracX = scrollDistX > 0 ? scrollOffsetX / scrollDistX : 0
 
-        const scrollDistY = dragLimitBottom - dragLimitTop;
-        const scrollOffsetY = currentY - dragLimitTop;
-        const fracY = scrollDistY > 0 ? scrollOffsetY / scrollDistY : 0;
+        const scrollDistY = dragLimitBottom - dragLimitTop
+        const scrollOffsetY = currentY - dragLimitTop
+        const fracY = scrollDistY > 0 ? scrollOffsetY / scrollDistY : 0
         
         // Total movement range for the map image outline
-        const mapScrollDistX = mapImgW - viewScaleW;
-        const mapScrollDistY = mapImgH - viewScaleH;
-        
-        // NEW FIX: Position of the FIXED VIEWPORT BOX relative to the MINI_MAP_SIZE container
-        // This is the anchor point for the outline's movement (its max right/bottom position)
-        const fixedBoxPosX = (MINI_MAP_SIZE - viewScaleW) / 2;
-        const fixedBoxPosY = (MINI_MAP_SIZE - viewScaleH) / 2;
+        const mapScrollDistX = mapImgW - viewScaleW
+        const mapScrollDistY = mapImgH - viewScaleH
 
-        // --- CORRECTED TRANSLATION LOGIC ---
-        // The movement is now defined as: (Start position) + (fractional distance * total movement)
-        // The start position is the max negative translation (the outline's UP/LEFT limit).
+        // This is the anchor point for the outline's movement (its max right/bottom position)
+        const fixedBoxPosX = (MINI_MAP_SIZE - viewScaleW) / 2
+        const fixedBoxPosY = (MINI_MAP_SIZE - viewScaleH) / 2
         
         // UP/LEFT Limit: The fixed box position minus the full scroll distance.
         const leftLimitX = fixedBoxPosX - mapScrollDistX;
         const topLimitY = fixedBoxPosY - mapScrollDistY;
 
         // Final translation: start at the limit and add back the fractional scroll distance
-        const finalImgTranslateX = leftLimitX + (fracX * mapScrollDistX);
-        const finalImgTranslateY = topLimitY + (fracY * mapScrollDistY);
-        // ------------------------------------
+        const finalImgTranslateX = leftLimitX + (fracX * mapScrollDistX)
+        const finalImgTranslateY = topLimitY + (fracY * mapScrollDistY)
 
         return {
             mapImgW, mapImgH,
@@ -383,33 +386,52 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                             transform: `translateX(-${currentImageIndex * displayWidth}px)`
                         }}
                     >
-                        {allImageDetails.map((image, index) => (
-                            <div
-                                key={image.imageSrc}
-                                className="artwork-image__image-slide"
-                                style={{
-                                    width: displayWidth,
-                                    height: displayHeight
-                                }}
-                            >
-                                <div 
-                                    className="artwork-image__image-wrapper"
-                                    style={{ width: displayWidth, height: displayHeight}}    
+                        {allImageDetails.map((detail, index) => {
+                            const { imageSrc, altText } = detail
+                            const isCurrent = index === currentImageIndex
+                            const isImageLoaded = imageLoadingStates[index]
+
+                            return (
+                                <div
+                                    key={index}
+                                    className="artwork-image__image-slide"
+                                    style={{
+                                        width: displayWidth,
+                                        height: displayHeight
+                                    }}
                                 >
-                                    <Image
-                                        className="artwork-image__image"
-                                        src={image.imageSrc}
-                                        alt={image.altText}
-                                        // srcSet={image.imageSrcSet}
-                                        width={displayWidth}
-                                        height={displayHeight}
-                                        onLoad={() => setArtworkLoading(false)}
-                                        priority={index === currentImageIndex}
-                                        style={{ objectFit: 'contain' }}
-                                    />
+                                    <div 
+                                        className="artwork-image__image-wrapper"
+                                        style={{ width: displayWidth, height: displayHeight}}   
+                                    >
+                                        <Image
+                                            className="artwork-image__image"
+                                            src={imageSrc}
+                                            sizes={imageSizes}
+                                            alt={altText ?? ''}
+                                            width={displayWidth}
+                                            height={displayHeight}
+                                            quality={80}
+                                            placeholder='blur'
+                                            blurDataURL={detail.blurDataURL}
+                                            onLoadingComplete={() => {
+                                                console.log(isImageLoaded)
+                                                if (!isImageLoaded) {
+                                                    setImageLoadingStates(prevStates => {
+                                                        const newStates = [...prevStates]
+                                                        newStates[index] = true
+                                                        return newStates;
+                                                    })
+                                                }
+                                            }}
+                                            priority={isCurrent}
+                                            style={{  objectFit: 'cover' }}
+                                            key={index}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </div>
                 <div className="artwork-image__info-container">
@@ -502,18 +524,12 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                 const dragLimitTop = (viewportHeight - BORDER_PADDING) - imageMagnifiedH
                                 const dragLimitBottom = BORDER_PADDING
 
-                                // const dragLeft = -(imageMagnifiedW - effectiveContainerW)
-                                // const dragTop = -(imageMagnifiedH - effectiveContainerH)
-
                                 const imageDragBounds: DragBounds = {
                                     left: canDragImage ? dragLimitLeft : 0, 
                                     right: canDragImage ? dragLimitRight : 0, 
                                     top: canDragImage ? dragLimitTop : 0, 
                                     bottom: canDragImage ? dragLimitBottom : 0
                                 }
-
-                                // const centeringMarginLeft = (viewportWidth - imageMagnifiedW) / 2;
-                                // const centeringMarginTop = (viewportHeight - imageMagnifiedH) / 2;
 
                                 return (
                                     <div
@@ -536,18 +552,18 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                                     cursor: canDragImage ? 'grab' : 'default',
                                                     width: imageMagnifiedW,
                                                     height: imageMagnifiedH,
-                                                    opacity: index === currentImageIndex && enlargedArtworkLoading ? 0 : 1,
-                                                    transition: 'opacity 0.3s ease-in-out',
-                                                    // marginLeft: centeringMarginLeft,
-                                                    // marginTop: centeringMarginTop
+                                                    position: 'relative'
                                                 }}
                                             >
                                                 <Image
                                                     src={image.imageSrc}
-                                                    alt={image.altText}
+                                                    alt={image.altText ?? ''}
                                                     width={imageMagnifiedW}
                                                     height={imageMagnifiedH}
                                                     quality={100}
+                                                    unoptimized={true}
+                                                    blurDataURL={image.blurDataURL}
+                                                    placeholder='blur'
                                                     priority={index === currentImageIndex}
                                                     draggable={false}
                                                     style={{ objectFit: 'contain' }}
@@ -557,6 +573,12 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                                         }
                                                     }}
                                                 />
+                                                {(index === currentImageIndex) && enlargedArtworkLoading && (
+                                                    <div className="artwork-image__loading-text">
+                                                        <p>loading high-resolution</p>
+                                                        <p>{`artwork ${artwork.title}...`}</p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </Draggable>
                                     </div>
@@ -566,7 +588,6 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                         
                         {magnifiedDims.canDrag && (
                             <div className="artwork-image__mini-map-container" style={{ width: miniMap.MINI_MAP_SIZE, height: miniMap.MINI_MAP_SIZE }}>
-                                {/* Moving Artwork Outline (now a sibling) */}
                                 <div 
                                     className="artwork-image__mini-map-image-outline" 
                                     style={{ 
@@ -575,7 +596,6 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                         transform: `translate(${miniMap.finalImgTranslateX}px, ${miniMap.finalImgTranslateY}px)` 
                                     }}
                                 />
-                                {/* Fixed Viewport Box (now a sibling) */}
                                 <div 
                                     className="artwork-image__mini-map-viewport-box" 
                                     style={{ 

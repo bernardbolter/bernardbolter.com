@@ -44,10 +44,16 @@
 }
 
 .artwork-image__image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: block;
     max-width: 100%;
     height: auto;
+    z-index: 1;
 }
+
 
 .artwork-image__magnify-container {
     position: fixed;
@@ -268,6 +274,23 @@
     
     img {
         max-width: none !important; // Critical for allowing overflow
+    }
+}
+
+.artwork-image__loading-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
+    pointer-events: none;
+
+    p {
+        color: $title-light;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-align: center;
     }
 }
 

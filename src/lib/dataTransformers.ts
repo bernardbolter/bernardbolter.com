@@ -128,6 +128,8 @@ function transformArtworkFields(
     // Metadata
     year: parseNumber(gqlFields.year),
     forsale: gqlFields.forsale || null,
+    price: gqlFields.price || null,
+    provenance: gqlFields.provenance || null,
     metadescription: gqlFields.metadescription || null,
     metakeywords: gqlFields.metakeywords || null,
     

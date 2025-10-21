@@ -48,6 +48,8 @@ export interface ArtworkFields {
   // Metadata
   year: number | null;
   forsale: boolean | null;
+  price: string | null;
+  provenance: string | null;
   metadescription: string | null;
   metakeywords: string | null;
   

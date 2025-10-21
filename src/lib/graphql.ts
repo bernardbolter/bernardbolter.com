@@ -2,8 +2,8 @@
 const ImageFields = `
   node {
     altText
-    sourceUrl(size: LARGE)
-    srcSet(size: LARGE)
+    sourceUrl(size: _1536X1536)
+    srcSet(size: _1536X1536)
     mediaDetails {
       width
       height
@@ -38,6 +38,8 @@ export const getAllArtwork = `
           elevation
           extraimages
           forsale
+          price
+          provenance
           height
           lat
           lng
@@ -179,6 +181,8 @@ export const getSingleArtwork = `
         elevation
         extraimages
         forsale
+        price
+        provenance
         height
         lat
         lng

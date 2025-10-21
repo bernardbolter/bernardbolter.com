@@ -2,7 +2,7 @@
 
 import { getClient } from '@/lib/apollo-client';
 import { gql } from '@apollo/client';
-import { AllData, CVItem, ArtistInfoLink, ArtistInfo } from '@/types/artworkProviderTypes';
+import { AllData, CVItem, ArtistInfoLink, ArtistData } from '@/types/artworkProviderTypes';
 import { 
   GqlGetAllArtworkResponse, 
   GqlGetSingleArtworkResponse, 
@@ -145,7 +145,7 @@ function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
   const gqlArtistData = data.artistInfo?.artistData;
 
   // Transform Artist Data (ArtistInfo)
-  const artistDataFinal: ArtistInfo | null = gqlArtistData ? {
+  const artistDataFinal: ArtistData | null = gqlArtistData ? {
       name: gqlArtistData.name || undefined,
       birthcity: gqlArtistData.birthcity || undefined,
       birthyear: gqlArtistData.birthyear || undefined,
