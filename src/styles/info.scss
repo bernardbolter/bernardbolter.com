@@ -33,6 +33,10 @@
     color: $title-text;
 }
 
+.name__all-artwork {
+    padding: 0 0 6px !important;
+}
+
 // BACK LINK
 .name__back--container {
     display: flex;
@@ -70,30 +74,37 @@
 
 // BUTTON
 
-.info-button__container {
-    width: 24px;
-    height: 24px;
-    margin: 10px 0;
-    cursor: pointer;
+.info-button__container--background {
     position: fixed;
+    z-index: 1999;
+    top: 68px;
+    background: $nav-background;
+    width: 150px;
+    height: 40px;
+
+}
+
+.info-button__container {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    position: relative;
     z-index: 2001;
-    background: $nav-background-light;
-    top: 60px;
-    left: 7px;
+    margin: 5px 0 0 10px;
 }
 
 // CONTENT
 .info__content {
-    width: 120px;
+    width: 150px;
     background: $nav-background;
     padding: 0 0 10px 8px;
     border-bottom-right-radius: 10px;
     position: relative;
     left: 0;
-    transform: translateX(-120px);
+    transform: translateX(-150px);
     transition: all .5s ease-in-out;
     position: fixed;
-    top: 100px;
+    top: 108px;
     z-index: 2000;
 }
 
@@ -154,6 +165,10 @@
         margin: 0;
         margin: 0 0 10px 0;
         text-decoration: none;
+        width: 30px;
+        height: 30px;
+        transform: scale(1);
+        transition: transform .3s ease-in-out;
 
         svg {
             width: 100%;
@@ -162,30 +177,8 @@
         }
 
         &:hover {
-            svg {
-                fill: $nav-highlight;
-            }
+            transform: scale(1.02);
         }
-    }
-
-    .info-socials__insta {
-        width: 28px;
-        height: 25px;
-    }
-
-    .info-socials__tiktok {
-        width: 28px;
-        height: 25px;
-    }
-
-    .info-socials__youtube {
-        width: 28px;
-        height: 19px;
-    }
-
-    .info-socials__linkedin {
-        width: 28px;
-        height: 25px;
     }
 }
 
@@ -200,16 +193,16 @@
         text-decoration: none;
         color: $dark;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: flex-start;
-        align-items: flex-start;
-        padding: 3px 0;
+        align-items: center;
+        padding: 2px 0;
 
         h3 {
             font-family: $body-font;
             font-size: 16px;
             font-weight: 400;
-            padding: 0;
+            padding: 0 0 4px 3px;
             margin: 0;
         }
 

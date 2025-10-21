@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useArtworks } from '@/providers/ArtworkProvider'
 import useWindowSize from '@/hooks/useWindowSize'
 
-import { convertUnits } from '@/helpers/sizeConversion'
 import { getSeriesColor } from '@/helpers/seriesColor'
 
+import ArtworkSize from './ArtworkSize'
 import TitleCornerTopLeft from '@/svgs/TitleCornerTopLeft'
 import TitleCornerTopRight from '@/svgs/TitleCornerTopRight'
 import TitleCornerBottomLeft from '@/svgs/TitleCornerBottomLeft'
@@ -14,23 +13,19 @@ import TitleCornerBottomRight from '@/svgs/TitleCornerBottomRight'
 
 const ArtworkTitle = () => {
     const [artworks] = useArtworks()
-    const [convertedWidth, setConvertedWidth] = useState<string>('')
-    const [convertedHeight, setConvertedHeight] = useState<string>('')
     const size = useWindowSize()
 
     // Get current artwork from formattedArtworks or fall back to filtered
     const currentArtwork = artworks.formattedArtworks?.artworksArray?.[artworks.currentArtworkIndex] 
         ?? artworks.filtered[artworks.currentArtworkIndex];
 
-    useEffect(() => {
-        if (currentArtwork?.artworkFields?.width && currentArtwork?.artworkFields?.height) {
-            const width = String(currentArtwork.artworkFields.width);
-            const height = String(currentArtwork.artworkFields.height);
-            
-            setConvertedWidth(convertUnits(width).value)
-            setConvertedHeight(convertUnits(height).value)
-        }
-    }, [currentArtwork])
+    // useEffect(() => {
+    //     if (currentArtwork?.artworkFields?.width && currentArtwork?.artworkFields?.height) {
+    //         const width = String(currentArtwork.artworkFields.width);
+    //         const height = String(currentArtwork.artworkFields.height);
+
+    //     }
+    // }, [currentArtwork])
 
     if (!currentArtwork) {
         return null;
@@ -89,12 +84,16 @@ const ArtworkTitle = () => {
                         ) : (
                             <h3 className="artwork-title__medium">{currentArtwork.artworkFields.medium}</h3> 
                         )}
-                        <h4 className="artwork-title__size">{currentArtwork.artworkFields.width} x {currentArtwork.artworkFields.height}</h4>
-                        <h5 className="artwork-title__size--converted">({convertedWidth} X {convertedHeight})</h5>
+                        <ArtworkSize
+                            width={currentArtwork.artworkFields.width || '0'}
+                            height={currentArtwork.artworkFields.height || '0'}
+                            units={currentArtwork.artworkFields.units || 'metric'}
+                            isImage={false}
+                        />
                         <div
                             className="artwork-title__series-box"
                             style={{
-                                background: getSeriesColor(currentArtwork.artworkFields?.series),
+                                background: getSeriesColor(currentArtwork.artworkFields?.series|| 'a-colorful-history'),
                                 right: artworks.showSlideshow ? 0 : 10,
                                 bottom: size.width && size.width <= 768 ? 10 : 0,
                             }}

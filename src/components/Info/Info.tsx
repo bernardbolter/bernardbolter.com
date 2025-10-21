@@ -1,19 +1,19 @@
 'use client'
 
-import { useArtworks } from '@/providers/ArtworkProvider';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useArtworks } from '@/providers/ArtworkProvider'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 import MenuPlusSvg from '@/svgs/MenuPlusSvg'
-import InstaPlainSvg from '@/svgs/InstaPlainSvg'
-import TiktokPlainSvg from '@/svgs/TiktokPlainSvg'
-import LinkedinPlainSvg from '@/svgs/LinkedinPlainSvg'
-import YoutubePlainSvg from '@/svgs/YoutubePlainSvg'
+import InstaCircleSvg from '@/svgs/InstaCircleSvg'
+import TiktokCircleSvg from'@/svgs/TiktokCircleSvg'
+import LinkedinCircleSvg from '@/svgs/LinkedinCircleSvg'
+import YoutubeCircleSvg from '@/svgs/YoutubeCircleSvg'
 import LinkSvg from '@/svgs/LinkSvg'
 import BackArrowSvg from '@/svgs/BackArrowSvg'
 
 const Info = () => {
-    const [artworks, setArtworks] = useArtworks();
+    const [artworks, setArtworks] = useArtworks()
     const pathname = usePathname()
     // console.log(pathname)
     // console.log(artworks.artistData)
@@ -39,17 +39,42 @@ const Info = () => {
                         <div className="name__back--svg">
                             <BackArrowSvg />
                         </div>
-                        <p>All Artwork</p>
+                        <p className="name__all-artwork">All Artwork</p>
                     </Link>
                 )}
             </div>
             <div 
-                className={artworks.infoOpen ? "info-button__container info-button__container--open" : "info-button__container"}
-                onClick={() => setArtworks(prevState => ({...prevState, infoOpen: !prevState.infoOpen}))}    
+                className="info-button__container--background"
+                style={{ 
+                    borderBottomRightRadius: artworks.infoOpen ? 0 : 6,
+                    width: artworks.infoOpen ? 150 : 49,
+                    transition: 'all .3s ease-in-out'
+                }}    
             >
-                <MenuPlusSvg />
+                <div 
+                    className={artworks.infoOpen ? "info-button__container info-button__container--open" : "info-button__container"}
+                    onClick={() => setArtworks(prevState => ({...prevState, infoOpen: !prevState.infoOpen}))}    
+                >
+                    <MenuPlusSvg />
+                </div>
             </div>
+            
             <div className={artworks.infoOpen ? "info__content info__content--open" : "info__content"}>
+                <div className="info-websites">
+                    <a href="https://acolorfulhistory.com" rel="noopener noreferrer">
+                        <LinkSvg />
+                        <h3>acolorfulhistory.com</h3>
+                    </a>
+                    <a href="https://digitalcityseries.com" rel="noopener noreferrer">
+                        <LinkSvg />
+                        <h3>digitalcityseries.com</h3>
+                    </a>
+                    <a href="https://smoothism.com" rel="noopener noreferrer">
+                        <LinkSvg />
+                        <h3>smoothism.com</h3>
+                    </a>
+                </div>
+                <div className="info__divider" />
                 <div className="info-links">
                     {pathname !== '/' && <Link href="/">Artwork</Link>}
                     {pathname !== '/bio' && <Link href="/bio">Bio</Link>}
@@ -60,41 +85,30 @@ const Info = () => {
                 <div className="info__divider" />
                 <div className="info-socials">
                     <a
-                        className="info-socials__svg-container info-socials__insta"
+                        className="info-socials__svg-container"
                         href="https://www.instagram.com/bernardbolter" rel="noopener noreferrer"
                     >
-                        <InstaPlainSvg />
+                        <InstaCircleSvg />
                     </a>
                     <a
-                        className="info-socials__svg-container info-socials__tiktok"
-                        href="https://www.tiktok.com/@acolorfulhistory" rel="noopener noreferrer"
+                        className="info-socials__svg-container"
+                        href="https://www.tiktok.com/@bernardbreaksdownart" rel="noopener noreferrer"
                     >
-                        <TiktokPlainSvg />
+                        <TiktokCircleSvg />
                     </a>
                     <a
-                        className="info-socials__svg-container info-socials__youtube"
+                        className="info-socials__svg-container"
                         href="https://www.youtube.com/channel/UCL5q08QoZ6yjHwYkGzJpKXg" rel="noopener noreferrer"
                     >
-                        <YoutubePlainSvg />
+                        <YoutubeCircleSvg />
                     </a>
                     <a
-                        className="info-socials__svg-container info-socials__linkedin"
+                        className="info-socials__svg-container"
                         href="https://www.linkedin.com/in/bernard-bolter-iv/" rel="noopener noreferrer"
                     >
-                        <LinkedinPlainSvg />
+                        <LinkedinCircleSvg />
                     </a>
                 </div>
-                <div className="info__divider" />
-                <div className="info-websites">
-                    <a href="https://megacities.world" rel="noopener noreferrer">
-                        <LinkSvg />
-                        <h3>megacities.world</h3>
-                    </a>
-                    <a href="https://smoothism.com" rel="noopener noreferrer">
-                        <LinkSvg />
-                        <h3>smoothism.com</h3>
-                    </a>
-                </div> 
             </div>
         </>
     )

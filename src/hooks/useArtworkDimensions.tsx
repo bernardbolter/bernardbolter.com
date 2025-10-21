@@ -1,134 +1,124 @@
-// hooks/useArtworkDimensions.ts
+'use client'
 
-import { useMemo } from 'react';
+import { useMemo } from 'react'
+
+// --- TYPES ---
+type SizeKey = 'sm' | 'md' | 'lg' | 'xl'
+type OrientationKey = 'portrait' | 'landscape' | 'square'
+
+interface Dimensions {
+  displayWidth: number
+  displayHeight: number
+}
+
+interface UseArtworkDimensionsProps {
+  imageWidth: number
+  imageHeight: number
+  artworkContainerWidth: number
+  artworkContainerHeight: number
+  artworkSize: string
+  useImageFactors?: boolean
+}
 
 // --- FACTOR CONSTANTS ---
-const COMMON_FACTORS = {
+const SIZE_FACTORS = {
+  common: {
     xl: 0.95,
     lg: 0.85,
     md: 0.75,
-    sm: 0.65,
-};
-
-const DEFAULT_SIZE_FACTORS = {
-    portrait: COMMON_FACTORS,
-    landscape: COMMON_FACTORS,
-    square: {
-        xl: 0.90,
-        lg: 0.80,
-        md: 0.70,
-        sm: 0.60,
-    },
-} as const;
-
-const IMAGE_FACTORS_COMMON = {
+    sm: 0.65
+  },
+  square: {
+    xl: 0.90,
+    lg: 0.80,
+    md: 0.70,
+    sm: 0.60
+  },
+  imageCommon: {
     xl: 0.95,
     lg: 0.90,
     md: 0.85,
-    sm: 0.80,
-};
-
-const IMAGE_SIZE_FACTORS = {
-    portrait: IMAGE_FACTORS_COMMON,
-    landscape: IMAGE_FACTORS_COMMON,
-    square: IMAGE_FACTORS_COMMON
+    sm: 0.80
+  }
 } as const
 
-// --- TYPES ---
-type OrientationKey = keyof typeof DEFAULT_SIZE_FACTORS;
-type SizeKey = keyof typeof COMMON_FACTORS;
-
-interface Dimensions {
-    displayWidth: number;
-    displayHeight: number;
-}
-interface UseArtworkDimensionsProps {
-    imageWidth: number;
-    imageHeight: number;
-    artworkContainerWidth: number;
-    artworkContainerHeight: number;
-    artworkSize: string;
-    useImageFactors?: boolean;
-}
-
 /**
- * Custom hook to calculate the display width and height of an artwork image
+ * Custom hook to calculate the display width and height of an artwork image or video poster
  * based on its orientation, size factor, and container dimensions.
  */
 export const useArtworkDimensions = ({
-    artworkContainerWidth,
-    artworkContainerHeight,
-    useImageFactors = false,
-    imageWidth,
-    imageHeight,
-    artworkSize
+  artworkContainerWidth,
+  artworkContainerHeight,
+  useImageFactors = false,
+  imageWidth,
+  imageHeight,
+  artworkSize
 }: UseArtworkDimensionsProps): Dimensions => {
-    const FALLBACK_DIM = 800
-    const FALLBACK_SIZE: SizeKey = 'lg'
+  const FALLBACK_DIM = 800
+  const FALLBACK_SIZE: SizeKey = 'lg'
 
-    const mediaWidth = (imageWidth > 0) ? imageWidth : FALLBACK_DIM
-    const mediaHeight = (imageHeight > 0) ? imageHeight : FALLBACK_DIM
+  // Validate inputs
+  const mediaWidth = Math.max(imageWidth || FALLBACK_DIM, 1)
+  const mediaHeight = Math.max(imageHeight || FALLBACK_DIM, 1)
+  const safeContainerWidth = Math.max(artworkContainerWidth || 0, 0)
+  const safeContainerHeight = Math.max(artworkContainerHeight || 0, 0)
+  const currentSize: SizeKey = (artworkSize in SIZE_FACTORS.common ? artworkSize : FALLBACK_SIZE) as SizeKey
 
-    const aspectRatio = mediaWidth / mediaHeight
+  // Calculate aspect ratio and orientation
+  const aspectRatio = mediaWidth / mediaHeight
+  const currentOrientation: OrientationKey = aspectRatio > 1 ? 'landscape' : aspectRatio < 1 ? 'portrait' : 'square'
 
-    let currentOrientation: OrientationKey
+  // Select appropriate factor based on orientation and useImageFactors
+  const factor = useImageFactors
+    ? SIZE_FACTORS.imageCommon[currentSize]
+    : currentOrientation === 'square'
+      ? SIZE_FACTORS.square[currentSize]
+      : SIZE_FACTORS.common[currentSize]
 
-    if (mediaWidth > mediaHeight) {
-        currentOrientation = 'landscape'
-    } else if (mediaWidth < mediaHeight) {
-        currentOrientation = 'portrait'
+  return useMemo(() => {
+    let maxW: number
+    let maxH: number
+
+    if (currentOrientation === 'square') {
+      const minContainerDim = Math.min(safeContainerWidth, safeContainerHeight)
+      maxW = minContainerDim * factor
+      maxH = minContainerDim * factor
     } else {
-        currentOrientation = 'square'
+      maxW = safeContainerWidth * factor
+      maxH = safeContainerHeight * factor
     }
 
-    const currentSize: SizeKey = (artworkSize as SizeKey) ?? FALLBACK_SIZE
-    const selectedSizeFactors = useImageFactors ? IMAGE_SIZE_FACTORS : DEFAULT_SIZE_FACTORS
-    const factor = selectedSizeFactors[currentOrientation][currentSize]
+    // Scale to fit container while preserving aspect ratio
+    let displayW = maxW
+    let displayH = maxW / aspectRatio
 
-    return useMemo(() => {
-        let maxW: number
-        let maxH: number
+    if (displayH > maxH) {
+      displayH = maxH
+      displayW = displayH * aspectRatio
+    }
 
-        switch (currentOrientation) {
-            case 'portrait':
-            case 'landscape':
-                maxW = artworkContainerWidth * factor
-                maxH = artworkContainerHeight * factor
-                break
-            case 'square':
-                const minContainerDim = Math.min(artworkContainerWidth, artworkContainerHeight)
-                maxW = minContainerDim * factor
-                maxH = minContainerDim * factor
-                break
-            default:
-                maxW = artworkContainerWidth * factor
-                maxH = artworkContainerHeight * factor
-                break
-        }
+    if (displayW > safeContainerWidth) {
+      displayW = safeContainerWidth
+      displayH = displayW / aspectRatio
+    }
+    if (displayH > safeContainerHeight) {
+      displayH = safeContainerHeight
+      displayW = displayH * aspectRatio
+    }
 
-        let displayW = maxW
-        let displayH = maxW / aspectRatio
+    // Round dimensions and ensure positive
+    const displayWidth = Math.max(Math.round(displayW), 1)
+    const displayHeight = Math.max(Math.round(displayH), 1)
 
-        if (displayH > maxH) {
-            displayH = maxH
-            displayW = displayH * aspectRatio
-        }
+    // Debug logging
+    console.log(`useArtworkDimensions: 
+      container=${safeContainerWidth}x${safeContainerHeight}, 
+      media=${mediaWidth}x${mediaHeight}, 
+      orientation=${currentOrientation}, 
+      size=${currentSize}, 
+      factor=${factor}, 
+      display=${displayWidth}x${displayHeight}`)
 
-        if (displayW > artworkContainerWidth) {
-             displayW = artworkContainerWidth;
-             displayH = displayW / aspectRatio;
-        }
-        if (displayH > artworkContainerHeight) {
-             displayH = artworkContainerHeight;
-             displayW = displayH * aspectRatio;
-        }
-
-        return { displayWidth: Math.round(displayW), displayHeight: Math.round(displayH) }
-    }, [
-        artworkContainerWidth, 
-        artworkContainerHeight, 
-        currentOrientation,
-        aspectRatio,
-        factor
-    ])
-};
+    return { displayWidth, displayHeight }
+  }, [safeContainerWidth, safeContainerHeight, mediaWidth, mediaHeight, currentSize, currentOrientation, factor, aspectRatio])
+}

@@ -1,0 +1,38 @@
+.svg {
+  cursor: pointer;
+  width: 100%;
+}
+
+.fadeIn {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fadeOut {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.arrowGrow {
+  stroke-dasharray: 26.398;
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.5s ease-in-out 0.5s;
+}
+
+.arrowShrink {
+  stroke-dasharray: 26.398;
+  stroke-dashoffset: 26.398;
+  opacity: 0;
+  transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.arrowUp {
+  transform: translate(2px, -5px);
+  transition: transform 0.5s ease-in-out;
+}
+
+.arrowDown {
+  transform: translate(2px, 0);
+  transition: transform 0.5s ease-in-out;
+}

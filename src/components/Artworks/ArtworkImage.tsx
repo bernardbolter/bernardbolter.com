@@ -415,7 +415,6 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                             placeholder='blur'
                                             blurDataURL={detail.blurDataURL}
                                             onLoadingComplete={() => {
-                                                console.log(isImageLoaded)
                                                 if (!isImageLoaded) {
                                                     setImageLoadingStates(prevStates => {
                                                         const newStates = [...prevStates]
