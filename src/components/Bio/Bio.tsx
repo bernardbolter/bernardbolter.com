@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useEffect, useCallback, useMemo} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useArtworks } from "@/providers/ArtworkProvider"
 import { BiographyData, BioImageNode } from '@/types/bioTypes'
 import Image from 'next/image'
+import Link from 'next/link'
 
+import CloseCircleSvg from '@/svgs/CloseCircleSvg'
+import HeaderTitle from '@/components/Info/HeaderTitle'
 import Loading from '@/components/Loading'
-
-import { getRandomArtColor } from '@/helpers/randomColor'
 
 const normalizeBioImages = (bioData: BiographyData | null): BioImageNode[] => {
     if (!bioData) return [];
@@ -68,22 +69,22 @@ const Bio = () => {
 
     const tagline = artworks.bioData?.bio?.tagline;
 
-    // console.log(bioContent)
-
-    const randomColor = useMemo(() => getRandomArtColor(), []);
-
     if (bioLoading) {
         return <Loading />
     }
 
     return (
         <div className="bio-container">
-            <h1 
-                className="bio__header"
-                style={{
-                    color: randomColor
-                }}    
-            >Bio</h1>
+            <HeaderTitle title='BIO' />
+
+            <Link
+                href='/'
+                className="bio__close-container"
+            >
+                <CloseCircleSvg />
+                <p>close</p>
+            </Link>
+
             <div className="bio__content-container">
                 {tagline && <h2 className="bio__tagline">&quot;{tagline}&quot;</h2>}
                 {bioContent && (

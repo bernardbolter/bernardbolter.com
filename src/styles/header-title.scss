@@ -1,0 +1,33 @@
+@use './vars.scss' as *;
+
+.header-title__container {
+    position: fixed;
+    top: -30px;
+    right: -40px;
+    font-size: 120px;
+    opacity: .6;
+    text-transform: uppercase;
+    font-weight: 900;
+    animation: colorChange 6s ease-in-out infinite;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 150px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        font-size: 180px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        font-size: 220px;
+        top: -60px;
+        right: -70px;
+    }
+}
+
+@keyframes colorChange {
+  0% { color: #D8D8D8; }
+  33% { color: #E2E2E2; }
+  66% { color: #ECECEC; }
+  100% { color: #D8D8D8; }
+}

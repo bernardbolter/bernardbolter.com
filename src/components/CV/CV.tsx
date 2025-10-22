@@ -1,13 +1,14 @@
 "use client"
 
-import {useState, useEffect, JSX, useMemo } from 'react'
+import {useState, useEffect, JSX } from 'react'
 import { useArtworks } from '@/providers/ArtworkProvider'
 import Link from 'next/link'
 
 import Loading from '../Loading'
 
 import { groupCvNodesBySection } from '@/helpers/cv'
-import { getRandomArtColor } from '@/helpers/randomColor'
+
+import HeaderTitle from '../Info/HeaderTitle'
 
 import CloseCircleSvg from '@/svgs/CloseCircleSvg'
 
@@ -72,7 +73,6 @@ const CV = () => {
         );
     }
 
-    const randomColor = useMemo(() => getRandomArtColor(), []);
     const isLoading = Object.keys(formattedCV).length === 0;
 
     return (
@@ -82,10 +82,7 @@ const CV = () => {
                 <Loading />
             ): (
                 <>
-                    <h1 
-                        className="cv__title"
-                        // style={{ color: randomColor}}    
-                    >CV</h1>
+                    <HeaderTitle title='CV' />
 
                     <Link
                         href='/'
@@ -102,8 +99,8 @@ const CV = () => {
                         onMouseEnter={() => setButtonHovered(true)}
                         onMouseLeave={() => setButtonHovered(false)}
                         style={{
-                            background: buttonHovered ? randomColor : '#ededed',
-                            color: buttonHovered ? 'white' : '#222'
+                            background: buttonHovered ? '#999' : '#ededed',
+                            color: buttonHovered ? '#ededed' : '#222'
                         }}
                     >
                         Print CV

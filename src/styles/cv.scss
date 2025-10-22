@@ -14,38 +14,6 @@
     }
 }
 
-.cv__title {
-    position: fixed;
-    top: -30px;
-    right: -40px;
-    font-size: 120px;
-    opacity: .6;
-    text-transform: uppercase;
-    font-weight: 900;
-    animation: colorChange 6s ease-in-out infinite;
-
-    @media screen and (min-width: $break-s) {
-        font-size: 150px;
-    }
-
-    @media screen and (min-width: $break-m) {
-        font-size: 180px;
-    }
-
-    @media screen and (min-width: $break-l) {
-        font-size: 220px;
-        top: -60px;
-        right: -70px;
-    }
-}
-
-@keyframes colorChange {
-  0% { color: #D8D8D8; }
-  33% { color: #E2E2E2; }
-  66% { color: #ECECEC; }
-  100% { color: #D8D8D8; }
-}
-
 .cv__header {
     font-size: 18px;
     color: $title-text-dark;
@@ -55,6 +23,56 @@
 
     @media screen and (min-width: $break-s) {
         font-size: 22px;
+    }
+}
+
+.cv__close-container {
+    position: fixed;
+    top: 84px;
+    right: 73px;
+    z-index: 5001;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: .6;
+    transition: opacity .3s ease-in-out;
+    text-decoration: none;
+
+    @media screen and (min-width: $break-s) {
+        top: 10px;
+        right: 190px;
+        width: 42px;
+        height: 42px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        top: 10px;
+        right: 230px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        top: 10px;
+        right: 260px;
+    }
+
+    &:hover {
+        opacity: .9;
+    }
+
+    svg {
+        width: 100%;
+        fill: $title-dark;
+    }
+
+    p {
+        font-size: 10px;
+        color: $title-dark;
+        font-weight: 300;
+        font-family: $title;
+        letter-spacing: 0.05em;
     }
 }
 
@@ -88,7 +106,13 @@
 
     @media screen and (min-width: $break-m) {
         width: 78%;
-        margin: 140px auto;
+        margin: 140px auto 140px 150px; 
+        max-width: 800px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        width: 78%;
+        margin: 140px 2% 100px 20%; 
         max-width: 800px;
     }
 }
@@ -166,39 +190,6 @@
         @media screen and (min-width: $break-m) {
             font-size: 14px;
         }
-    }
-}
-
-.cv__close-container {
-    position: fixed;
-    top: 10px;
-    right: 50px;
-    z-index: 5001;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: .7;
-    transition: opacity .3s ease-in-out;
-    text-decoration: none;
-
-    &:hover {
-        opacity: .9;
-    }
-
-    svg {
-        width: 100%;
-        fill: $title-dark;
-    }
-
-    p {
-        font-size: 10px;
-        color: $title-dark;
-        font-weight: 300;
-        font-family: $title;
-        letter-spacing: 0.05em;
     }
 }
 
