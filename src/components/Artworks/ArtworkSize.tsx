@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { convertSizeForDisplay } from '@/helpers/convertUnits'
 import { useArtworks } from '@/providers/ArtworkProvider'
 
@@ -18,7 +18,23 @@ const ArtworkSize = ({
     isImage
 }: ArtworkSizeProps) => {
     const [artworks] = useArtworks()
-    const [lightText, ]
+    const [titleText, setTitleText] = useState<string>('#666')
+    const [titleLight, setTitleLight] = useState<string>('#efefef')
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && document.documentElement) {
+             const computedTitleTextColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-text').trim()
+            if (computedTitleTextColor) {
+                 setTitleText(computedTitleTextColor)
+            }
+            const computedTitleLightColor = getComputedStyle(document.documentElement)
+                .getPropertyValue('--title-light').trim()
+            if (computedTitleLightColor) {
+                setTitleLight(computedTitleLightColor)
+            }
+        }
+    }, [])
 
     const {
         widthMetric,
@@ -41,6 +57,9 @@ const ArtworkSize = ({
             >
                 <h4 
                     className="artwork-size__size"
+                    style={{
+                        color: artworks.showSlideshow ? titleLight : titleText
+                    }}
                     
                 >{widthPixels}px x {heightPixels}px</h4>
             </div>
@@ -55,10 +74,16 @@ const ArtworkSize = ({
             >
                 <h4 
                     className="artwork-size__size"
+                    style={{
+                        color: artworks.showSlideshow ? titleLight : titleText
+                    }}
                     
                 >{widthImperialInches}{widthImperialFraction ? ` <span>${widthImperialFraction}<span>` : ''}&quot; x {heightImperialInches}{heightImperialFraction ? ` <span>${heightImperialFraction}</span>` : ''}&quot;</h4>
                 <h5 
                     className="artwork-size__size--converted"
+                    style={{
+                        color: artworks.showSlideshow ? titleLight : titleText
+                    }}
                     
                 >{widthMetric} x {heightMetric}</h5>
             </div>
@@ -70,8 +95,18 @@ const ArtworkSize = ({
             className="artwork-size__container"
             style={{ alignItems: isImage ? 'flex-end' : 'flex-start' }}    
         >
-            <h4 className="artwork-size__size">{widthMetric} x {heightMetric}</h4>
-            <h5 className="artwork-size__size--converted">{widthImperialInches}<span>{widthImperialFraction ? ` ${widthImperialFraction}` : ''}</span>&quot; x {heightImperialInches}<span>{heightImperialFraction ? ` ${heightImperialFraction}` : ''}&quot;</span></h5>
+            <h4 
+                className="artwork-size__size"
+                style={{
+                    color: artworks.showSlideshow ?  titleLight : titleText
+                }}
+            >{widthMetric} x {heightMetric}</h4>
+            <h5 
+                className="artwork-size__size--converted"
+                style={{
+                    color: artworks.showSlideshow ? titleLight : titleText
+                }}
+            >{widthImperialInches}<span>{widthImperialFraction ? ` ${widthImperialFraction}` : ''}</span>&quot; x {heightImperialInches}<span>{heightImperialFraction ? ` ${heightImperialFraction}` : ''}&quot;</span></h5>
         </div>
     )
 }

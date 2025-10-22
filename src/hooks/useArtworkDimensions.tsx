@@ -111,14 +111,14 @@ export const useArtworkDimensions = ({
     const displayHeight = Math.max(Math.round(displayH), 1)
 
     // Debug logging
-    console.log(`useArtworkDimensions: 
-      container=${safeContainerWidth}x${safeContainerHeight}, 
-      media=${mediaWidth}x${mediaHeight}, 
-      orientation=${currentOrientation}, 
-      size=${currentSize}, 
-      factor=${factor}, 
-      display=${displayWidth}x${displayHeight}`)
+    // console.log(`useArtworkDimensions: 
+    //   container=${safeContainerWidth}x${safeContainerHeight}, 
+    //   media=${mediaWidth}x${mediaHeight}, 
+    //   orientation=${currentOrientation}, 
+    //   size=${currentSize}, 
+    //   factor=${factor}, 
+    //   display=${displayWidth}x${displayHeight}`)
 
     return { displayWidth, displayHeight }
-  }, [safeContainerWidth, safeContainerHeight, mediaWidth, mediaHeight, currentSize, currentOrientation, factor, aspectRatio])
+  }, [safeContainerWidth, safeContainerHeight, currentOrientation, factor, aspectRatio])
 }

@@ -160,18 +160,22 @@ function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
   } : null;
 
   const biography = data.biography;
+  const statement = data.page;
 
   return {
     allArtwork: { nodes: artworks },
-    page: biography
+    biography: biography
       ? {
           content: biography.content || '',
           bio: transformBiography(biography.bio),
         }
       : null,
     cvinfos: { nodes: cvInfos },
-    
-    artistData: artistDataFinal, 
+    artistData: artistDataFinal,
+    statement: statement ? {
+          content: statement.content || '',
+        }
+      : null, 
   };
 }
 
@@ -205,6 +209,7 @@ export async function getArtworkData(): Promise<AllData> {
     }
 
     const rawData = result.data;
+    console.log(rawData)
     
     // REMOVED: All blur generation and mapping logic.
 

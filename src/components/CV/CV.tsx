@@ -2,11 +2,14 @@
 
 import {useState, useEffect, JSX, useMemo } from 'react'
 import { useArtworks } from '@/providers/ArtworkProvider'
+import Link from 'next/link'
 
 import Loading from '../Loading'
 
 import { groupCvNodesBySection } from '@/helpers/cv'
 import { getRandomArtColor } from '@/helpers/randomColor'
+
+import CloseCircleSvg from '@/svgs/CloseCircleSvg'
 
 // Define the type for a single CV Node
 interface CvNode {
@@ -27,7 +30,7 @@ interface GroupedCvNodes {
 
 const CV = () => {
     const [artworks] = useArtworks()
-    console.log(artworks.cvData)
+    // console.log(artworks.cvData)
 
     const [formattedCV, setFormattedCV] = useState<GroupedCvNodes>({})
     const [buttonHovered, setButtonHovered] = useState<boolean>(false)
@@ -81,8 +84,16 @@ const CV = () => {
                 <>
                     <h1 
                         className="cv__title"
-                        style={{ color: randomColor}}    
+                        // style={{ color: randomColor}}    
                     >CV</h1>
+
+                    <Link
+                        href='/'
+                        className="cv__close-container"
+                    >
+                        <CloseCircleSvg />
+                        <p>close</p>
+                    </Link>
 
                     <button 
                         onClick={handlePrint} 

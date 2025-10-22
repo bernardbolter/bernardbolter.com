@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { Artwork } from '@/types/artworkTypes'
 import { BiographyData } from "./bioTypes";
+import { StatementData } from "./contentTypes";
 import { TimelineResult } from "./timlineTypes";
 
 export interface ArtworksState {
@@ -25,6 +26,7 @@ export interface ArtworksState {
       content: string; 
       bio: BiographyData | null;
   } | null;
+  statementData: StatementData | null;
   viewportWidth: number;
   viewportHeight: number;
   artworkContainerWidth: number;
@@ -72,9 +74,10 @@ export interface BioInfo {
 
 export interface AllData {
   allArtwork: { nodes: Artwork[] };
-  page: { content: string; bio: BiographyData | null } | null;
+  biography: { content: string; bio: BiographyData | null } | null;
   cvinfos: { nodes: CVItem[] };
   artistData: ArtistData | null;
+  statement: StatementData | null;
 }
 
 export type ArtworksContextType = [ArtworksState, Dispatch<SetStateAction<ArtworksState>>];

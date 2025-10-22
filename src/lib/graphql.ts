@@ -101,7 +101,6 @@ export const getAllArtwork = `
         bioimage5 { ${ImageFields} }
       } 
     }
-
     artistInfo(id: "cG9zdDozNQ==") {
       id
       artistData {
@@ -151,6 +150,9 @@ export const getAllArtwork = `
           year
         }
       }
+    }
+    page(id: "cG9zdDo2MTc=") {
+      content(format: RENDERED)
     }
   }
 `

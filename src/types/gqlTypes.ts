@@ -117,6 +117,10 @@ export interface GqlBiography {
   bio?: GqlBiographyData | null;
 }
 
+export interface GqlStatement {
+  content?: string | null;
+}
+
 export interface GqlCVInfoFields {
   city?: string | null;
   gallery?: string | null;
@@ -155,7 +159,8 @@ export interface GqlGetAllArtworkResponse {
   allArtwork?: { nodes: GqlArtwork[] } | null;
   biography?: GqlBiography | null; 
   cvinfos?: { nodes: GqlCVInfo[] } | null;
-  artistInfo?: GqlArtistInfo | null; 
+  artistInfo?: GqlArtistInfo | null;
+  page?: GqlStatement | null;
 }
 export interface GqlGetSingleArtworkResponse {
   artwork?: GqlArtwork | null;

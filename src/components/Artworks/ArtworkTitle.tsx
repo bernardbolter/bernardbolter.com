@@ -95,7 +95,9 @@ const ArtworkTitle = () => {
                             style={{
                                 background: getSeriesColor(currentArtwork.artworkFields?.series|| 'a-colorful-history'),
                                 right: artworks.showSlideshow ? 0 : 10,
-                                bottom: size.width && size.width <= 768 ? 10 : 0,
+                                bottom: artworks.showSlideshow 
+                                    ? 10
+                                    : size.width && size.width <= 768 ? 10 : 0,
                             }}
                         />
                     </div>

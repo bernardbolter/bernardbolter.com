@@ -41,6 +41,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     infoOpen: false,
     cvData: [],
     bioData: null,
+    statementData: null,
     artistData: DEFAULT_ARTIST_INFO,
     viewportWidth: 0 as number,
     viewportHeight: 0 as number,
@@ -60,7 +61,7 @@ interface ArtworksProviderProps {
 
 export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
 
-  // console.log(allData.allArtwork?.nodes)
+  console.log(allData)
   
   const originalArtworks = allData.allArtwork.nodes.filter(artwork => {
       return !!artwork.artworkFields?.artworkImage || !!artwork.artworkFields?.videoPoster;
@@ -83,7 +84,8 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         searchValue: "",
         infoOpen: false,
         cvData: allData.cvinfos.nodes || [],
-        bioData: allData.page || null,
+        bioData: allData.biography || null,
+        statementData: allData.statement || null,
         artistData: (allData.artistData || DEFAULT_ARTIST_INFO) as ArtistData,
         viewportWidth: 0,
         viewportHeight: 0,
@@ -102,7 +104,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         original: allData.allArtwork.nodes,
         filtered: allData.allArtwork.nodes,
         cvData: allData.cvinfos.nodes,
-        bioData: allData.page,
+        bioData: allData.biography,
         artistData: allData.artistData || {},
       }));
     }
