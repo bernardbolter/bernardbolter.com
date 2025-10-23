@@ -33,7 +33,6 @@
 
 .search-nav__container {
     position: fixed;
-    top: 14px;
     right: 0;
     width: 150px;
     height: 25px;
@@ -41,10 +40,7 @@
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
     border-top: 1px solid $svg-dark;
     border-bottom: 1px solid $svg-dark;
-
-    @media screen and (min-width: $break-m) {
-        top: 137px;
-    }
+    z-index: 7001;
 }
 
 .search-nav__container--open {
@@ -59,7 +55,6 @@
     line-height: 23px;
     font-size: 13px;
     padding: 0 5px;
-    margin-left: 4px;
     color: $svg-dark;
     position: relative;
 }
@@ -82,6 +77,55 @@
     }       
 }
 
+.search-nav__matched-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    background: $nav-background;
+    width: 150px;
+    max-height: 400px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.search-nav__matched-inner {
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.search-nav__matched-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 5px;
+    text-decoration: none;
+    opacity: .8;
+    transition: opacity .3s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    h3 {
+        font-size: 10px;
+        color: $title-text-dark;
+    }
+
+    p {
+        font-size: 9px;
+        font-style: italic;
+        color: $title-text-dark;
+    }
+}
+
 // FILTER NAV
 .filter-button {
     transform: translateX(0);
@@ -89,21 +133,29 @@
 }
 
 .filter-button--open {
-    transform: translateX(-200);
+    transform: translateX(-174);
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
 }
 
 .filter-nav__container {
     position: fixed;
     right: 0;
-    width: 200px;
-    height: 400px;
     transform: translateX(200);
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
     // border-top: 1px solid $svg-dark;
     // border-bottom: 1px solid $svg-dark;
     // border-left: 1px solid $svg-dark;
-    background: $svg-dark;
+    background: $svg-light;
+    top: 79px;
+    padding: 0 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    border-bottom-left-radius: 22px;
+    width: 174px;
+    max-height: 400px;
+    overflow: hidden;
 
     @media screen and (min-width: $break-m) {
         top: 204px;
@@ -115,20 +167,62 @@
     transition: all .6s cubic-bezier(.8,.1,0.2,1);
 }
 
+.filter-nav__container--inner {
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.filter-nav__close-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: .8;
+    transition: opacity .4s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        stroke: $svg-dark;
+    }
+
+    p {
+        color: $svg-dark;
+        font-size: 9px;
+        font-weight: 300;
+        margin: 0;
+        padding: 2px 0 0 0;
+    }
+}
+
 .filter-nav__header {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    align-items: center;
-    padding-right: 10px;
     border-bottom: 1px solid $svg-light;
-    margin: 5px;
-    padding: 5px;
+    padding: 10px 0;
 
     h3 {
         font-family: $heading;
-        color: $svg-light;
-        font-size: 14px;
+        color: $filter-text;
+        font-size: 18px;
         font-weight: 700;
         margin: 0;
         padding: 0;
@@ -136,8 +230,15 @@
     }
 
     svg {
-        fill: $svg-light;
+        fill: $filter-text;
     }
+}
+
+.filter-nav__line {
+    width: 30px;
+    height: 1px;
+    background: $svg-dark;
+    margin: 0 0 10px auto;
 }
 
 .filter-nav__item--container {
@@ -146,19 +247,29 @@
     justify-content: flex-end;
     align-items: center;
     cursor: pointer;
+    margin: 0 0 6px;
+}
+
+.sort-nav__item--container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 0 6px;
 }
 
 // SORTING
 
 .filter-nav__header--sort {
     svg {
-        width: 40px;
+        width: 20px;
         height: 20px;
     }
 }
 
 .sorting-nav__box {
-    background: $svg-light;
+    background: $svg-dark;
 }
 
 // FILTERS
@@ -166,14 +277,15 @@
 .filter-nav__header--filters {
     svg {
         width: 20px;
-        height: 40px;
+        height: 20px;
     }   
 }
 
 .filter-nav__name {
     font-size: 12px;
     font-weight: 400;
-    color: $svg-light;
+    color: $filter-text;
+    margin: 0 4px;
 }
 
 .filter-nav__name--active {

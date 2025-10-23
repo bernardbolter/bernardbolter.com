@@ -10,7 +10,7 @@ const SortItem: React.FC<SortProps> = ({
 
     return (
         <div 
-            className="filter-nav__item--container"
+            className="sort-nav__item--container"
             // onClick={() => setArtworks(state => ({...state, sorting: slug}))}
             onClick={() => setArtworks(state => ({...state, sorting: slug}))}
         >

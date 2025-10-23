@@ -19,7 +19,7 @@ const Nav = () => {
     <nav 
       className="nav-container"
       style={{ 
-          zIndex: artworks.showSlideshow ? 5000 : 1000,
+          zIndex: 5001,
           top: !artworks.artworkViewTimeline 
             ? 4
             : artworks.showSlideshow 
@@ -38,7 +38,11 @@ const Nav = () => {
         <div 
             className={artworks.searchNavOpen ? "nav-button search-button search-button--open" : "nav-button search-button"}
             role="button"
-            onClick={() => setArtworks(prev => ({...prev, searchNavOpen: !prev.searchNavOpen}))}
+            onClick={() => setArtworks(prev => ({
+              ...prev, 
+              searchNavOpen: !prev.searchNavOpen,
+              searchValue: ''
+            }))}
             style={{ display: artworks.showSlideshow ? 'none' : 'block'}}
         >
           <SearchSvg searchNavOpen={artworks.searchNavOpen} />

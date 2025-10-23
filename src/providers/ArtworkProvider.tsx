@@ -38,6 +38,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     slideshowTimerProgress: 0,
     isTimelineScrollingProgamatically: false,
     searchValue: "",
+    searchMatches: {},
     infoOpen: false,
     cvData: [],
     bioData: null,
@@ -61,7 +62,7 @@ interface ArtworksProviderProps {
 
 export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) => {
 
-  console.log(allData)
+  // console.log(allData)
   
   const originalArtworks = allData.allArtwork.nodes.filter(artwork => {
       return !!artwork.artworkFields?.artworkImage || !!artwork.artworkFields?.videoPoster;
@@ -82,6 +83,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         slideshowTimerProgress: 0,
         isTimelineScrollingProgamatically: false,
         searchValue: "",
+        searchMatches: {},
         infoOpen: false,
         cvData: allData.cvinfos.nodes || [],
         bioData: allData.biography || null,
@@ -120,17 +122,10 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
     // Apply series filters
      if (state.filtersArray.length > 0) {
       result = result.filter((artwork: Artwork) => {
-        
-        // 1. Get the single series value (string | null)
         const series = artwork.artworkFields.series;
-
-        // 2. If series is null, it doesn't match any filter.
         if (!series) {
             return false;
         }
-
-        // 3. Check if the *active filters array* contains the artwork's single *series value*.
-        // This is the correct, type-safe replacement for the old logic.
         return state.filtersArray.includes(series);
         
       })
@@ -139,8 +134,32 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
     // Apply search filter
     if (state.searchValue.trim()) {
       const searchLower = state.searchValue.toLowerCase()
-      result = result.filter(artwork => 
-        artwork.title?.toLowerCase().includes(searchLower))
+      const matches: {  [key: string]: string[] } = {}
+      result = result.filter(artwork => {
+        const fields= [
+          { name: 'title', value: artwork.title},
+          { name: 'city', value: artwork.artworkFields?.city},
+          { name: 'county', value: artwork.artworkFields?.country},
+          { name: 'medium', value: artwork.artworkFields?.medium },
+          { name: 'style', value: artwork.artworkFields?.style},
+          { name: 'year', value: artwork.artworkFields?.year?.toString()}
+        ]
+        const matchedFields: string[] = []
+        const isMatch = fields.some(field => {
+          if (field.value && field.value.toLowerCase().includes(searchLower)) {
+            matchedFields.push(field.name)
+            return true
+          }
+          return false
+        })
+        if (isMatch && artwork.id) {
+          matches[artwork.id] = matchedFields
+        }
+        return isMatch
+      })
+      setState(state => ({ ...state, searchMatches: matches }))
+    } else {
+      setState(state => ({ ...state, searchMatches: {} }))
     }
 
     // Apply sorting
@@ -148,6 +167,8 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
       result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     } else if (state.sorting === 'oldest') {
       result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    } else if (state.sorting === 'random') {
+      result.sort(() => Math.random() - 0.5)
     }
 
     return result

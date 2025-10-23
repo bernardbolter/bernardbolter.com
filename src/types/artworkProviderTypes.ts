@@ -14,6 +14,7 @@ export interface ArtworksState {
   filtersArray: Array<string>;
   filterNavOpen: boolean;
   searchNavOpen: boolean;
+  searchMatches: Record<string, string[]>;
   showSlideshow: boolean;
   slideshowPlaying: boolean;
   slideshowTimerProgress: number;

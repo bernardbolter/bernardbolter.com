@@ -318,7 +318,8 @@ const ArtworksTimeline = () => {
                 ref={artworkTimelineRef}
                 style={{ 
                     width: '100%',
-                    height: vport.width && vport.height && vport.width > 767 ? `${vport.height}px` : '100vh'
+                    height: vport.width && vport.height && vport.width > 767 ? `${vport.height}px` : '100vh',
+                    paddingTop: vport.width && vport.height && vport.width <= 767 ? (vport.height - artworks.artworkContainerHeight) / 2 : 0
                 }}  
             >
                 <div
