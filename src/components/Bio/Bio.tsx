@@ -75,7 +75,7 @@ const Bio = () => {
 
     return (
         <div className="bio-container">
-            <HeaderTitle title='BIO' />
+            <HeaderTitle title='BIO' large={false} />
 
             <Link
                 href='/'

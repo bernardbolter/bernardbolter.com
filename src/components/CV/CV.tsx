@@ -82,7 +82,7 @@ const CV = () => {
                 <Loading />
             ): (
                 <>
-                    <HeaderTitle title='CV' />
+                    <HeaderTitle title='CV' large={true} />
 
                     <Link
                         href='/'

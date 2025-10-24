@@ -43,6 +43,8 @@ const ArtworksContext = createContext<ArtworksContextType>([
     cvData: [],
     bioData: null,
     statementData: null,
+    contactData: null,
+    datenschutzData: null,
     artistData: DEFAULT_ARTIST_INFO,
     viewportWidth: 0 as number,
     viewportHeight: 0 as number,
@@ -88,6 +90,8 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         cvData: allData.cvinfos.nodes || [],
         bioData: allData.biography || null,
         statementData: allData.statement || null,
+        contactData: allData.contact || null,
+        datenschutzData: allData.datenschutz || null,
         artistData: (allData.artistData || DEFAULT_ARTIST_INFO) as ArtistData,
         viewportWidth: 0,
         viewportHeight: 0,
@@ -107,6 +111,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         filtered: allData.allArtwork.nodes,
         cvData: allData.cvinfos.nodes,
         bioData: allData.biography,
+        datenschutzData: allData.datenschutz,
         artistData: allData.artistData || {},
       }));
     }

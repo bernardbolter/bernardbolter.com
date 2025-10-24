@@ -1,0 +1,52 @@
+@use './vars.scss' as *;
+
+.datenschutz__container {
+     width: 100%;
+        height: 100vh;
+        background: $background;
+        overflow: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            background: transparent; /* Chrome/Safari/Webkit */
+            width: 0px;
+        }
+}
+
+.datenschutz__close {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 30px;
+    height: 30px;
+    opacity: .8;
+    transition: opacity .3s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    svg {
+        width: 100%;
+        fill: $svg-dark;
+        stroke: $svg-dark;
+    }
+}
+
+.datenschutz__content {
+    width: 100%;
+    padding: 50px 1%;
+
+    p {
+        margin: 0;
+        padding: 0 10px 10px;
+        color: #333;
+        overflow-x: hidden;
+        width: 100vw;
+        box-sizing: border-box;
+        pointer-events: none;
+        user-select: none;
+        line-height: 1.3;
+    }
+}

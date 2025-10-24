@@ -154,6 +154,12 @@ export const getAllArtwork = `
     page(id: "cG9zdDo2MTc=") {
       content(format: RENDERED)
     }
+    contact: page(id: "cG9zdDo2MjA=") { 
+      content(format: RENDERED)
+    }
+    datenschutz: page(id: "cG9zdDo2Mjk=") { 
+      content(format: RENDERED)
+    }
   }
 `
 

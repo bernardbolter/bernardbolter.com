@@ -121,6 +121,14 @@ export interface GqlStatement {
   content?: string | null;
 }
 
+export interface GqlContact {
+  content?: string | null;
+}
+
+export interface GqlDatenschutz {
+  content?: string | null;
+}
+
 export interface GqlCVInfoFields {
   city?: string | null;
   gallery?: string | null;
@@ -161,6 +169,8 @@ export interface GqlGetAllArtworkResponse {
   cvinfos?: { nodes: GqlCVInfo[] } | null;
   artistInfo?: GqlArtistInfo | null;
   page?: GqlStatement | null;
+  contact?: GqlContact | null;
+  datenschutz?: GqlDatenschutz | null;
 }
 export interface GqlGetSingleArtworkResponse {
   artwork?: GqlArtwork | null;

@@ -1,11 +1,12 @@
 interface HeaderTitleProps {
-    title: string
+    title: string,
+    large: boolean
 }
 
-const HeaderTitle = ({ title }: HeaderTitleProps) => {
+const HeaderTitle = ({ title, large = false }: HeaderTitleProps) => {
     return (
         <h1 
-            className="header-title__container"  
+            className={large ? "header-title__container--large": "header-title__container"}  
         >{title}</h1>
     )
 }

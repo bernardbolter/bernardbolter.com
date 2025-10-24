@@ -25,6 +25,35 @@
     }
 }
 
+.header-title__container--large {
+    position: fixed;
+    top: -10px;
+    right: -10px;
+    font-size: 60px;
+    opacity: .6;
+    text-transform: uppercase;
+    font-weight: 900;
+    animation: colorChange 6s ease-in-out infinite;
+
+    @media screen and (min-width: $break-s) {
+        font-size: 80px;
+        top: -20px;
+        right: -15px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        font-size: 110px;
+        top: -20px;
+        right: -15px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        font-size: 150px;
+        top: -40px;
+        right: -50px;
+    }
+}
+
 @keyframes colorChange {
   0% { color: #D8D8D8; }
   33% { color: #E2E2E2; }

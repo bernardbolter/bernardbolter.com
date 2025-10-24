@@ -28,7 +28,7 @@ const Statement = () => {
 
     return (
         <div className="statement__container">
-            <HeaderTitle title='STATE' />
+            <HeaderTitle title='STATE' large={true} />
 
             <Link
                 href="/"

@@ -76,11 +76,11 @@ const Info = () => {
                 </div>
                 <div className="info__divider" />
                 <div className="info-links">
-                    {pathname !== '/' && <Link href="/">Artwork</Link>}
-                    {pathname !== '/bio' && <Link href="/bio">Bio</Link>}
-                    {pathname !== '/cv' && <Link href="/cv">CV</Link>}
-                    {pathname !== '/statement' && <Link href="/statement">Statement</Link>}
-                    {pathname !== '/contact' && <Link href="contact">Contact</Link>}
+                    {pathname !== '/' && <Link href="/" onClick={() => setArtworks(state => ({...state, infoOpen: false}))}>Artwork</Link>}
+                    {pathname !== '/bio' && <Link href="/bio" onClick={() => setArtworks(state => ({...state, infoOpen: false}))}>Bio</Link>}
+                    {pathname !== '/cv' && <Link href="/cv" onClick={() => setArtworks(state => ({...state, infoOpen: false}))}>CV</Link>}
+                    {pathname !== '/statement' && <Link href="/statement" onClick={() => setArtworks(state => ({...state, infoOpen: false}))}>Statement</Link>}
+                    {pathname !== '/contact' && <Link href="contact" onClick={() => setArtworks(state => ({...state, infoOpen: false}))}>Contact</Link>}
                 </div>
                 <div className="info__divider" />
                 <div className="info-socials">

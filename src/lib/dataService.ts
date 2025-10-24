@@ -138,6 +138,8 @@ function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
   const artworks = (data.allArtwork?.nodes || []).map((gqlArtwork) => 
     transformArtwork(gqlArtwork) 
   );
+
+  console.log(data)
   
   // Transform CV and Artist Info
   const cvInfos = (data.cvinfos?.nodes || []).map(transformCVItem);
@@ -161,6 +163,8 @@ function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
 
   const biography = data.biography;
   const statement = data.page;
+  const contact = data.contact;
+  const datenschutz = data.datenschutz;
 
   return {
     allArtwork: { nodes: artworks },
@@ -175,7 +179,13 @@ function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
     statement: statement ? {
           content: statement.content || '',
         }
-      : null, 
+      : null,
+    contact: contact? {
+        content: contact.content || ''
+      } : null,
+    datenschutz: datenschutz? {
+        content: datenschutz.content || ''
+      } : null,
   };
 }
 
@@ -209,9 +219,6 @@ export async function getArtworkData(): Promise<AllData> {
     }
 
     const rawData = result.data;
-    console.log(rawData)
-    
-    // REMOVED: All blur generation and mapping logic.
 
     // 4. Transform the raw data (without blur map)
     return transformGqlResponse(rawData);
