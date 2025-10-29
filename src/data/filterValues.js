@@ -8,6 +8,5 @@ export const filterValues = [
     {id:"07", slug: 'og', name: 'OG Artwork', color: "#395B0E"},
     {id:"08", slug: 'installations', name: 'Installations', color: "#A27E8E"},
     {id:"09", slug: 'photography', name: 'Photography', color: "#2D4654"},
-    {id:"10", slug: 'videos', name: 'Videos', color: "#996a3e"},
-    {id:"11", slug: 'available', name: 'Available', color: "#d4af37"}
+    {id:"10", slug: 'videos', name: 'Videos', color: "#996a3e"}
 ]

@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { RefObject } from 'react'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import useWindowSize from '@/hooks/useWindowSize'
+import DOMPurify from 'dompurify'
 
 import { getSeriesColor } from '@/helpers/seriesColor'
 import { seriesColorBlurDataURLs } from '@/helpers/blurURLs'
@@ -13,8 +15,10 @@ import { seriesColorBlurDataURLs } from '@/helpers/blurURLs'
 import Info from '@/components/Info/Info'
 import ArtworkSize from './ArtworkSize'
 import MagnifyAnimationSvg from '@/svgs/MagnifyAnimationSvg'
-import RightArrowSvg from '@/svgs/RightArrowSvg'
 import LeftArrowSvg from '@/svgs/LeftArrowSvg'
+import ArtworkPauseSvg from '@/svgs/ArtworkPauseSvg'
+import CloseCircleSvg from '@/svgs/CloseCircleSvg'
+import ArtworkTimerSvg from '@/svgs/ArtworkTimerSvg'
 
 import { Artwork, ArtworkImageNode } from '@/types/artworkTypes'
 import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
@@ -59,6 +63,10 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     const [enlargeArtwork, setEnlargeArtwork] = useState<boolean>(false)
     const [currentImageIndex, setCurrentImageIndex] = useState<number>(0)
     const [dragPositions, setDragPositions] = useState<DragPosition[]>([])
+    const [artworkContent, setArtworkContent] = useState<string>('')
+    const [provenaceData, setProvenanceData] = useState<string>('')
+    const [artworkPlaying, setArtworkPlaying] = useState<boolean>(true)
+    const [timerProgress, setTimerProgress] = useState<number>(0)
 
     const size = useWindowSize();
     const viewportWidth = size.width || 0;
@@ -66,7 +74,13 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
 
     const imageRefsRef = useRef<RefObject<HTMLDivElement>[]>([])
 
-    // console.log("artwork image: ", artwork)
+    useEffect(() => {
+        // Sanitize content and provenance, default to empty string if null
+        setArtworkContent(DOMPurify.sanitize(artwork.content || ''))
+        setProvenanceData(DOMPurify.sanitize(artwork.artworkFields?.provenance || ''))
+    }, [artwork.content, artwork.artworkFields?.provenance])
+
+    // console.log("artwork image: ", artwork.artworkFields)
 
     // --- 1. Consolidate All Images ---
     const allImageNodes = useMemo(() => {
@@ -107,7 +121,7 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
             altText: node?.altText || artwork.title || 'Artwork Image',
             blurDataURL: seriesColorBlurDataURLs[artwork.artworkFields?.series || 'a-colorful-history']
         }))
-    }, [allImageNodes, artwork.title])
+    }, [allImageNodes, artwork.title, artwork.artworkFields.series])
 
     useMemo(() => {
         // Only run if the number of images has changed
@@ -117,7 +131,7 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         if (imageLoadingStates.length !== allImageDetails.length) {
         setImageLoadingStates(new Array(allImageDetails.length).fill(false))
     }
-    }, [allImageDetails.length, imageLoadingStates.length])
+    }, [allImageDetails, imageLoadingStates.length])
 
     if (dragPositions.length === 0 && allImageDetails.length > 0) {
         setDragPositions(allImageDetails.map(() => ({ x: 0, y: 0 })))
@@ -353,12 +367,47 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         };
     }, [magnifiedDims, containerDims, currentDragPosition, viewportWidth, viewportHeight]);
 
+    // Timer on multiple images
+    useEffect(() => {
+        if (!hasMultipleImages || !artworkPlaying || enlargeArtwork) {
+            setTimerProgress(0)
+            return
+        }
+
+        const INTERVAL = 4000
+        const UPDATE_FREQUENCY = 50
+        const INCREMENT = (100 / INTERVAL) * UPDATE_FREQUENCY
+
+        let progress = 0
+        
+        const progressInterval = setInterval(() => {
+            progress += INCREMENT
+            if (progress >= 100) {
+                progress = 0
+                handleNextImage()
+            }
+            setTimerProgress(progress)
+        }, UPDATE_FREQUENCY)
+
+        return () => {
+            clearInterval(progressInterval)
+            setTimerProgress(0)
+        }
+    }, [hasMultipleImages, artworkPlaying, enlargeArtwork, handleNextImage])
+
     // --- 9. Render ---
     if (!allImageDetails.length) return null;
 
     return (
         <div className="artwork-image__main-scroll-wrapper">
             <Info />
+            <Link
+                href="/"
+                className="artwork-image__close"
+            >
+                <CloseCircleSvg />
+                <p>close</p>
+            </Link>
             <div 
                 className="artwork-image__magnify-container"
                 onClick={handleToggleMagnify}
@@ -414,7 +463,7 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                             quality={80}
                                             placeholder='blur'
                                             blurDataURL={detail.blurDataURL}
-                                            onLoadingComplete={() => {
+                                            onLoad={() => {
                                                 if (!isImageLoaded) {
                                                     setImageLoadingStates(prevStates => {
                                                         const newStates = [...prevStates]
@@ -459,19 +508,55 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                             }}
                         />
                     </div>
-                    <div className="artwork-image__info--line"/>
                     <div className="artwork-image__info--details-container">
-                        <div className="artwork-image__info--available">
-
+                        <div className="artwork-image__info--line"/>
+                        <div className="artwork-image__info--about-wrapper">
+                            {artworkContent && (
+                                <>
+                                    <h1>About the Artwork</h1>
+                                    <div className="artwork-image__info--about"
+                                        dangerouslySetInnerHTML={{ __html: artworkContent }}
+                                    />
+                                </>
+                                
+                            )}
                         </div>
                         <div className="artwork-image__info--details">
-
+                            {artwork.artworkFields?.forsale && (
+                                <div className="artwork-image__info--available">
+                                    <h2>This artwork is available</h2>
+                                    <div className="artwork-image__info--price-wrapper">
+                                        <h3>{artwork.artworkFields?.price}€</h3>
+                                        <p>shipping in the EU included</p>
+                                    </div>
+                                    <p className="artwork-image__info--email">email for details</p>
+                                    <h5>bernardbolter@gmail.com</h5>
+                                </div>
+                            )}
+                            {artwork.artworkFields?.location === 'unknown' && (
+                                <div className="artwork-image__info--unknown">
+                                    <p>If you happen to own this artwork, email me. I’ll add you and your details to this page, officially connecting you to its history. <Link href="/contact">bernardbolter@gmail.com</Link></p>
+                                </div>
+                            )}
+                            {artwork.artworkFields?.location && (
+                                <div className="artwork-image__info--location">
+                                    <h1>Current Location</h1>
+                                    <p>{artwork.artworkFields?.location}</p>
+                                </div>
+                            )}
+                            {provenaceData && (
+                                <div className="artwork-image__info--provenance-wrapper">
+                                    <h1>Provenance <span>(history of ownership)</span></h1>
+                                    <div className="artwork-image__info--provenance"
+                                        dangerouslySetInnerHTML={{ __html: provenaceData}}
+                                    />
+                                </div>
+                            )}
+                            
+                            </div>
                         </div>
                     </div>
-                    <h1>Info</h1>
-                    <p>jfkas<br/>dfasj<br/>kfhjka<br/>shdfjha<br/>sjkl<br/>dfhsajkld<br/>fhj<br/>klasd<br/>hfjkl<br/>asdhfjlh<br/>sadjkfh<br/>sajdkhfjk<br/>sahdjkfhaf<br/>jsdahfjkh<br/>sdkljfhasd</p>
                 </div>
-            </div>
             
             {/* Multiple Buttons and Counter */}
             {hasMultipleImages && (
@@ -479,14 +564,22 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                     <div className="artwork-image__counter">
                         <p>{currentImageIndex + 1} / {allImageNodes.length}</p>
                     </div>
-                    <div className="artwork-image__buttons">
-                        <div className="artwork-image__button" onClick={handlePrevImage} aria-label="Previous Image">
-                            <LeftArrowSvg />
-                        </div>
-                        <div className="artwork-image__button" onClick={handleNextImage} aria-label="Next Image">
-                            <RightArrowSvg />
-                        </div>
+                    <div className="artwork-image__button" onClick={handlePrevImage} aria-label="Previous Image">
+                        <LeftArrowSvg isRight={false} />
                     </div>
+                    <div className="artwork-image__button right-arrow" onClick={handleNextImage} aria-label="Next Image">
+                        <LeftArrowSvg isRight= {true} />
+                    </div>
+                    {!enlargeArtwork && (<div className="artwork-image__button">
+                        <ArtworkPauseSvg 
+                            artworkPlaying={artworkPlaying} 
+                            setArtworkPlaying={setArtworkPlaying}    
+                        />
+                    </div>)}
+                    {!enlargeArtwork && (<div className="artwork-image__button artwork-image__button--timer">
+                        <ArtworkTimerSvg progress={timerProgress} />
+                    </div>
+                    )}
                 </div>
             )}
 

@@ -44,6 +44,7 @@ export interface GqlArtworkFields {
   
   year?: string | null; // GraphQL returns as string!
   forsale?: boolean | null;
+  location?: string | null;
   price?: string | null;
   provenance?: string | null;
   metadescription?: string | null;

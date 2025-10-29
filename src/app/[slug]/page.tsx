@@ -45,7 +45,7 @@ export async function generateStaticParams() {
 export default async function ArtworkPage({ params }: Props) {
   const { slug } = await params
   const artwork = await getArtworkBySlug(slug)
-  console.log("in page: ", artwork)
+  // console.log("in page: ", artwork)
 
   if (!artwork) {
     notFound()

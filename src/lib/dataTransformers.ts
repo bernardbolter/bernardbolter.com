@@ -129,6 +129,7 @@ function transformArtworkFields(
     year: parseNumber(gqlFields.year),
     forsale: gqlFields.forsale || null,
     price: gqlFields.price || null,
+    location: gqlFields.location || null,
     provenance: gqlFields.provenance || null,
     metadescription: gqlFields.metadescription || null,
     metakeywords: gqlFields.metakeywords || null,

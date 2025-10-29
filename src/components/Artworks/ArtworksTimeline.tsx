@@ -413,7 +413,7 @@ const ArtworksTimeline = () => {
                         className="artworks-timeline__control"
                         onClick={scrollPrevious}    
                     >
-                        <LeftArrowSvg />
+                        <LeftArrowSvg isRight={false} />
                     </div>
                     <div 
                         className="artworks-timeline__control"

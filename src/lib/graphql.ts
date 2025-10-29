@@ -37,6 +37,7 @@ export const getAllArtwork = `
           density
           elevation
           extraimages
+          location
           forsale
           price
           provenance
@@ -188,6 +189,7 @@ export const getSingleArtwork = `
         density
         elevation
         extraimages
+        location
         forsale
         price
         provenance

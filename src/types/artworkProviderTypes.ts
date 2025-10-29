@@ -12,6 +12,7 @@ export interface ArtworksState {
   sorting: string;
   artworkViewTimeline: boolean;
   filtersArray: Array<string>;
+  isAvailableFilter: boolean;
   filterNavOpen: boolean;
   searchNavOpen: boolean;
   searchMatches: Record<string, string[]>;

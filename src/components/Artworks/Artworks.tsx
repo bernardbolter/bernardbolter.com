@@ -32,7 +32,7 @@ const Artworks = () => {
         }
     }, [size.width, artworks.artworkViewTimeline, setArtworks])
 
-    if (artworks.original.length === 0) {
+    if (artworks.original.length == 0) {
         return <Loading />
     }
 

@@ -31,6 +31,7 @@ const ArtworksContext = createContext<ArtworksContextType>([
     sorting: "latest",
     artworkViewTimeline: true,
     filtersArray: [],
+    isAvailableFilter: false,
     filterNavOpen: false,
     searchNavOpen: false,
     showSlideshow: false,
@@ -78,6 +79,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
         sorting: "latest",
         artworkViewTimeline: true,
         filtersArray: [],
+        isAvailableFilter: false,
         filterNavOpen: false,
         searchNavOpen: false,
         showSlideshow: false,
@@ -123,6 +125,14 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
 
     // Filter out artworks without images
     let result = state.original
+
+    // Aplly is Available filter
+    if (state.isAvailableFilter) {
+      result = result.filter(( artwork: Artwork) => {
+        console.log(artwork)
+        return artwork.artworkFields?.forsale === true
+      })
+    }
 
     // Apply series filters
      if (state.filtersArray.length > 0) {
@@ -177,7 +187,7 @@ export const ArtworksProvider = ({ children, allData }: ArtworksProviderProps) =
     }
 
     return result
-  }, [state.original, state.filtersArray, state.searchValue, state.sorting])
+  }, [state.original, state.filtersArray, state.searchValue, state.sorting, state.isAvailableFilter])
 
   // Update filtered array when computation changes
   useEffect(() => {

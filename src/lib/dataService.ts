@@ -138,8 +138,6 @@ function transformGqlResponse(data: GqlGetAllArtworkResponse): AllData {
   const artworks = (data.allArtwork?.nodes || []).map((gqlArtwork) => 
     transformArtwork(gqlArtwork) 
   );
-
-  console.log(data)
   
   // Transform CV and Artist Info
   const cvInfos = (data.cvinfos?.nodes || []).map(transformCVItem);

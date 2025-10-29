@@ -62,6 +62,26 @@ const FilterNav: React.FC = () => {
                 </div>
 
                 <div className='filter-nav__line' />
+                
+                <div 
+                    className="filter-nav__item--container"
+                    onClick={() => setArtworks(state => ({...state, isAvailableFilter: !state.isAvailableFilter}))}    
+                >
+                    <p
+                    className={artworks.isAvailableFilter ? "filter-nav__name filter-nav__name--active" : "filter-nav__name" }
+                    >
+                        Available
+                    </p>
+                    <div 
+                        className="filter-nav__box" 
+                        style={{
+                            backgroundColor: '#d4af37',
+                            borderRadius: artworks.isAvailableFilter ? "50%" : ""
+                        }}    
+                    />
+                </div>
+
+                <div className='filter-nav__line' />
 
                 <div className="filter-nav__content">
                     {filterValues.map(value => {
