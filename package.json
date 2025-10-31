@@ -17,6 +17,7 @@
     "dompurify": "^3.3.0",
     "framer-motion": "^12.23.6",
     "graphql": "^16.11.0",
+    "klaro": "^0.7.21",
     "next": "15.3.4",
     "node-fetch": "^3.3.2",
     "plaiceholder": "^3.0.0",

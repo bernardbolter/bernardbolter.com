@@ -45,12 +45,28 @@
 .artwork-video__info-container {
     width: 90%;
     margin: 10px 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.artwork-video__youtube--play {
+    width: 44px;
+    height: 44px;
+
+    svg {
+        fill: $background;
+        width: 100%;
+    }
 }
 
 .artwork-grid__info--title {
     font-size: 12px;
     text-align: right;
     font-weight: 300;
+    padding: 0 0 9px;
+    border-bottom: 1px solid $art-image-line;
 
     span {
         font-weight: 600;
@@ -61,4 +77,44 @@
     width: 90%;
     margin: 20px 0 50px auto;
     max-width: 600px;
+
+    h1 {
+        font-family: $title;
+        font-size: 20px;
+        color: $art-image-text-dark;
+        padding: 5px 0;
+        letter-spacing: 0.05em;
+    }
+
+    h2 {
+        font-family: $title;
+        font-size: 16px;
+        color: $art-image-text-light;
+        padding: 5px 0;
+        letter-spacing: 0.05em; 
+    }
+
+    li {
+        font-size: 16px;
+        padding: 4px 0;
+        font-weight: 300;
+        color: $art-image-text-dark;
+        
+
+        &:before {
+            content: '•';
+            display: inline-block;
+            margin-right: 5px; 
+            color: $art-image-text-light; 
+            font-size: 1.5em; 
+        }
+    }
+
+    p {
+        text-indent: 14px;
+        color: $art-image-text-dark;
+        line-height: 1.4;
+        font-weight: 400;
+        padding: 0 0 7px;
+    }
 }
