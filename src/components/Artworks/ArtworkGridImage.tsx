@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -31,6 +32,8 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
   artwork,
   itemSize
 }) => {
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(true)
+  const [imageFailed, setImageFailed] = useState<boolean>(false)
   const isVideo = !artwork.artworkFields?.artworkImage && !!artwork.artworkFields?.videoPoster
   const imageSource = isVideo ? artwork.artworkFields?.videoPoster : artwork.artworkFields?.artworkImage
   const imageNode = imageSource?.node
@@ -63,7 +66,7 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
 
   const horizontalMargin = Math.round((itemSize.width - finalWidth) / 2)
 
-    // Tesing Logs
+    // Testing Logs
     // console.log(`ArtworkGridImage: isVideo=${isVideo}, imageSrc=${imageSrc}, blurDataURL=${blurDataURL}, display=${finalWidth}x${finalHeight}, margin=${horizontalMargin}, loading=lazy`)
 
   return (
@@ -79,21 +82,47 @@ const ArtworkGridImage: React.FC<ArtworkGridImageProps> = ({
         className="artwork-grid__image-wrapper"
         style={{
           marginLeft: horizontalMargin,
-          marginRight: horizontalMargin
+          marginRight: horizontalMargin,
+          position: 'relative',
+          width: finalWidth,
+          height: finalHeight
         }}
       >
         {isVideo && <PlayButtonSvg />}
+
+        {(isImageLoading || imageFailed) && (
+          <div
+            className="artwork-grid__placeholer-overlay"
+            style={{
+              backgroundColor: getSeriesColor(artwork.artworkFields?.series || ''),
+              zIndex: imageFailed ? 20 : 10
+            }}
+          >
+            {imageFailed
+              ? <p>image failed to load</p>
+              : <p>image loading...</p>
+            }
+          </div>
+        )}
         <Image
           className="artwork-grid__image"
           src={imageSrc}
           alt={altText}
           width={finalWidth}
           height={finalHeight}
-          style={{ objectFit: 'contain' }}
+          style={{ 
+            objectFit: 'contain',
+            opacity: imageFailed ? 0 : 1 
+          }}
           placeholder="blur"
           blurDataURL={blurDataURL}
           loading="lazy"
           sizes={getImageSizes(itemSize.width)}
+          onLoadingComplete={() => setIsImageLoading(false)}
+          onError={() => {
+            setIsImageLoading(false)
+            setImageFailed(true)
+          }}
         />
         <div className="artwork-grid__info">
             <div

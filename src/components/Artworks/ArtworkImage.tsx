@@ -41,6 +41,7 @@ interface ArtworkImageDetail {
     altText?: string
     imageSrcSet?: string
     blurDataURL?: string
+    seriesSlug?: string
 }
 interface ArtworkFieldsWithGallery {
     artworkImage?: { node: ArtworkImageNode } | null;
@@ -59,7 +60,9 @@ const BORDER_PADDING = 20; // 20px white border for magnify mode
 
 const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     const [imageLoadingStates, setImageLoadingStates] = useState<boolean[]>([])
+    const [imageErrorStates, setImageErrorStates] = useState<boolean[]>([])
     const [enlargedArtworkLoading, setEnlargedArtworkLoading] = useState<boolean>(true)
+    const [enlargedArtworkError, setEnlargedArtworkError] = useState<boolean>(false)
     const [enlargeArtwork, setEnlargeArtwork] = useState<boolean>(false)
     const [currentImageIndex, setCurrentImageIndex] = useState<number>(0)
     const [dragPositions, setDragPositions] = useState<DragPosition[]>([])
@@ -75,6 +78,10 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     const viewportHeight = size.height || 0;
 
     const imageRefsRef = useRef<RefObject<HTMLDivElement>[]>([])
+
+    const seriesColor = useMemo(() => {
+        return getSeriesColor(artwork.artworkFields?.series || '')
+    }, [artwork.artworkFields?.series])
 
     useEffect(() => {
         // Sanitize content and provenance, default to empty string if null
@@ -134,8 +141,11 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         }
         if (imageLoadingStates.length !== allImageDetails.length) {
         setImageLoadingStates(new Array(allImageDetails.length).fill(false))
-    }
-    }, [allImageDetails, imageLoadingStates.length])
+        }
+        if (imageErrorStates.length !== allImageDetails.length) {
+            setImageErrorStates(new Array(allImageDetails.length).fill(false))
+        }
+    }, [allImageDetails, imageLoadingStates.length, imageErrorStates.length])
 
     if (dragPositions.length === 0 && allImageDetails.length > 0) {
         setDragPositions(allImageDetails.map(() => ({ x: 0, y: 0 })))
@@ -196,6 +206,9 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                     newPositions[newIndex] = newInitialPosition;
                     return newPositions;
                 });
+
+                setEnlargedArtworkLoading(true)
+                setEnlargedArtworkError(false)
             }
         }
         setCurrentImageIndex(newIndex);
@@ -282,8 +295,9 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         setEnlargeArtwork(state => {
             if (!state) { 
                 // When switching TO magnify mode
-                setEnlargedArtworkLoading(true); // Ensure loading state is reset
-                
+                setEnlargedArtworkLoading(true)
+                setEnlargedArtworkError(false)
+
                 const initialPosition = getInitialDragPosition(currentImageIndex);
                 
                 setDragPositions(prevPositions => {
@@ -445,6 +459,7 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                             const { imageSrc, altText } = detail
                             const isCurrent = index === currentImageIndex
                             const isImageLoaded = imageLoadingStates[index]
+                            const hasImageError = imageErrorStates[index]
 
                             return (
                                 <div
@@ -457,8 +472,24 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                 >
                                     <div 
                                         className="artwork-image__image-wrapper"
-                                        style={{ width: displayWidth, height: displayHeight}}   
+                                        style={{ 
+                                            width: displayWidth, 
+                                            height: displayHeight,
+                                            backgroundColor: seriesColor,
+                                            position: 'relative'
+                                        }}   
                                     >
+                                        {(isImageLoaded === false || hasImageError) && (
+                                            <div
+                                                className="artwork-detail__placeholder-overlay"
+                                                style={{
+                                                    zIndex: hasImageError ? 20 : 10
+                                                }}
+                                            >
+                                                <p>{artwork.title}</p>
+                                                <p>{hasImageError ? 'image failed to load' : 'loading...'}</p>
+                                            </div>
+                                        )}
                                         <Image
                                             className="artwork-image__image"
                                             src={imageSrc}
@@ -478,8 +509,23 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                                     })
                                                 }
                                             }}
+                                            onError={() => {
+                                                setImageLoadingStates(prevStates => {
+                                                    const newStates = [...prevStates]
+                                                    newStates[index] = true
+                                                    return newStates;
+                                                })
+                                                setImageErrorStates(prevStates => {
+                                                    const newStates = [...prevStates]
+                                                    newStates[index] = true
+                                                    return newStates;
+                                                })
+                                            }}
                                             priority={isCurrent}
-                                            style={{  objectFit: 'cover' }}
+                                            style={{ 
+                                                objectFit: 'cover',
+                                                opacity: hasImageError ? 0 : 1
+                                            }}
                                             key={index}
                                         />
                                     </div>
@@ -666,7 +712,8 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                                     cursor: canDragImage ? 'grab' : 'default',
                                                     width: imageMagnifiedW,
                                                     height: imageMagnifiedH,
-                                                    position: 'relative'
+                                                    position: 'relative',
+                                                    background: seriesColor
                                                 }}
                                             >
                                                 <Image
@@ -680,17 +727,47 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                                     placeholder='blur'
                                                     priority={index === currentImageIndex}
                                                     draggable={false}
-                                                    style={{ objectFit: 'contain' }}
+                                                    style={{ 
+                                                        objectFit: 'contain',
+                                                        opacity: enlargedArtworkError && index === currentImageIndex ? 0 : 1
+                                                    }}
                                                     onLoad={() => {
                                                         if (index === currentImageIndex) {
                                                             setEnlargedArtworkLoading(false)
+                                                            setEnlargedArtworkError(false)
+                                                        }
+                                                    }}
+                                                    onError={() => {
+                                                        if (index === currentImageIndex) {
+                                                            setEnlargedArtworkLoading(false)
+                                                            setEnlargedArtworkError(true)
                                                         }
                                                     }}
                                                 />
-                                                {(index === currentImageIndex) && enlargedArtworkLoading && (
-                                                    <div className="artwork-image__loading-text">
-                                                        <p>loading high-resolution</p>
-                                                        <p>{`artwork ${artwork.title}...`}</p>
+                                                {(index === currentImageIndex) && (enlargedArtworkLoading || enlargedArtworkError) && (
+                                                    <div 
+                                                        className="artwork-image__loading-text"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '50%',
+                                                            left: '50%',
+                                                            transform: 'translate(-50%, -50%)',
+                                                            textAlign: 'center',
+                                                            color: 'white',
+                                                            zIndex: enlargedArtworkError ? 20 : -1
+                                                        }}
+                                                    >
+                                                        {enlargedArtworkError ? (
+                                                            <>
+                                                                <p>{artwork.title}</p>
+                                                                <p>high-resolution image failed to load</p>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <p>loading high-resolution</p>
+                                                                <p>{`${artwork.title}...`}</p>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>

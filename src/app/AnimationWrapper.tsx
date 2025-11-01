@@ -3,35 +3,30 @@
 
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect } from 'react'; // Add useEffect import
+import { ReactNode, useEffect } from 'react';
 
-// Define the subtle variants, explicitly typed as Variants
-const subtleFadeScaleVariants: Variants = {
-  // Page starts slightly transparent and scaled down
+// 1. Rename and update the variants for a subtle opacity fade
+const subtleFadeVariants: Variants = {
+  // Page starts fully transparent (no scale applied)
   initial: { 
     opacity: 0, 
-    scale: 0.98, 
   },
   
   // Animates into view
   animate: { 
     opacity: 1, 
-    scale: 1, 
-    // Transition for the entry phase
     transition: { 
-      duration: 0.4, 
-      ease: [0.6, -0.05, 0.01, 0.99] // Smoother, standard easing array
+      duration: 0.5, // Slightly slower entrance for smoothness
+      ease: 'easeInOut' // Standard, reliable ease
     } 
   },
   
-  // Exits by fading out and scaling down slightly again
+  // Exits by fading out
   exit: { 
     opacity: 0, 
-    scale: 0.99, 
-    // Transition for the exit phase (faster)
     transition: { 
-      duration: 0.3, 
-      ease: [0.6, -0.05, 0.01, 0.99] // Match ease for consistency
+      duration: 0.2, // Quick exit is key for a non-jarring "wait" transition
+      ease: 'easeOut' 
     } 
   },
 };
@@ -49,10 +44,10 @@ export default function AnimationWrapper({
   };
 
   const handleAnimationComplete = () => {
-    document.body.style.overflow = ''; // Reset to default (usually 'visible' or 'auto')
+    // Only restore overflow when the new page is finished animating
+    document.body.style.overflow = ''; 
   };
 
-  // Cleanup on unmount (just in case)
   useEffect(() => {
     return () => {
       document.body.style.overflow = '';
@@ -60,29 +55,32 @@ export default function AnimationWrapper({
   }, []);
 
   return (
-    <AnimatePresence mode="wait" onExitComplete={handleAnimationComplete}>
+    <AnimatePresence 
+      mode="wait" // Ensures the old page fades out before the new one fades in
+      onExitComplete={handleAnimationComplete}
+    >
       <motion.div 
         key={pathname}
-        variants={subtleFadeScaleVariants}
+        variants={subtleFadeVariants} // 2. Use the new variants
         initial="initial"
         animate="animate"
         exit="exit"
-        onAnimationStart={handleAnimationStart} // Hide overflow at start
-        onAnimationComplete={handleAnimationComplete} // Restore after complete
+        onAnimationStart={handleAnimationStart}
+        onAnimationComplete={handleAnimationComplete} // This will fire once per animation cycle
         style={{ 
-          // CRITICAL FIX: These styles prevent content flash/flicker
+          // CRITICAL: Keep these styles for positioning and background integrity
           position: 'absolute', 
           width: '100%', 
           minHeight: '100vh',
           top: 0,
           left: 0,
-          // IMPORTANT: Replace #fff with your actual page background color/variable
-          backgroundColor: 'var(--page-background-color, #fff)', 
-          overflow: 'hidden', // Also hide overflow on the motion div itself
+          // IMPORTANT: Ensure this color matches the rest of your page background
+          backgroundColor: 'var(--page-background-color, #FDFEFF)', 
+          overflow: 'hidden', 
         }}
       >
         {children}
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { useArtworkDimensions } from '@/hooks/useArtworkDimensions'
 import { seriesColorBlurDataURLs } from '@/helpers/blurURLs'
+import { getSeriesColor } from '@/helpers/seriesColor'
 import PlayButtonSvg from '@/svgs/PlayButtonSvg'
 
 import { Artwork } from '@/types/artworkTypes'
@@ -26,6 +28,9 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
   artworkContainerWidth,
   artworkContainerHeight
 }) => {
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(true)
+  const [imageError, setImageError] = useState<boolean>(false)
+
   const isVideo = !artwork.artworkFields?.artworkImage && !!artwork.artworkFields?.videoPoster
   const imageSource = isVideo ? artwork.artworkFields?.videoPoster : artwork.artworkFields?.artworkImage
   const imageNode = imageSource?.node
@@ -55,18 +60,47 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({
 
   return (
     <Link href={`/${artwork.slug}`} className="artwork-detail__link">
-      <div className="artwork-detail__image-container" style={{ width: displayWidth, height: displayHeight }}>
-        {isVideo && <PlayButtonSvg />}
+      <div 
+        className="artwork-detail__image-container" 
+        style={{ 
+          width: displayWidth, 
+          height: displayHeight,
+          backgroundColor: getSeriesColor(artwork.artworkFields?.series || ''),
+          overflow: 'hidden'
+        }}
+      >
+        {isVideo && !imageError && <PlayButtonSvg />}
+
+        {(isImageLoading || imageError) && (
+          <div
+            className="artwork-detail__placeholder-overlay"
+            style={{
+              zIndex: imageError ? 20 : 10
+            }}
+          >
+            <p>{artwork.title}</p>
+            <p>{imageError ? 'image failed to load' : 'image loading...'}</p>
+          </div>
+        )}
+
         <Image
           className="artwork-detail__image"
           src={imageSrc}
           alt={altText}
           width={displayWidth}
           height={displayHeight}
-          style={{ objectFit: 'contain' }}
+          style={{ 
+            objectFit: 'contain',
+            opacity: imageError ? 0 : 1
+          }}
           placeholder="blur"
           blurDataURL={blurDataURL}
           priority={true}
+          onLoad={() => setIsImageLoading(false)}
+          onError={() => {
+            setIsImageLoading(false)
+            setImageError(true)
+          }}
         />
       </div>
     </Link>
