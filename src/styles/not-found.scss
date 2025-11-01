@@ -1,0 +1,91 @@
+@use './vars.scss' as *;
+
+.not-found__container {
+    background: $background;
+    width: 90%;
+    padding: 115px 5% 10px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        font-family: $title;
+        font-size: 22px;
+        font-weight: 600;
+        color: $art-image-text-dark;
+        letter-spacing: 0.05em;
+        padding: 0 0 7px; 
+    }
+
+    p {
+        color: $art-image-text-light;
+        font-size: 15px;
+        font-weight: 300;
+        max-width: 450px;
+        width: 100%;
+        line-height: 1.6;
+    }
+}
+
+.not-found__links {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 7px;
+    max-width: 350px;
+    width: 100%;
+
+    a {
+        text-decoration: none;
+        color: $art-image-text-dark;
+        font-size: 14px;
+        font-weight: 200;
+        padding: 5px 0;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    a::before {
+        content: '»';
+        color: $art-image-text-dark;
+        font-size: 1.2em;
+        margin-right: 0.5em;
+        display: inline-block;
+        transform: translateY(1px); 
+    }
+}
+
+.not-found__artwork--container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 400px;
+
+    p {
+        color: $art-image-text-light;
+        font-size: 13px;
+        font-weight: 200;
+        padding: 2px 0 5px;
+    }
+
+    h2 {
+        color: $art-image-text-dark;
+        font-family: $title;
+        font-weight: 200;
+        letter-spacing: 0.05em;
+        padding: 2px 5px;
+        font-size: 17px;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+    }
+}

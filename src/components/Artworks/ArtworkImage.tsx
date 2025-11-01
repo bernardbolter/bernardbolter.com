@@ -457,7 +457,7 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                                             className="artwork-image__image"
                                             src={imageSrc}
                                             sizes={imageSizes}
-                                            alt={altText ?? ''}
+                                            alt={altText || artwork.title || 'Bernard Bolter Artwork'}
                                             width={displayWidth}
                                             height={displayHeight}
                                             quality={80}

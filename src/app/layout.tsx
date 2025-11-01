@@ -31,7 +31,7 @@ const sofiaSansExtraCondensed = Sofia_Sans_Extra_Condensed({
 export const metadata: Metadata = {
   title: {
     default: "Bernard Bolter's Web Portal",
-    template: '%s | Bernard Bolter Art',
+    template: "%s | Bernard Bolter",
   },
   description: "Explore Bernard Bolter's cityscape artworks: a timeline of paintings, drawings, and mixed media from 1992 to present. Original art for sale and exhibitions.",
   keywords: ['Bernard Bolter', 'digital art', 'meixed media art', 'contemporary painting', 'artist portfolio', 'original artwork', 'San Francisco artist', 'cityscape art'],
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     description: "Timeline of cityscape artworks by Bernard Bolter.",
     url: 'https://bernardbolter.com',
     siteName: 'Bernard Bolter Art',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Bernard Bolter Cityscape Artwork' }],
+    images: [{ url: '/bernard_bolter_portrait.jpeg', width: 811, height: 539, alt: 'Bernard Bolter Cityscape Artwork' }],
     locale: 'en_US',
     type: 'website',
   },
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Bernard Bolter's Art Portfolio",
     description: "Explore abstract artworks from 1980 to present.",
-    images: ['/og-image.jpg'],
+    images: ['/bernard_bolter_portrait.jpeg'],
   },
   robots: {
     index: true,
@@ -98,7 +98,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           "jobTitle": "Mixed Media and Digital Artist",
           "url": "https://bernardbolter.com",
           "description": "San Francisco born, Berlin based, mixed media and digital artist.",
-          "image": "https://bernardbolter.com/bernard-bolter-portrait.jpg",
+          "image": "https://bernardbolter.com/bernard-bolter-portrait.jpeg",
           "sameAs": [
             "https://instagram.com/bernardbolter",
           ] // Add social links

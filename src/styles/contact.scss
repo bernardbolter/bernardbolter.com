@@ -109,6 +109,8 @@
     border: 1px solid $svg-dark;
     border-radius: 6px;
     max-width: 550px;
+    position: relative;
+    background: white;
 }
 
 .formcarry-block {
@@ -253,30 +255,69 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 30px 0;
+  margin: 0 auto;
+  max-width: 800px;
 
-  @media screen and (min-width: $break-s) {
-    flex-direction: row;
-  }
-
-  a {
+  .contact__datenschutz {
+    font-size: 20px;
     text-decoration: none;
-    font-family: $title;
-    font-size: 16px;
-    color: $svg-dark;
 
-    svg {
+    &:hover {
+      text-decoration: underline;
+    }
+
+     svg {
       width: 15px;
       height: 15px;
       fill: $svg-dark;
+      margin-right: 5px;
     }
   }
 
-  p {
+  h1 {
     font-family: $title;
+    color: $art-image-text-dark;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    padding: 15px 0 0;
+  }
+
+  .contact__bottom--line {
+    height: 1px;
+    width: 100%;
+    background: $art-image-line;
+    margin: 10px 0;
+  }
+
+  h5 {
+    font-family: $body-font;
     font-size: 16px;
-    color: $svg-dark;
+    color: $art-image-text-dark;
+    padding: 3px 0;
+    font-weight: 500;
+  }
+
+  p {
+    font-family: $body-font;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 300;
+    color: $art-image-text-light;
+    padding:  0 0 5px;
+  }
+
+  a {
+    font-family: $body-font;
+    font-size: 13px;
+    color: $art-image-text-dark;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 

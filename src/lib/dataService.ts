@@ -252,3 +252,37 @@ export async function getArtworkBySlug(slug: string): Promise<Artwork | null> {
     return null;
   }
 }
+
+/**
+ * Fetch all artworks and return one randomly selected Artwork.
+ */
+export async function getRandomArtwork(): Promise<Artwork | null> {
+  try {
+    const allData = await getArtworkData();
+    const allArtworks = allData.allArtwork.nodes;
+
+    // 💡 FIX: Filter the artworks to only include those with a primary image or video poster
+    const imageArtworks = allArtworks.filter(art => 
+      art.artworkFields?.artworkImage?.node || art.artworkFields?.videoPoster?.node
+    );
+
+    // Keep the log to confirm the pool size
+    console.log(`[404 DEBUG] Total artworks with image found: ${imageArtworks.length}`);
+
+    if (imageArtworks.length === 0) {
+      // If no artworks have an image, return null
+      return null;
+    }
+
+    // Select a random index from the filtered list
+    const randomIndex = Math.floor(Math.random() * imageArtworks.length);
+    const selectedArtwork = imageArtworks[randomIndex];
+    
+    console.log(`[404 DEBUG] Selected artwork slug: ${selectedArtwork.slug}`);
+
+    return selectedArtwork;
+  } catch (error) {
+    console.error('❌ [404 DEBUG] Failed to fetch random artwork:', error);
+    return null; 
+  }
+}

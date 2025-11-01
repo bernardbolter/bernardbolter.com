@@ -125,87 +125,99 @@ export default function BasicForm() {
         />
     
         <div className="contact-form__container" id="contact-form">
-        <form onSubmit={(e) => onSubmit(e)} noValidate>
-            
-            <div className={`formcarry-block ${errors.name ? 'has-error' : ''}`}>
-            {/* Translate labels */}
-            <label htmlFor="name">name</label> 
-            <input 
-                type="text" 
-                value={name} 
-                onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) setErrors({...errors, name: undefined});
-                }} 
-                id="name" 
-                placeholder="name"
-                className={errors.name ? 'error' : ''}
-            />
-            {errors.name && <span className="error-message">{errors.name}</span>}
-            </div>
-            
-            <div className={`formcarry-block ${errors.email ? 'has-error' : ''}`}>
-            <label htmlFor="email">email</label>
-            <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => {
-                setEmail(e.target.value);
-                if (errors.email) setErrors({...errors, email: undefined});
-                }} 
-                id="email" 
-                placeholder="email"
-                className={errors.email ? 'error' : ''}
-            />
-            {errors.email && <span className="error-message">{errors.email}</span>}
-            </div>
-            
-            <div className={`formcarry-block ${errors.message ? 'has-error' : ''}`}>
-            <label htmlFor="message">message</label>
-            <textarea 
-                value={message} 
-                onChange={(e) => {
-                setMessage(e.target.value);
-                if (errors.message) setErrors({...errors, message: undefined});
-                }} 
-                id="message" 
-                placeholder="message"
-                className={errors.message ? 'error' : ''}
-                rows={5}
-            />
-            {errors.message && <span className="error-message">{errors.message}</span>}
-            </div>
-            
-            <div className="formcarry-block">  
-            <button type="submit" disabled={isSubmitting}>
-                {/* Translate button text */}
-                {isSubmitting ? "sending..." : "send message"} 
-            </button>
-            </div>
-            
-            {submitError && (
-            <div className="alert alert-error">
-                <span className="alert-icon">⚠</span>
-                {submitError}
-            </div>
-            )}
-            
-            {submitSuccess && (
-            <div className="alert alert-success">
-                <span className="alert-icon">✓</span>
-                {/* Translate success message */}
-                {"received your submission, thank you!"} 
-            </div>
-            )}
-        </form>
-            <div className="contact__bottom-info">
-                <Link
-                    href="/datenschutz"
-                    className="contact__datenschutz"
-                ><LinkSvg /> Datenschutz</Link>
-                <p>&copy; all rights reserved 1974 - {new Date().getFullYear()}</p>
-            </div>
+          <form onSubmit={(e) => onSubmit(e)} noValidate>
+              
+              <div className={`formcarry-block ${errors.name ? 'has-error' : ''}`}>
+              {/* Translate labels */}
+              <label htmlFor="name">name</label> 
+              <input 
+                  type="text" 
+                  value={name} 
+                  onChange={(e) => {
+                  setName(e.target.value);
+                  if (errors.name) setErrors({...errors, name: undefined});
+                  }} 
+                  id="name" 
+                  placeholder="name"
+                  className={errors.name ? 'error' : ''}
+              />
+              {errors.name && <span className="error-message">{errors.name}</span>}
+              </div>
+              
+              <div className={`formcarry-block ${errors.email ? 'has-error' : ''}`}>
+              <label htmlFor="email">email</label>
+              <input 
+                  type="email" 
+                  value={email} 
+                  onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors({...errors, email: undefined});
+                  }} 
+                  id="email" 
+                  placeholder="email"
+                  className={errors.email ? 'error' : ''}
+              />
+              {errors.email && <span className="error-message">{errors.email}</span>}
+              </div>
+              
+              <div className={`formcarry-block ${errors.message ? 'has-error' : ''}`}>
+              <label htmlFor="message">message</label>
+              <textarea 
+                  value={message} 
+                  onChange={(e) => {
+                  setMessage(e.target.value);
+                  if (errors.message) setErrors({...errors, message: undefined});
+                  }} 
+                  id="message" 
+                  placeholder="message"
+                  className={errors.message ? 'error' : ''}
+                  rows={5}
+              />
+              {errors.message && <span className="error-message">{errors.message}</span>}
+              </div>
+              
+              <div className="formcarry-block">  
+              <button type="submit" disabled={isSubmitting}>
+                  {/* Translate button text */}
+                  {isSubmitting ? "sending..." : "send message"} 
+              </button>
+              </div>
+              
+              {submitError && (
+              <div className="alert alert-error">
+                  <span className="alert-icon">⚠</span>
+                  {submitError}
+              </div>
+              )}
+              
+              {submitSuccess && (
+              <div className="alert alert-success">
+                  <span className="alert-icon">✓</span>
+                  {/* Translate success message */}
+                  {"received your submission, thank you!"} 
+              </div>
+              )}
+          </form>            
         </div>
+        <div className="contact__bottom-info">
+            <Link
+                href="/datenschutz"
+                className="contact__datenschutz"
+            >
+              <LinkSvg /> 
+              Datenschutz
+            </Link>
+            <h1 className="contact__bottom--title">Impressum</h1>
+            <div className="contact__bottom--line" />
+            <h5>Bernard John Bolter IV</h5>
+            <h5>Charlottenburgerstr. 8a</h5>
+            <h5>14169 Berlin Germany</h5>
+            <h5>bernardbolter@gmail.com</h5>
+            <p>Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird die Umsatzsteuer nicht ausgewiesen.</p>
+            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit, die Sie unter <a href="https://ec.europa.eu/consumers/odr/">[Link to the ODR Platform]</a> finden. Wir sind weder bereit noch verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen</p>
+            <div className="contact__bottom--line" />
+            <h5 className="contact__reserved">&copy; all rights reserved 1974 - {new Date().getFullYear()}</h5>
+          </div>
     </section>
   );
 }
