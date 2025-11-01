@@ -131,6 +131,8 @@ function transformArtworkFields(
     price: gqlFields.price || null,
     location: gqlFields.location || null,
     provenance: gqlFields.provenance || null,
+    printEditions: gqlFields.printEditions || null,
+    exhibitionHistory: gqlFields.exhibitionHistory || null,
     metadescription: gqlFields.metadescription || null,
     metakeywords: gqlFields.metakeywords || null,
     

@@ -46,7 +46,9 @@ export interface GqlArtworkFields {
   forsale?: boolean | null;
   location?: string | null;
   price?: string | null;
+  exhibitionHistory?: string | null;
   provenance?: string | null;
+  printEditions?: string | null;
   metadescription?: string | null;
   metakeywords?: string | null;
   

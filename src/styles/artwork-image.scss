@@ -243,40 +243,42 @@
     background-color: $art-image-line;
 }
 
-.artwork-image__info--about-wrapper {
+.artwork-image__info--about-section {
     width: 100%;
-    padding: 14px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 
-    h1 {
+    @media screen and (min-width: $break-s) {
+        width: 60%;
+        border-right: 1px solid $art-image-line;
+    }
+}
+
+.artwork-image__info--about-wrapper {
+    width: 100%;
+    padding: 14px;
+
+    @media screen and (min-width: $break-m) {
+        padding-left: 20%;
+    }
+
+    @media screen and (min-width: $break-l) {
+        padding-left: 30%;
+    }
+
+    @media screen and (min-width: $break-xl) {
+        padding-left: 40%;
+    }
+
+    h2 {
         color: $art-image-text-dark;
         padding: 0;
         margin: 0;
         font-weight: 200;
         letter-spacing: 0.05em;
         font-family: $title;
-    }
-
-    @media screen and (min-width: $break-s) {
-        width: 60%;
-        border-right: 1px solid $art-image-line;
-    }
-
-    @media screen and (min-width: $break-m) {
-        width: 55%;
-        margin-left: 5%;
-    }
-
-    @media screen and (min-width: $break-m) {
-        width: 50%;
-        margin-left: 10%;
-    }
-
-    @media screen and (min-width: $break-m) {
-        width: 45%;
-        margin-left: 15%;
+        font-size: 18px;
     }
 }
 
@@ -299,21 +301,54 @@
     @media screen and (min-width: $break-s) {
         width: 40%;
     }
+}
 
-    // @media screen and (min-width: $break-m) {
-    //     width: 40%;
-    //     margin-right: 5%;
-    // }
+.artwork-image__info--print-editions-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    border-top: 1px solid $art-image-line;
 
-    // @media screen and (min-width: $break-l) {
-    //     width: 30%;
-    //     margin-right: 10%;
-    // }
+    h2 {
+        width: 100%;
+        background: $art-image-heading;
+        font-family: $title;
+        padding: 6px 12px;
+        color: $art-image-text-light;
+        text-align: right;
+        font-size: 17px;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $art-image-line;;
+    }
+}
 
-    // @media screen and (min-width: $break-xl) {
-    //     width: 25%;
-    //     margin-right: 15%;
-    // }
+.artwork-image__info--print-editions {
+    width: 100%;
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        padding: 10px 9px 5px;
+        font-weight: 200;
+        font-size: 14px;
+        color: $art-image-text-dark;
+        letter-spacing: 0.03em;
+        border-bottom: 1px solid $art-image-line;
+        text-align: right;
+    }
+
+    li:nth-child(odd) {
+        background: $art-image-odd;
+    }
+
+    li:nth-child(even) {
+        background: $art-image-even;
+    }
 }
 
 .artwork-image__info--available {
@@ -424,14 +459,18 @@
 }
 
 .artwork-image__info--location {
-    padding: 20px;
     border-bottom: 1px solid  $art-image-line;
-    background: $background;
 
-    h1 {
+    h2 {
+        width: 100%;
+        background: $art-image-heading;
         font-family: $title;
-        font-size: 18px;
-        color: $art-image-text-dark;
+        padding: 6px 12px;
+        color: $art-image-text-light;
+        text-align: left;
+        font-size: 17px;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $art-image-line;;
     }
 
     p {
@@ -439,31 +478,30 @@
         color: $art-image-text-light;
         line-height: 1.1;
         font-weight: 300;
-
-        &:before {
-            content: '•';
-            display: inline-block;
-            margin-right: 8px; 
-            color: $art-image-text-light; 
-            font-size: 1.2em; 
-        }
+        width: 100%;
+        background: $art-image-odd;
+        padding: 10px 5px 6px 13px;
     }
 }
 
 .artwork-image__info--provenance-wrapper {
     width: 100%;
-    padding: 20px 20px 50px;
-
-    h1 {
-        font-size: 19px;
+    
+    h2 {
+        width: 100%;
+        background: $art-image-heading;
         font-family: $title;
-        color: $art-image-text-dark;
+        padding: 6px 12px;
+        color: $art-image-text-light;
+        text-align: left;
+        font-size: 17px;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $art-image-line;
 
         span {
-            font-size: 15px;
-            color: $art-image-text-light;
             font-family: $body-font;
-            display: block;
+            font-size: 11px;
+            letter-spacing: 0.05em;
         }
     }
 }
@@ -471,40 +509,72 @@
 .artwork-image__info--provenance {
     width: 100%;
 
-    h5 {
-        font-size: 12px;
-        font-style: italic;
-        color: $art-image-text-light;
-        padding: 5px 0 3px;
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        padding: 10px 9px 5px;
         font-weight: 200;
-
-        &:after {
-            content: ' →';
-            margin-left: 4px;
-            display: inline-block;
-        }
-    }
-
-    p {
-        font-size: 13px;
-        color: $art-image-text-light;
+        font-size: 14px;
+        color: $art-image-text-dark;
+        letter-spacing: 0.03em;
+        border-bottom: 1px solid $art-image-line;
+        text-align: left;
         line-height: 1.1;
-        padding: 3px 0;
-
-        &:before {
-            content: '•';
-            display: inline-block;
-            margin-right: 8px; 
-            color: $art-image-text-light; 
-            font-size: 1.2em; 
-        }
     }
+
+    li:nth-child(odd) {
+        background: $art-image-odd;
+    }
+
+    li:nth-child(even) {
+        background: $art-image-even;
+    }
+}
+
+.artwork-image__info--exhibition-history-wrapper {
+    width: 100%;
     
     h2 {
-        font-size: 19px;
+        width: 100%;
+        background: $art-image-heading;
         font-family: $title;
+        padding: 6px 12px;
+        color: $art-image-text-light;
+        text-align: left;
+        font-size: 17px;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $art-image-line;
+    }
+}
+
+.artwork-image__info--exhibition-history {
+    width: 100%;
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        padding: 10px 9px 5px;
+        font-weight: 200;
+        font-size: 14px;
         color: $art-image-text-dark;
-        padding: 7px 0 0;
+        letter-spacing: 0.03em;
+        border-bottom: 1px solid $art-image-line;
+        text-align: left;
+        line-height: 1.1;
+    }
+
+    li:nth-child(odd) {
+        background: $art-image-odd;
+    }
+
+    li:nth-child(even) {
+        background: $art-image-even;
     }
 }
 

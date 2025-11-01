@@ -65,6 +65,8 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     const [dragPositions, setDragPositions] = useState<DragPosition[]>([])
     const [artworkContent, setArtworkContent] = useState<string>('')
     const [provenaceData, setProvenanceData] = useState<string>('')
+    const [exhibitionHistoryData, setExhibitionHistoryData] = useState<string>('')
+    const [printEditionsData, setPrintEditionsData] = useState<string>('')
     const [artworkPlaying, setArtworkPlaying] = useState<boolean>(true)
     const [timerProgress, setTimerProgress] = useState<number>(0)
 
@@ -78,7 +80,9 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
         // Sanitize content and provenance, default to empty string if null
         setArtworkContent(DOMPurify.sanitize(artwork.content || ''))
         setProvenanceData(DOMPurify.sanitize(artwork.artworkFields?.provenance || ''))
-    }, [artwork.content, artwork.artworkFields?.provenance])
+        setExhibitionHistoryData(DOMPurify.sanitize(artwork.artworkFields?.exhibitionHistory || ''))
+        setPrintEditionsData(DOMPurify.sanitize(artwork.artworkFields?.printEditions || ''))
+    }, [artwork.content, artwork.artworkFields?.provenance, artwork.artworkFields?.exhibitionHistory, artwork.artworkFields?.printEditions])
 
     // console.log("artwork image: ", artwork.artworkFields)
 
@@ -398,6 +402,8 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
     // --- 9. Render ---
     if (!allImageDetails.length) return null;
 
+    // console.log(artwork)
+
     return (
         <div className="artwork-image__main-scroll-wrapper">
             <Info />
@@ -510,15 +516,23 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                     </div>
                     <div className="artwork-image__info--details-container">
                         <div className="artwork-image__info--line"/>
-                        <div className="artwork-image__info--about-wrapper">
+                        <div className="artwork-image__info--about-section">
                             {artworkContent && (
-                                <>
-                                    <h1>About the Artwork</h1>
+                                <div className="artwork-image__info--about-wrapper">
+                                    <h2>About the Artwork</h2>
                                     <div className="artwork-image__info--about"
                                         dangerouslySetInnerHTML={{ __html: artworkContent }}
                                     />
-                                </>
+                                </div>
                                 
+                            )}
+                            {printEditionsData && (
+                                <div className="artwork-image__info--print-editions-wrapper">
+                                    <h2>Print Editions</h2>
+                                    <div className="artwork-image__info--print-editions"
+                                        dangerouslySetInnerHTML={{ __html: printEditionsData}}
+                                    />
+                                </div>
                             )}
                         </div>
                         <div className="artwork-image__info--details">
@@ -540,15 +554,23 @@ const ArtworkImage = ({artwork}: ArtworkImageProps) => {
                             )}
                             {artwork.artworkFields?.location && (
                                 <div className="artwork-image__info--location">
-                                    <h1>Current Location</h1>
+                                    <h2>Current Location</h2>
                                     <p>{artwork.artworkFields?.location}</p>
                                 </div>
                             )}
                             {provenaceData && (
                                 <div className="artwork-image__info--provenance-wrapper">
-                                    <h1>Provenance <span>(history of ownership)</span></h1>
+                                    <h2>Provenance <span>(history of ownership)</span></h2>
                                     <div className="artwork-image__info--provenance"
                                         dangerouslySetInnerHTML={{ __html: provenaceData}}
+                                    />
+                                </div>
+                            )}
+                            {exhibitionHistoryData && (
+                                <div className="artwork-image__info--exhibition-history-wrapper">
+                                    <h2>Exhibition History</h2>
+                                    <div className="artwork-image__info--exhibition-history"
+                                        dangerouslySetInnerHTML={{ __html: exhibitionHistoryData}}
                                     />
                                 </div>
                             )}

@@ -36,11 +36,13 @@ export const getAllArtwork = `
           dcsSatellite { ${ImageFields} }
           density
           elevation
+          exhibitionHistory
           extraimages
           location
           forsale
           price
           provenance
+          printEditions
           height
           lat
           lng
@@ -188,10 +190,12 @@ export const getSingleArtwork = `
         dcsSatellite { ${ImageFields} }
         density
         elevation
+        exhibitionHistory
         extraimages
         location
         forsale
         price
+        printEditions
         provenance
         height
         lat

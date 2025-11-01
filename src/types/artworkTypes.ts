@@ -50,7 +50,9 @@ export interface ArtworkFields {
   forsale: boolean | null;
   price: string | null;
   location: string | null;
+  exhibitionHistory: string | null;
   provenance: string | null;
+  printEditions: string | null;
   metadescription: string | null;
   metakeywords: string | null;
   
