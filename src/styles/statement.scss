@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     background: $background;
-    padding: 120px 10% 200px;
+    padding: 0 10%;
     overflow: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -22,17 +22,19 @@
     }
 
     @media screen and (min-width: $break-m) {
-        max-width: 650px;
-        margin: 0 auto;
+        padding-left: calc(50vw - 325px);
+        padding-right: calc(50vw - 325px);
     }
 
     @media screen and (min-width: $break-l) {
-        max-width: 800px;
-        padding: 150px 0 200px;
+        padding-left: calc(50vw - 400px);
+        padding-right: calc(50vw - 400px);
     }
 }
 
 .statement__content {
+    padding: 130px 0 30px;
+
     p {
         @include body-font;
         font-size: 14px;
@@ -48,7 +50,7 @@
 
 .statement__close-container {
     position: fixed;
-    top: 50px;
+    top: 45px;
     right: 0;
     z-index: 5001;
     width: 35px;
@@ -62,17 +64,17 @@
     text-decoration: none;
 
     @media screen and (min-width: $break-s) {
-        top: 58px;
+        top: 62px;
         width: 42px;
         height: 42px;
     }
 
     @media screen and (min-width: $break-m) {
-        top: 89px
+        top: 79px
     }
 
     @media screen and (min-width: $break-l) {
-        top: 140px;
+        top: 108px;
     }
 
     &:hover {
