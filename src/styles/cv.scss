@@ -10,8 +10,99 @@
     -ms-overflow-style: none;
 
     &::-webkit-scrollbar {
-        background: transparent;
+        background: transparent; /* Chrome/Safari/Webkit */
         width: 0px;
+    }
+}
+
+.cv__close-container {
+    position: fixed;
+    top: 49px;
+    right: 0;
+    z-index: 5001;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: .6;
+    transition: opacity .3s ease-in-out;
+    text-decoration: none;
+
+    @media screen and (min-width: $break-s) {
+        top: 65px;
+        width: 42px;
+        height: 42px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        top: 88px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        top: 105px;
+    }
+
+    &:hover {
+        opacity: .9;
+    }
+
+    svg {
+        width: 100%;
+        fill: $title-dark;
+    }
+
+    p {
+        font-size: 10px;
+        color: $title-dark;
+        font-weight: 300;
+        font-family: var(--font-staatliches);
+        letter-spacing: 0.05em;
+    }
+}
+
+.cv__print-button {
+    position: fixed;
+    right: 10px;
+    top: 92px;
+    transition: all .5s ease-in-out;
+    cursor: pointer;
+
+    @media screen and (min-width: $break-s) {
+        top: 115px;
+    }
+
+    @media screen and (min-width: $break-m) {
+        top: 140px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        top: 156px;
+    }
+}
+
+.cv__content {
+    width: 90%;
+    margin: 135px 5% 50px;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (min-width: $break-s) {
+        width: 84%;
+        margin: 120px 8%;
+    }
+
+    @media screen and (min-width: $break-m) {
+        width: 78%;
+        margin: 140px auto 140px 150px; 
+        max-width: 800px;
+    }
+
+    @media screen and (min-width: $break-l) {
+        width: 78%;
+        margin: 140px 2% 100px 20%; 
+        max-width: 800px;
     }
 }
 
@@ -28,183 +119,118 @@
     }
 }
 
-.cv__close-container {
-    position: fixed;
-    top: 84px;
-    right: 73px;
-    z-index: 5001;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: .6;
-    transition: opacity .3s ease-in-out;
-    text-decoration: none;
-
-    @media screen and (min-width: $break-s) {
-        top: 10px;
-        right: 190px;
-        width: 42px;
-        height: 42px;
-    }
-
-    @media screen and (min-width: $break-m) {
-        top: 10px;
-        right: 230px;
-    }
-
-    @media screen and (min-width: $break-l) {
-        top: 10px;
-        right: 260px;
-    }
-
-    &:hover {
-        opacity: .9;
-    }
-
-    svg {
-        width: 100%;
-        fill: $title-dark;
-    }
-
-    p {
-        @include heading-font;
-        font-size: 10px;
-        color: $title-dark;
-        font-weight: 300;
-        letter-spacing: 0.05em;
-    }
-}
-
-.cv__print-button {
-    position: fixed;
-    right: 10px;
-    top: 100px;
-    transition: all .5s ease-in-out;
-    cursor: pointer;
-
-    @media screen and (min-width: $break-s) {
-        top: 115px;
-    }
-
-    @media screen and (min-width: $break-m) {
-        top: 140px;
-    }
-}
-
-.cv__content {
-    width: 90%;
-    margin: 120px 5%;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 50px;
-
-    @media screen and (min-width: $break-s) {
-        width: 80%;
-        margin: 120px auto;
-    }
-
-    @media screen and (min-width: $break-m) {
-        width: 70%;
-    }
-
-    @media screen and (min-width: $break-l) {
-        width: 60%;
-        max-width: 800px;
-    }
-}
-
 .cv__entry {
-    margin-bottom: 20px;
-    page-break-inside: avoid;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-bottom: 4px;
 
     h2 {
-        @include heading-font;
-        font-size: 16px;
-        color: $art-image-text-dark;
-        margin: 0 0 4px;
-        font-weight: 600;
+        font-size: 12px;
+        color: $title-text-dark;
+        font-weight: 500;
+        padding: 0 4px 0 0;
+        font-family: monospace;
+        line-height: 1;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 14px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 16px;
+        }
     }
 
     h3 {
+        font-size: 13px;
         @include heading-font;
-        font-size: 14px;
-        color: $art-image-text-light;
-        margin: 0 0 2px;
-        font-weight: 500;
+        color: $title-text-dark;
+        font-weight: 600;
+        padding: 0 4px 0 0;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 14px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 16px;
+        }
     }
 
     h4 {
-        @include body-font;
-        font-size: 13px;
-        color: $art-image-text-dark;
-        margin: 0;
-        font-style: italic;
+        font-size: 12px;
+        color: $title-text-dark;
+        font-weight: 300;
+        font-family: sans-serif;
+        padding: 3px 4px 0 0;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 14px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 16px;
+        }
     }
 
-    p {
-        @include body-font;
-        font-size: 14px;
-        line-height: 1.5;
-        color: $art-image-text-light;
-        margin: 4px 0 0;
+    h5 {
+        font-size: 11px;
+        color: $title-text-dark;
+        font-weight: 700;
+        padding: 2px 0 0 0;
+
+        @media screen and (min-width: $break-s) {
+            font-size: 13px;
+        }
+
+        @media screen and (min-width: $break-m) {
+            font-size: 14px;
+        }
     }
 }
 
-// .name__container {
-//     display: flex;
-//     flex-direction: column;
-//     margin-bottom: 30px;
-
-//     h1 {
-//         @include heading-font;
-//         font-size: 28px;
-//         color: $art-image-text-dark;
-//         margin: 0;
-//         font-weight: 700;
-//         letter-spacing: 0.02em;
-//     }
-
-//     p {
-//         @include body-font;
-//         font-size: 16px;
-//         color: $art-image-text-light;
-//         margin: 4px 0 0;
-//     }
-// }
-
-/* ====================================== PRINT STYLES ====================================== */
+/* ======================================================= */
+/* CSS PRINT MEDIA QUERY FOR A4 FORMAT (FIXED)             */
+/* ======================================================= */
 
 @media print {
+    /* 1. Define the A4 page size and margins */
     @page {
         size: A4;
-        margin: 20mm 15mm;
+        margin: 20mm 15mm; /* Set print margins */
     }
 
+    /* FIX 1: Override screen-specific dimensions/scrolling for main containers */
     .cv__container {
         height: auto !important;
         overflow: visible !important;
         background-color: white !important;
     }
     
+    /* FIX 2: Hide specific UI elements (no aggressive body > * selector) */
     .cv__print-button,
     .cv__title,
+    .cv__close-container,
     .info-button__container {
         display: none !important;
     }
 
+    /* FIX 3: Centering and width adjustment */
     .cv__content {
-        width: 80% !important;
-        margin: 0 auto !important;
+        width: 80% !important; /* Make list narrower */
+        margin: 0 auto !important; /* Center the list on the page */
         padding: 0 !important;
+        
         display: block !important;
         position: static;
         max-width: 100%;
-        page-break-after: always;
+        page-break-after: always; /* Ensure content flows to new pages */
     }
     
+    /* FIX 4: Reduce text size and vertical spacing for single-page fit */
     .cv__header {
         font-size: 14pt !important;
         margin-top: 10pt !important;
@@ -212,15 +238,17 @@
     }
 
     .cv__entry {
-        margin-bottom: 1pt !important;
-        page-break-inside: avoid !important;
+        margin-bottom: 1pt !important; /* Reduced space between entries */
+        page-break-inside: avoid !important; /* Prevents splitting a single entry */
         
+        /* Adjusting font sizes for tight fit */
         h2 { font-size: 9pt !important; }
         h3 { font-size: 8.5pt !important; }
         h4 { font-size: 8.5pt !important; }
         h5 { font-size: 8pt !important; }
     }
     
+    /* Ensure the name container doesn't break from the top content */
     .name__container {
         display: block !important;
         position: static !important;
