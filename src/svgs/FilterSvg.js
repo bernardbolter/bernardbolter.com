@@ -1,11 +1,17 @@
+'use client'
+
+import { useArtworks } from "@/providers/ArtworkProvider"
+
 const FilterSvg = ({ filterNavOpen }) => {
+    const [artworks] = useArtworks()
+
     return (
         <svg viewBox="0 0 52 50" >
             <path className="svgs-dark-stroke svgs-light-fill" 
                 d="M43.8242 44.5L50.0742 49.5H8.6582L1.5752 44.5H43.8242ZM51 11.6484V48.959L44.5 43.7588V1.68164L51 11.6484Z" 
             />
             <path 
-                className="svgs-face-fill"
+                className={artworks.filtersArray.length > 0 ? "svg-face-fill-filtered" :"svgs-face-fill"}
                 d="M0 6L6 0H44V44H0V6Z"
             />
             <path 

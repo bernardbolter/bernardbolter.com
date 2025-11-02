@@ -121,10 +121,9 @@
 
 .artworks-timeline__year-label {
     position: absolute;
-    right: -45px;
-    top: 3px;
-    @include title-font;
-    font-size: 18px;
+    right: -42px;
+    top: 0;
+    @include heading-font;
     font-weight: 700;
     color: $timeline;
     white-space: nowrap;
@@ -132,7 +131,7 @@
     padding: 3px;
 
     @media screen and (min-width: $break-m) {
-        bottom: -24px;
+        bottom: -20px;
         right: -40px;
         top: 0px;
         padding: 3px 3px 0 3px;
