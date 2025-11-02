@@ -1,8 +1,6 @@
 @forward './base.scss';
 @use './vars.scss' as *;
 
-@use './main.scss';
-@use './artworks.scss';
 @use './info.scss';
 @use './nav.scss';
 @use './loading.scss';
@@ -24,3 +22,4 @@
 @use './datenschutz.scss';
 @use './klaro.scss';
 @use './not-found.scss';
+@use './menu.scss';

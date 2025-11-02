@@ -1,4 +1,5 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 .bio-page__container {
     display: block;
@@ -10,7 +11,7 @@
     display: flex;
     flex-direction: column;
     background: $background;
-    padding: 100px 5%;
+    padding: 0 5%;
     overflow: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -21,15 +22,20 @@
     }
 
     @media screen and (min-width: $break-m) {
-        max-width: 650px;
-        margin: 0 auto;
+        padding-left: calc((100vw - 650px) / 2);
+        padding-right: calc((100vw - 650px) / 2);
     }
 
-    @media screen and (min-width: $break-m) {
-        max-width: 800px;
+    @media screen and (min-width: $break-l) {
+        padding-left: calc((100vw - 800px) / 2);
+        padding-right: calc((100vw - 800px) / 2);
     }
 }
 
+.bio__content-container {
+    width: 100%;
+    padding: 120px 0 0;
+}
 
 .bio__content-wrapper {
     display: flex;
@@ -39,8 +45,8 @@
 
 .bio__close-container {
     position: fixed;
-    top: 84px;
-    right: 10px;
+    top: 80px;
+    right: 0;
     z-index: 5001;
     width: 35px;
     height: 35px;
@@ -53,20 +59,17 @@
     text-decoration: none;
 
     @media screen and (min-width: $break-s) {
-        top: 10px;
-        right: 230px;
+        top: 103px;
         width: 42px;
         height: 42px;
     }
 
     @media screen and (min-width: $break-m) {
-        top: 10px;
-        right: 280px;
+        top: 130px;
     }
 
     @media screen and (min-width: $break-l) {
-        top: 10px;
-        right: 325px;
+        top: 135px;
     }
 
     &:hover {
@@ -82,13 +85,12 @@
         font-size: 10px;
         color: $title-dark;
         font-weight: 300;
-        font-family: $title;
         letter-spacing: 0.05em;
     }
 }
 
 .bio__tagline {
-    font-family: serif;
+    @include heading-font;
     font-style: italic;
     font-size: 20px;
     font-weight: 200;
@@ -103,6 +105,7 @@
 
 .bio__main-content {
     p {
+        @include body-font;
         font-size: 14px;
         line-height: 1.5;
         padding-bottom: 30px;
@@ -113,136 +116,157 @@
     }
 }
 
-/* --- Square Image Grid Styling --- */
-.bio__image-grid {
-    display: grid;
-    /* 2 columns on mobile */
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 5px;
-    padding-top: 1rem;
-    padding-bottom: 120px;
-
-    @media screen and (min-width: $break-m) {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 7px;
-    }
+// ---- Masonry Styles (CSS Grid) -------
+.bio__masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 7px;
+  gap: 7px;
+  width: 100%;
+  padding: 0 0 49px;
+  
+  // Responsive breakpoints
+  @media (max-width: 978px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 549px) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.bio__grid-item {
-    position: relative;
-    /* KEY: This creates the square aspect ratio */
-    padding-bottom: 100%; 
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
+.bio__masonry-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  filter: grayscale(100%);
+  transition: filter 0.5s ease;
+  cursor: pointer;
+  
+  &:hover {
+    filter: grayscale(20%);
+  }
 }
 
-.bio__grid-item:hover {
-    transform: scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+.bio__image-masonry {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.bio__image-square {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* KEY: Next.js Image property to crop content to square container */
-    object-fit: cover; 
-}
 /* --- Lightbox Modal --- */
 .lightbox__overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* FIX 1: Light gray background with 0.9 opacity */
-    background-color: rgba(211, 211, 211, 0.9); 
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(211, 211, 211, 0.95);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .lightbox__overlay--open {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .lightbox__content {
-    position: relative;
-    /* Constraints the content area */
-    max-width: 90vw;
-    max-height: 90vh;
-    
-    /* Ensure Image children can use fill prop */
-    width: 100%; 
-    height: 100%; 
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-/* Container for the Next.js Image */
-.lightbox__image-container {
-    position: relative;
-    /* Ensures the container fills the available space within the content box */
-    flex-grow: 1; 
-    width: 100%;
-    max-height: 80vh; /* Limit the image height */
-    
-    /* Ensures content takes up all available height/width for the image */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 4px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Styling for the Next.js Image when using fill/contain */
-.lightbox__image {
-    /* FIX 3: Ensure object-fit: contain forces the image to scale fully within bounds */
-    object-fit: contain !important; 
-    border-radius: 4px;
+.lightbox__image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  background: white;
+  overflow: hidden;
+  
+  img {
+    display: block;
+  }
 }
 
 .lightbox__alt-text {
-    /* FIX 2: Text on white background */
-    color: black;
-    margin-top: 1rem;
-    padding: 0.75rem 1.5rem;
-    background: white; 
-    border-radius: 6px;
-    font-size: 1rem;
-    max-width: 100%;
-    text-align: center;
-    flex-shrink: 0; 
+  color: $svg-dark;
+  background: $background;
+  border-top-right-radius: 10px;
+  font-size: 1rem;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  @include heading-font;
+  font-size: 17px;
+  font-weight: 400;
+  padding: 7px 10px 7px 7px;
+  line-height: 1.2;
 }
 
-.lightbox__close-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    /* FIX 1: Black color for visibility on light background */
-    color: black; 
-    font-size: 2.5rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    z-index: 1001;
-    transition: color 0.2s;
+
+/* Lightbox Navigation Controls */
+.lightbox__controls {
+  position: fixed;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 10001;
 }
-.lightbox__close-button:hover {
-    color: #555;
+
+.lightbox__close {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin: 5px 0;
+
+    svg {
+        fill: $svg-dark;
+        width: 100%;
+    }
+}
+
+.lightbox__counter {
+  font-size: 12px;
+  color: $svg-light;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  font-weight: 500;
+  text-align: center;
+  padding: 3px 5px;
+}
+
+.lightbox__nav-button {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 4px 0 0;
+
+  svg {
+    width: 100%;
+  }
+}
+
+.lightbox__nav-button--timer {
+    position: relative;
+    right: -3px;
+    top: 3px;
 }

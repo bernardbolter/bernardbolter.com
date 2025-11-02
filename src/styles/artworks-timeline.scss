@@ -1,4 +1,5 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 .artworks-timeline__container {
     position: relative;
@@ -12,23 +13,22 @@
 }
 
 .artworks-timeline__artworks-container {
-        width: 100%;
-        display: flex;
-        flex-direction: row-reverse;
-        overflow: scroll;
-        padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    overflow: scroll;
+    padding: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none;  /* IE 10+ */
+    &::-webkit-scrollbar {
+        background: transparent;
+        width: 0px;
+    }
 
-        &::-webkit-scrollbar {
-            background: transparent; /* Chrome/Safari/Webkit */
-            width: 0px;
-        }
-
-        @media screen and (min-width: $break-m) {
-            flex-direction: column;
-        }
+    @media screen and (min-width: $break-m) {
+        flex-direction: column;
+    }
 }
 
 .artworks-timeline__artworks {
@@ -41,8 +41,6 @@
         margin-top: 75px;
     }
 }
-
-// ARTWORK
 
 .artworks-timeline__artwork-inside {
     display: flex;
@@ -64,19 +62,17 @@
     border: 1px solid black;
 }
 
-// TIMELINE
 .artworks-timeline__timeline-container {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: scroll;
     position: relative;
-
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE 10+ */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 
     &::-webkit-scrollbar {
-        background: transparent; /* Chrome/Safari/Webkit */
+        background: transparent;
         width: 0px;
     }
 
@@ -87,29 +83,22 @@
     }
 }
 
-.artworks-timeline__line {
+.artworks-timeline__line,
+.artworks-timeline__small-lines,
+.artworks-timeline__small-line {
     position: absolute;
     background-color: $timeline;
-}
-
-.artworks-timeline__small-lines {
-    position: absolute;
 }
 
 .artworks-timeline__small-line {
-    position: absolute;
     left: 18px;
-    background-color: $timeline;
 
     @media screen and (min-width: $break-m) {
-        top: 18px
+        top: 18px;
     }
 }
 
-.artworks-timeline__year-markers {
-    position: absolute;
-}
-
+.artworks-timeline__year-markers,
 .artworks-timeline__year-marker {
     position: absolute;
 }
@@ -132,14 +121,13 @@
 
 .artworks-timeline__year-label {
     position: absolute;
-    right: -43px;
+    right: -45px;
     top: 3px;
-    font-size: 12px;
+    @include title-font;
+    font-size: 18px;
+    font-weight: 700;
     color: $timeline;
     white-space: nowrap;
-    font-family: $heading;
-    font-size: 20px;
-    font-weight: 700;
     background: rgba(255,255,255,.5);
     padding: 3px;
 
@@ -150,9 +138,6 @@
         padding: 3px 3px 0 3px;
     }
 }
-    
-
-// CONTROLS
 
 .artworks-timeline__controls-container {
     position: fixed;

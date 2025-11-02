@@ -113,6 +113,11 @@ export interface GqlBiographyData {
   bioimage3?: GqlImage | null;
   bioimage4?: GqlImage | null;
   bioimage5?: GqlImage | null;
+  bioimage6?: GqlImage | null;
+  bioimage7?: GqlImage | null;
+  bioimage8?: GqlImage | null;
+  bioimage9?: GqlImage | null;
+  bioimage10?: GqlImage | null;
 }
 
 export interface GqlBiography {

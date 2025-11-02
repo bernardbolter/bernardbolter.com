@@ -1,4 +1,5 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 .artwork-title__container {
     position: fixed;
@@ -38,22 +39,10 @@
         background: $title-text;
     }
 
-    .artwork-title__title {
-        color: $title-light;
-    }
-
-    .artwork-title__year {
-        color: $title-light;
-    }
-
-    .artwork-title__medium {
-        color: $title-light;
-    }
-
-    .artwork-title__size {
-        color: $title-light;
-    }
-
+    .artwork-title__title,
+    .artwork-title__year,
+    .artwork-title__medium,
+    .artwork-title__size,
     .artwork-title__size--converted {
         color: $title-light;
     }
@@ -64,7 +53,8 @@
     flex-direction: row;
 }
 
-.artwork-title__border-top--left {
+.artwork-title__border-top--left,
+.artwork-title__border-top--right {
     width: 10px;
     height: 10px;
     flex-shrink: 0;
@@ -85,18 +75,6 @@
 
 .artwork-title__border-top--show {
     border-bottom: 1px solid $title-dark;
-}
-
-.artwork-title__border-top--right {
-    width: 10px;
-    height: 10px;
-    flex-shrink: 0;
-
-    svg {
-        position: absolute;
-        top: 0;
-        fill: $title-light;
-    }
 }
 
 .artwork-title__border-middle {
@@ -128,8 +106,6 @@
     width: 15px;
     height: 15px;
     position: absolute;
-    // bottom: 0px;
-    // right: 10px;
     border-radius: 50%;
 }
 
@@ -150,21 +126,22 @@
 }
 
 .artwork-title__title {
-    font-family: $heading;
-    font-weight: 800;
+    @include heading-font;
     font-size: 22px;
     color: $title-text-dark;
-    line-height: 1em;
-    padding: 0;
+    padding: 0 0 4px;
     margin: 0;
+    line-height: 1;
 
     @media screen and (min-width: $break-s) {
         font-size: 24px;
     }
 }
 
-.artwork-title__year {
-    font-family: $heading;
+.artwork-title__year,
+.artwork-title__medium,
+.artwork-title__size {
+    @include heading-font;
     color: $title-text;
     font-size: 14px;
     font-weight: 500;
@@ -178,35 +155,11 @@
 }
 
 .artwork-title__medium {
-    font-family: $heading;
-    color: $title-text;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1em;
-    padding: 0 0 4px;
-    margin: 0;
-
-     @media screen and (min-width: $break-s) {
-        font-size: 16px;
-    }
-}
-
-.artwork-title__size {
-    font-family: $heading;
-    color: $title-text;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1em;
-    padding: 0;
-    margin: 0;
-
-    @media screen and (min-width: $break-s) {
-        font-size: 16px;
-    }
+    padding-bottom: 4px;
 }
 
 .artwork-title__size--converted {
-    font-family: $heading;
+    @include heading-font;
     color: $title-text;
     font-size: 11px;
     font-weight: 200;
@@ -214,7 +167,7 @@
     padding: 0;
     margin: 0;
 
-     @media screen and (min-width: $break-s) {
+    @media screen and (min-width: $break-s) {
         font-size: 12px;
     }
 }
@@ -235,7 +188,8 @@
     flex-direction: row;
 }
 
-.artwork-title__border-bottom--left {
+.artwork-title__border-bottom--left,
+.artwork-title__border-bottom--right {
     width: 10px;
     height: 10px;
     flex-shrink: 0;
@@ -251,22 +205,8 @@
     height: 10px;
     flex-grow: 1;
     background: $title-light;
-
 }
 
 .artwork-title__border-bottom--show {
     border-top: 1px solid $title-dark;
-}
-
-
-.artwork-title__border-bottom--right {
-    width: 10px;
-    height: 10px;
-    flex-shrink: 0;
-
-    svg {
-        position: absolute;
-        bottom: 0;
-        fill: $title-light;
-    }
 }

@@ -102,6 +102,11 @@ export const getAllArtwork = `
         bioimage3 { ${ImageFields} }
         bioimage4 { ${ImageFields} }
         bioimage5 { ${ImageFields} }
+        bioimage6 { ${ImageFields} }
+        bioimage7 { ${ImageFields} }
+        bioimage8 { ${ImageFields} }
+        bioimage9 { ${ImageFields} }
+        bioimage10 { ${ImageFields} }
       } 
     }
     artistInfo(id: "cG9zdDozNQ==") {

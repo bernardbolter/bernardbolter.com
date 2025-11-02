@@ -1,4 +1,5 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 .not-found__container {
     background: $background;
@@ -11,7 +12,7 @@
     align-items: center;
 
     h1 {
-        font-family: $title;
+        @include heading-font;
         font-size: 22px;
         font-weight: 600;
         color: $art-image-text-dark;
@@ -20,6 +21,7 @@
     }
 
     p {
+        @include body-font;
         color: $art-image-text-light;
         font-size: 15px;
         font-weight: 300;
@@ -39,6 +41,7 @@
     width: 100%;
 
     a {
+        @include body-font;
         text-decoration: none;
         color: $art-image-text-dark;
         font-size: 14px;
@@ -69,6 +72,7 @@
     max-width: 400px;
 
     p {
+        @include body-font;
         color: $art-image-text-light;
         font-size: 13px;
         font-weight: 200;
@@ -76,8 +80,8 @@
     }
 
     h2 {
+        @include heading-font;
         color: $art-image-text-dark;
-        font-family: $title;
         font-weight: 200;
         letter-spacing: 0.05em;
         padding: 2px 5px;

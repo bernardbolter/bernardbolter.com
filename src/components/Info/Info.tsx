@@ -4,7 +4,8 @@ import { useArtworks } from '@/providers/ArtworkProvider'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
-import MenuPlusSvg from '@/svgs/MenuPlusSvg'
+import AnimatedHamburgerMenu from '../Navs/AnimatedHamburgerMenu'
+// import MenuPlusSvg from '@/svgs/MenuPlusSvg'
 import InstaCircleSvg from '@/svgs/InstaCircleSvg'
 import TiktokCircleSvg from'@/svgs/TiktokCircleSvg'
 import LinkedinCircleSvg from '@/svgs/LinkedinCircleSvg'
@@ -47,7 +48,7 @@ const Info = () => {
                 className="info-button__container--background"
                 style={{ 
                     borderBottomRightRadius: artworks.infoOpen ? 0 : 6,
-                    width: artworks.infoOpen ? 150 : 49,
+                    width: artworks.infoOpen ? 149 : 50,
                     transition: 'all .3s ease-in-out'
                 }}    
             >
@@ -55,7 +56,7 @@ const Info = () => {
                     className={artworks.infoOpen ? "info-button__container info-button__container--open" : "info-button__container"}
                     onClick={() => setArtworks(prevState => ({...prevState, infoOpen: !prevState.infoOpen}))}    
                 >
-                    <MenuPlusSvg />
+                    <AnimatedHamburgerMenu />
                 </div>
             </div>
             

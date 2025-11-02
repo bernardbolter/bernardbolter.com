@@ -1,4 +1,5 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 // NAME
 
@@ -14,21 +15,23 @@
 }
 
 .name__full {
-    font-family: $heading;
-    font-size: 26px;
-    font-weight: 700;
+    @include title-font;
+    font-size: 29px;
     color: $title-text-dark;
+    line-height: 1;
+    opacity: .9;
+    letter-spacing: 0.03em;
 }
 
 .name__city {
-    font-family: $body-font;
+    @include heading-font;
     font-size: 14px;
     font-weight: 300;
     color: $title-text;
+    line-height: 1.1;
 }
 
 .name__location {
-    font-family: $body-font;
     font-size: 14px;
     font-weight: 300;
     color: $title-text;
@@ -68,7 +71,7 @@
         font-size: 14px;
         font-weight: 800;
         color: $title-text;
-        padding: 0;
+        padding: 0 !important;
         margin: 0;
     }
 }
@@ -78,34 +81,33 @@
 .info-button__container--background {
     position: fixed;
     z-index: 1999;
-    top: 68px;
+    top: 79px;
     left: 0;
     background: $nav-background;
     width: 150px;
-    height: 40px;
+    height: 50px;
 }
 
 .info-button__container {
-    width: 28px;
-    height: 28px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
     position: relative;
     z-index: 2001;
-    margin: 5px 0 0 10px;
 }
 
 // CONTENT
 .info__content {
-    width: 150px;
+    width: 149px;
     background: $nav-background;
     padding: 0 0 10px 8px;
     border-bottom-right-radius: 10px;
     position: relative;
     left: 0;
-    transform: translateX(-150px);
+    transform: translateX(-169px);
     transition: all .5s ease-in-out;
     position: fixed;
-    top: 108px;
+    top: 129px;
     z-index: 2000;
 }
 
@@ -132,12 +134,12 @@
     a {
         color: $dark;
         text-decoration: none;
-        font-family: $heading;
         font-size: 19px;
         padding: 3px 0;
         font-weight: 700;
         opacity: .9;
         transition: all .2s ease-in-out;
+        @include heading-font;
 
         &:hover {
             opacity: 1;
@@ -158,18 +160,26 @@
 // INFO SOCIALS
 .info-socials {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
 
+    @media screen and (min-width: $break-s) {
+        flex-direction: column;
+    }
+
     .info-socials__svg-container {
         margin: 0;
-        margin: 0 0 10px 0;
+        margin: 0 10px 0 0;
         text-decoration: none;
         width: 30px;
         height: 30px;
         transform: scale(1);
         transition: transform .3s ease-in-out;
+
+        @media screen and (min-width: $break-s) {
+            margin: 0 0 10px 0;
+        }
 
         svg {
             width: 100%;
@@ -200,11 +210,12 @@
         padding: 2px 0;
 
         h3 {
-            font-family: $body-font;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 400;
             padding: 0 0 4px 3px;
             margin: 0;
+            @include heading-font;
+            line-height: 1.2;
         }
 
         svg {

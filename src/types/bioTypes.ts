@@ -21,6 +21,11 @@ export interface BiographyData {
     bioimage3: BioImageNode | null;
     bioimage4: BioImageNode | null;
     bioimage5: BioImageNode | null;
+    bioimage6: BioImageNode | null;
+    bioimage7: BioImageNode | null;
+    bioimage8: BioImageNode | null;
+    bioimage9: BioImageNode | null;
+    bioimage10: BioImageNode | null;
     // We will use this new property to store the 5 images as an array
     imagesArray?: BioImageNode[]; 
 }

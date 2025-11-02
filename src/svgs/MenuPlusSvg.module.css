@@ -17,22 +17,20 @@
   stroke-dasharray: 26.398;
   stroke-dashoffset: 0;
   opacity: 1;
-  transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.5s ease-in-out 0.5s;
+  transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.5s ease-in-out 0.5s, transform 0.5s ease-in-out;
 }
 
 .arrowShrink {
   stroke-dasharray: 26.398;
   stroke-dashoffset: 26.398;
   opacity: 0;
-  transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
 .arrowUp {
   transform: translate(2px, -5px);
-  transition: transform 0.5s ease-in-out;
 }
 
 .arrowDown {
   transform: translate(2px, 0);
-  transition: transform 0.5s ease-in-out;
 }

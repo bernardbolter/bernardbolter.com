@@ -39,7 +39,7 @@ const TitleCornerTopLeft = () => {
             {viewState === 'desktop' && <line x1="0" y1="10" x2="10" y2="10" stroke={titleDark} strokeWidth="2" />}
             {viewState === 'desktop' && <line x1="0" y1="10" x2="10" y2="0" stroke={titleDark} strokeWidth="1" />}
             {viewState === 'slideshow' && <line x1="10" y1="0" x2="10" y2="10" stroke={titleDark} strokeWidth="2" />}
-            {viewState === 'sldieshow' && <line  x1="10" y1="0" x2="10" y2="0" stroke={titleDark} strokeWidth="1" />}
+            {viewState === 'slideshow' && <line  x1="10" y1="0" x2="10" y2="0" stroke={titleDark} strokeWidth="1" />}
         </svg>
     )
 }

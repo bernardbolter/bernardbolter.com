@@ -1,4 +1,5 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 @use "sass:color";
 
 @mixin transition($properties...) {
@@ -21,7 +22,7 @@
     -ms-overflow-style: none;
 
     &::-webkit-scrollbar {
-        background: transparent; /* Chrome/Safari/Webkit */
+        background: transparent;
         width: 0px;
     }
 }
@@ -65,10 +66,10 @@
     }
 
     p {
+        @include heading-font;
         font-size: 10px;
         color: $title-dark;
         font-weight: 300;
-        font-family: $title;
         letter-spacing: 0.05em;
     }
 }
@@ -85,140 +86,92 @@
     }
 
     h2 {
+        @include heading-font;
         color: $grid-text;
         padding: 0 0 5px;
+        font-weight: 600;
     }
 
     h3 {
+        @include heading-font;
         color: $grid-text;
-        padding: 0 0 5px;
+        padding: 0 0 10px;
+        font-weight: 500;
     }
 
     p {
-        padding: 0 0 20px;
-        color: $dark;
-        text-indent: 12px;
-        line-height: 1.4;
+        @include body-font;
+        color: $art-image-text-light;
+        line-height: 1.5;
+        padding: 0 0 8px;
+    }
+
+    a {
+        @include body-font;
+        color: $art-image-text-dark;
+        text-decoration: underline;
+        font-weight: 500;
     }
 }
 
-.contact-form__container {
+.contact__form {
     width: 100%;
-    padding: 30px 5% 15px;
-    margin: 15px auto;
-    border: 1px solid $svg-dark;
-    border-radius: 6px;
-    max-width: 550px;
-    position: relative;
-    background: white;
-}
-
-.formcarry-block {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 16px;
+    padding: 20px 0;
 
     label {
-      color: $svg-dark;
-      font-weight: 500;
-      font-size: 12px;
-      letter-spacing: 0.05px;
-      font-family: $title;
+        @include heading-font;
+        font-size: 14px;
+        color: $art-image-text-dark;
+        font-weight: 500;
     }
 
     input,
     textarea {
-      background-color: #ddd;
-      padding: 6px 11px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      color: $svg-dark;
-      border-bottom: 1px solid $svg-dark;
-      border-top: none;
-      border-left: none;
-      border-right: none;
+        @include body-font;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid $art-image-line;
+        border-radius: 4px;
+        background: white;
+        font-size: 16px;
+        color: $dark;
 
-      &::placeholder {
-        color: $svg-dark;
-        opacity: 0.7;
-      }
-
-      &:focus {
-        outline: none;
-        box-shadow: none;
-        border: none; 
-      }
-
-      &.error {
-        border-color: $error-color;
-        
         &:focus {
-          box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+            outline: none;
+            border-color: $nav-highlight;
         }
-      }
     }
 
     textarea {
-      resize: vertical;
-      min-height: 120px;
-      line-height: 1.5;
-    }
-
-    .error-message {
-      color: $error-color;
-      font-size: 10px;
-      margin: 0 0 10px;
-      display: flex;
-      align-items: center;
-      
-      &::before {
-        content: '⚠';
-        font-size: 9px;
-        margin: 0 4px 0 0;
-      }
+        min-height: 100px;
+        resize: vertical;
     }
 
     button {
-      background-color: #ddd;
-      color: $svg-dark;
-      width:150px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 10px 0;
-      border: none;
-      border-radius: 2px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      @include transition(background-color 0.3s ease, transform 0.1s ease);
-      letter-spacing: 0.5px;
-      margin: 0 0 10px;
+        @include heading-font;
+        align-self: flex-start;
+        padding: 10px 20px;
+        background: $dark;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
 
-      &:hover:not(:disabled) {
-        // background-color: $button-hover;
-        transform: translateY(-1px);
-      }
-
-      &:active:not(:disabled) {
-        transform: translateY(0);
-      }
-
-      &:disabled {
-        background-color: #999;
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
+        &:hover {
+            background: $medium;
+        }
     }
-  }
+}
 
-  .alert {
-    padding: 1rem 1.25rem;
+.contact__alert {
+    padding: 12px 16px;
     border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.95rem;
+    margin: 16px 0;
     animation: slideDown 0.3s ease;
 
     .alert-icon {
@@ -238,7 +191,6 @@
       color: color.adjust($confirmation-color, $lightness: 20%);
     }
 }
-
 
 @keyframes slideDown {
   from {
@@ -261,23 +213,26 @@
   max-width: 800px;
 
   .contact__datenschutz {
+    @include heading-font;
     font-size: 20px;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 
     &:hover {
       text-decoration: underline;
     }
 
-     svg {
+    svg {
       width: 15px;
       height: 15px;
       fill: $svg-dark;
-      margin-right: 5px;
     }
   }
 
   h1 {
-    font-family: $title;
+    @include heading-font;
     color: $art-image-text-dark;
     font-size: 18px;
     font-weight: 300;
@@ -293,7 +248,7 @@
   }
 
   h5 {
-    font-family: $body-font;
+    @include heading-font;
     font-size: 16px;
     color: $art-image-text-dark;
     padding: 3px 0;
@@ -301,16 +256,16 @@
   }
 
   p {
-    font-family: $body-font;
+    @include body-font;
     font-size: 14px;
     line-height: 1.4;
     font-weight: 300;
     color: $art-image-text-light;
-    padding:  0 0 5px;
+    padding: 0 0 5px;
   }
 
   a {
-    font-family: $body-font;
+    @include body-font;
     font-size: 13px;
     color: $art-image-text-dark;
     font-weight: 600;
@@ -320,5 +275,3 @@
     }
   }
 }
-
-

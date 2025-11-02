@@ -1,0 +1,47 @@
+// styles/_fonts.scss
+// ---------------------------------------------------
+// 1. Mixins – use the CSS variables created by next/font
+// ---------------------------------------------------
+@mixin body-font {
+  font-family: var(--font-barlow), sans-serif;
+}
+
+@mixin heading-font {
+  font-family: var(--font-barlow-condensed), sans-serif;
+}
+
+@mixin title-font {
+  font-family: var(--font-staatliches), sans-serif;
+  text-transform: uppercase; // Optional: Matches Staatliches style
+}
+
+// NEW: Klaro-specific mixins with !important
+@mixin body-font--klaro {
+  font-family: var(--font-barlow), sans-serif !important;
+}
+
+@mixin heading-font--klaro {
+  font-family: var(--font-barlow-condensed), sans-serif !important;
+}
+
+// ---------------------------------------------------
+// 2. Global defaults
+// ---------------------------------------------------
+body {
+  @include body-font;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+// Headings → condensed
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.title,
+.heading {
+  @include heading-font;
+}

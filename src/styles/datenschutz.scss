@@ -1,17 +1,18 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 .datenschutz__container {
      width: 100%;
-        height: 100vh;
-        background: $background;
-        overflow: scroll;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+     height: 100vh;
+     background: $background;
+     overflow: scroll;
+     scrollbar-width: none;
+     -ms-overflow-style: none;
 
-        &::-webkit-scrollbar {
-            background: transparent; /* Chrome/Safari/Webkit */
-            width: 0px;
-        }
+     &::-webkit-scrollbar {
+         background: transparent;
+         width: 0px;
+     }
 }
 
 .datenschutz__close {
@@ -39,6 +40,7 @@
     padding: 50px 1%;
 
     p {
+        @include body-font;
         margin: 0;
         padding: 0 10px 10px;
         color: #333;

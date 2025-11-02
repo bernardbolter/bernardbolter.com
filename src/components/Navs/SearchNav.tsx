@@ -16,7 +16,7 @@ const SearchNav = () => {
                 style={{
                     display: artworks.showSlideshow ? "none" : "",
                     top: size.width && size.width < 768
-                        ? 11 : artworks.artworkViewTimeline ? 131 : 11
+                        ? 9 : artworks.artworkViewTimeline ? 137 : 9
                 }}
             >
                 <input

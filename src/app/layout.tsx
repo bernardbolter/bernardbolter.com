@@ -1,7 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
 import AnimationWrapper from './AnimationWrapper';
-import { Staatliches, Sofia_Sans_Extra_Condensed, Barlow_Condensed } from 'next/font/google';
+import { Barlow, Barlow_Condensed, Staatliches } from 'next/font/google';
 import { getArtworkData } from '@/lib/dataService';
 import ArtworksProvider from '@/providers/ArtworkProvider';
 import { AllData } from '@/types/artworkProviderTypes';
@@ -10,22 +10,25 @@ import KlaroComponent from '@/components/Klaro';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import '@/styles/index.scss';
 
-const barlow = Barlow_Condensed({
+const barlow = Barlow({
   weight: ['300', '400', '500', '600', '700'],
   subsets: ['latin'],
-  display: 'swap'
+  display: 'swap',
+  variable: '--font-barlow',          // <-- CSS variable
+});
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-barlow-condensed'
 });
 
 const staatliches = Staatliches({
   weight: ['400'],
   subsets: ['latin'],
-  display: 'swap'
-});
-
-const sofiaSansExtraCondensed = Sofia_Sans_Extra_Condensed({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ['latin'],
-  display: 'swap'
+  display: 'swap',
+  variable: '--font-staatliches',
 });
 
 export const metadata: Metadata = {
@@ -70,9 +73,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <head>
-        <link rel="preload" href={barlow.style.fontFamily} as="font" type="font/woff2" crossOrigin="" />
-        <link rel="preload" href={staatliches.style.fontFamily} as="font" type="font/woff2" crossOrigin="" />
-        <link rel="preload" href={sofiaSansExtraCondensed.style.fontFamily} as="font" type="font/woff2" crossOrigin="" />
         <script
           type="text/plain"
           data-type="text/javascript"
@@ -105,7 +105,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         }) }} />
       </head>
       <body
-        className={`${barlow.className} ${staatliches.className} ${sofiaSansExtraCondensed.className}`}
+        className={`
+          ${barlow.variable}
+          ${barlowCondensed.variable}
+          ${staatliches.variable}
+          ${barlow.className}
+        `}
       >
         <ApolloProvider>
           <ArtworksProvider allData={allData}>

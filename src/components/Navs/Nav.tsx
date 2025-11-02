@@ -25,7 +25,7 @@ const Nav = () => {
             : artworks.showSlideshow 
             ? 4
             : size.width && size.width > 768
-            ? 125 : 4
+            ? 130 : 4
         }}  
     >
         <div

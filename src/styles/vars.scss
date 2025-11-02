@@ -60,10 +60,10 @@ $break-m: 767px;
 $break-l: 979px;
 $break-xl: 1200px;
 
-// FONTS
-$title: "Staatliches", sans-serif;
-$heading: "Sofia Sans Extra Condensed", sans-serif;
-$body-font: "Barlow Condensed", sans-serif;
+// // FONTS
+// $title: var(--font-staatliches);
+// $heading: var(--font-sofia);
+// $body-font: var(--font-barlow);
 
 :root {
     --dark-color: #{$dark};

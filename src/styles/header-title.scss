@@ -1,14 +1,17 @@
 @use './vars.scss' as *;
+@use './fonts.scss' as *;
 
 .header-title__container {
     position: fixed;
     top: -30px;
-    right: -40px;
+    right: -30px;
+    @include title-font;
     font-size: 120px;
     opacity: .6;
     text-transform: uppercase;
     font-weight: 900;
     animation: colorChange 6s ease-in-out infinite;
+    line-height: 1;
 
     @media screen and (min-width: $break-s) {
         font-size: 150px;
@@ -29,6 +32,7 @@
     position: fixed;
     top: -10px;
     right: -10px;
+    @include heading-font;
     font-size: 60px;
     opacity: .6;
     text-transform: uppercase;

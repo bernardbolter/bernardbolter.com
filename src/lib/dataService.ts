@@ -47,31 +47,31 @@ function transformArtistLink(gqlLink: GqlLink | null | undefined): ArtistInfoLin
 function transformBioImage(gqlImage: GqlImage | null | undefined): BioImageNode | null {
   const node = gqlImage?.node;
   if (!node) return null;
-  
+
   const details = node.mediaDetails;
 
-  // CRITICAL CHECK for Error 2: Check for required non-nullable properties
-  if (!node.sourceUrl || !node.srcSet || !details) {
+  // REQUIRED FIELDS – if any are missing we skip the image
+  if (
+    !node.sourceUrl ||
+    !node.srcSet ||
+    !details ||
+    details.width == null ||
+    details.height == null
+  ) {
+    console.warn('Bio image missing required fields', { node, details });
     return null;
-  }
-
-  // CRITICAL CHECK for Error 1: Check for required mediaDetails properties
-  if (details.width === undefined || details.width === null ||
-      details.height === undefined || details.height === null) {
-    return null; 
   }
 
   return {
     node: {
-        altText: node.altText || null,
-        // Non-null assertion (!) is now safe because the checks passed
-        sourceUrl: node.sourceUrl!, 
-        srcSet: node.srcSet!, 
-        mediaDetails: {
-            width: details.width!, 
-            height: details.height!, 
-        },
-    }
+      altText: node.altText || null,
+      sourceUrl: node.sourceUrl,
+      srcSet: node.srcSet,
+      mediaDetails: {
+        width: details.width,
+        height: details.height,
+      },
+    },
   };
 }
 
@@ -88,12 +88,22 @@ function transformBiography(gqlBio: GqlBiographyData | null | undefined): Biogra
     const bioImage3 = transformBioImage(gqlBio.bioimage3);
     const bioImage4 = transformBioImage(gqlBio.bioimage4);
     const bioImage5 = transformBioImage(gqlBio.bioimage5);
+    const bioImage6 = transformBioImage(gqlBio.bioimage6);
+    const bioImage7 = transformBioImage(gqlBio.bioimage7);
+    const bioImage8 = transformBioImage(gqlBio.bioimage8);
+    const bioImage9 = transformBioImage(gqlBio.bioimage9);
+    const bioImage10 = transformBioImage(gqlBio.bioimage10);
     
     if (bioImage1) imagesArray.push(bioImage1);
     if (bioImage2) imagesArray.push(bioImage2);
     if (bioImage3) imagesArray.push(bioImage3);
     if (bioImage4) imagesArray.push(bioImage4);
     if (bioImage5) imagesArray.push(bioImage5);
+    if (bioImage6) imagesArray.push(bioImage6);
+    if (bioImage7) imagesArray.push(bioImage7);
+    if (bioImage8) imagesArray.push(bioImage8);
+    if (bioImage9) imagesArray.push(bioImage9);
+    if (bioImage10) imagesArray.push(bioImage10);
 
 
     return {
@@ -103,6 +113,11 @@ function transformBiography(gqlBio: GqlBiographyData | null | undefined): Biogra
         bioimage3: bioImage3,
         bioimage4: bioImage4,
         bioimage5: bioImage5,
+        bioimage6: bioImage6,
+        bioimage7: bioImage7,
+        bioimage8: bioImage8,
+        bioimage9: bioImage9,
+        bioimage10: bioImage10,
         imagesArray: imagesArray,
     };
 }

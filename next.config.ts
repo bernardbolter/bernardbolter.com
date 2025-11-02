@@ -11,6 +11,15 @@ const nextConfig: NextConfig = {
         pathname: '/**', // Allows images from any path on this domain
       },
     ],
+  },
+  webpack: (config) => {
+    // Suppress unreachable code warnings from dependencies
+    config.ignoreWarnings = [
+      { module: /node_modules\/@apollo\/client/ },
+      { module: /node_modules\/klaro/ },
+      /unreachable code after return statement/
+    ]
+    return config
   }
 };
 

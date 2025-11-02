@@ -43,7 +43,7 @@ const TitleCornerBottomRight = () => {
             {viewState === 'mobile'  && <polygon points="0,0 10,0, 10,10" fill={titleShadow} />}
             {viewState === 'slideshow' && <polygon points="0,0 10,0 0,10" />}
 
-            {viewState === 'desktop' && <line x1="0" y1="0" x2="o" y2="10" stroke={titleDark} strokeWidth="1" />}
+            {viewState === 'desktop' && <line x1="0" y1="0" x2="0" y2="10" stroke={titleDark} strokeWidth="1" />}
             {viewState === 'desktop' && <line x1="0" y1="10" x2="10" y2="0" stroke={titleDark} strokeWidth="1" />}
             {viewState === 'mobile' && <line x1="0" y1="0" x2="10" y2="10" stroke={titleDark} strokeWidth="1" />}
             {viewState === 'slideshow' && <line x1="0" y1="0" x2="10" y2="0" stroke={titleDark} strokeWidth="2" />}
